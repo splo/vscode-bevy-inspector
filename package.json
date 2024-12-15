@@ -3,7 +3,7 @@
   "publisher": "splo",
   "displayName": "Bevy Inspector",
   "description": "Bevy Inspector Visual Studio Code Extension",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": {
     "url": "https://github.com/splo/vscode-bevy-inspector"
   },
