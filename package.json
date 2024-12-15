@@ -1,5 +1,6 @@
 {
   "name": "vscode-bevy-inspector",
+  "publisher": "splo",
   "displayName": "Bevy Inspector",
   "description": "Bevy Inspector Visual Studio Code Extension",
   "version": "0.0.1",
