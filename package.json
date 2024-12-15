@@ -1,0 +1,163 @@
+{
+  "name": "vscode-bevy-inspector",
+  "displayName": "Bevy Inspector",
+  "description": "Bevy Inspector Visual Studio Code Extension",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/splo/vscode-bevy-inspector"
+  },
+  "icon": "resources/bevy_bird_dark.png",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Visualization"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bevyInspectorContainer",
+          "title": "Bevy",
+          "icon": "resources/bevy_bird_dark.svg"
+        }
+      ]
+    },
+    "views": {
+      "bevyInspectorContainer": [
+        {
+          "id": "bevyInspector",
+          "name": "Bevy Inspector"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "bevyInspector",
+        "contents": "Connecting to the server running the Bevy Remote Plugin...\n[Refresh](command:bevyInspector.refresh)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "bevyInspector.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)",
+        "category": "Bevy Inspector"
+      },
+      {
+        "command": "bevyInspector.enablePolling",
+        "title": "Enable Polling",
+        "icon": "$(sync-ignored)",
+        "category": "Bevy Inspector"
+      },
+      {
+        "command": "bevyInspector.disablePolling",
+        "title": "Disable Polling",
+        "icon": "$(sync~spin)",
+        "category": "Bevy Inspector"
+      },
+      {
+        "command": "bevyInspector.destroyEntity",
+        "title": "Destroy Entity",
+        "icon": "$(trash)",
+        "category": "Bevy Inspector"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "bevyInspector.refresh",
+          "when": "view == bevyInspector",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.enablePolling",
+          "when": "view == bevyInspector && !bevyInspector.pollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.disablePolling",
+          "when": "view == bevyInspector && bevyInspector.pollingEnabled",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "bevyInspector.destroyEntity",
+          "when": "view == bevyInspector && viewItem == entity",
+          "group": "inline"
+        },
+        {
+          "command": "bevyInspector.destroyEntity",
+          "when": "view == bevyInspector && viewItem == entity"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "bevyInspector.refresh"
+        },
+        {
+          "command": "bevyInspector.enablePolling",
+          "when": "!bevyInspector.pollingEnabled"
+        },
+        {
+          "command": "bevyInspector.disablePolling",
+          "when": "bevyInspector.pollingEnabled"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Bevy Inspector",
+      "properties": {
+        "bevyInspector.url": {
+          "type": "string",
+          "order": 0,
+          "title": "Remote URL",
+          "description": "URL to the network interface where the application is running with the Bevy Remote HTTP plugin enabled",
+          "format": "uri",
+          "default": "http://127.0.0.1:15702"
+        },
+        "bevyInspector.pollingDelay": {
+          "type": "number",
+          "title": "Polling delay",
+          "description": "Interval in milliseconds between remote data refreshes, if polling is enabled",
+          "minimum": 1,
+          "default": "1000"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "json-rpc-types": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
+    "eslint": "^9.16.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.7.2"
+  }
+}
