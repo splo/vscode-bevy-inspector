@@ -122,5 +122,5 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
 }
 
 function shortenName(name: string): string {
-    return name.split("::").at(-1) ?? name;
+    return name.replaceAll(/\w*::/g, '');
 }
