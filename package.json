@@ -7,7 +7,7 @@
   "repository": {
     "url": "https://github.com/splo/vscode-bevy-inspector"
   },
-  "icon": "resources/bevy_bird_dark.png",
+  "icon": "resources/bevy-inspector.png",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -22,7 +22,7 @@
         {
           "id": "bevyInspectorContainer",
           "title": "Bevy",
-          "icon": "resources/bevy_bird_dark.svg"
+          "icon": "resources/bevy-inspector.svg"
         }
       ]
     },
