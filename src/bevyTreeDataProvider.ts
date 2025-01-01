@@ -78,7 +78,7 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
     private buildEntityTreeItem(entity: Entity): TreeItem {
         const treeItem = new TreeItem(entity.name || entity.id.toString(), TreeItemCollapsibleState.Collapsed);
         if (entity.name !== undefined) {
-            treeItem.description = entity.id.toString();
+            treeItem.tooltip = entity.id.toString();
         }
         treeItem.iconPath = new ThemeIcon('symbol-class');
         treeItem.contextValue = 'entity';
@@ -88,7 +88,7 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
     private buildComponentNameTreeItem(component: Component): TreeItem {
         let { name, errorMessage } = component;
         const treeItem = new TreeItem(shortenName(name), TreeItemCollapsibleState.Collapsed);
-        treeItem.description = name;
+        treeItem.tooltip = name;
         treeItem.iconPath = new ThemeIcon(errorMessage === undefined ? 'checklist' : 'error');
         treeItem.contextValue = 'component';
         return treeItem;
