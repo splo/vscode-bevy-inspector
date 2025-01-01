@@ -207,6 +207,7 @@ export class BevyTreeService {
 
 
 function inferEntityName(components: string[]): string | null {
+    // https://github.com/jakobhellermann/bevy-inspector-egui/blob/b203ca5c3f688dddbe7245f87bfcd74acd4f5da3/crates/bevy-inspector-egui/src/utils.rs#L57
     let associations: Record<ComponentName, string> = {
         "bevy_window::window::PrimaryWindow": "Primary Window",
         "bevy_core_pipeline::core_3d::camera_3d::Camera3d": "Camera3d",
