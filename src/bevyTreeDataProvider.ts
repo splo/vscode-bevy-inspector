@@ -130,6 +130,7 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
     }
 }
 
+// https://github.com/bevyengine/disqualified/blob/cc4940da85aa64070a34da590ff5aab12e7c951d/src/short_name.rs#L50
 function shortenName(name: string): string {
     return name.replaceAll(/\w*::/g, '');
 }
