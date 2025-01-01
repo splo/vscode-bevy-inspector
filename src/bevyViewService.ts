@@ -99,7 +99,15 @@ export class BevyTreeService {
             // Sort so that children are on top, then component name in lexicographical order.
             const aIsChildren = a.name === 'bevy_hierarchy::components::children::Children';
             const bIsChildren = b.name === 'bevy_hierarchy::components::children::Children';
-            return aIsChildren ? -1 : bIsChildren ? 1 : a.name.localeCompare(b.name);
+            if (aIsChildren) return -1;
+            else if (bIsChildren) return 1;
+            else {
+                let aHasErrors = a.errorMessage != undefined;
+                let bHasErrors = b.errorMessage != undefined;
+                if (aHasErrors && !bHasErrors) return 1;
+                if (bHasErrors && !aHasErrors) return -1;
+                return a.name.localeCompare(b.name);
+            }
         });
     }
 
