@@ -37,7 +37,9 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
             } else if (element instanceof Entity) {
                 return await this.service.listComponents(element.id);
             } else if (element instanceof Component) {
-                return await this.service.buildComponentValueTree(element);
+                if (!isPrimitiveComponent(element)) {
+                    return await this.service.buildComponentValueTree(element);
+                }
             } else if (element instanceof ComponentValue) {
                 return element.children;
             }
@@ -87,9 +89,16 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
 
     private buildComponentNameTreeItem(component: Component): TreeItem {
         let { name, errorMessage } = component;
-        const treeItem = new TreeItem(shortenName(name), TreeItemCollapsibleState.Collapsed);
+        const treeItem = new TreeItem(shortenName(name));
         treeItem.tooltip = name;
+
+        let isPrimitive = isPrimitiveComponent(component);
+        if (isPrimitive) {
+            treeItem.description = JSON.stringify(component.value);
+        }
+
         treeItem.iconPath = new ThemeIcon(errorMessage === undefined ? 'checklist' : 'error');
+        treeItem.collapsibleState = isPrimitive ? TreeItemCollapsibleState.None : TreeItemCollapsibleState.Collapsed;
         treeItem.contextValue = 'component';
         return treeItem;
     }
@@ -123,4 +132,12 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
 
 function shortenName(name: string): string {
     return name.replaceAll(/\w*::/g, '');
+}
+
+function isPrimitiveComponent(component: Component) {
+    if (component.value instanceof Object) {
+        if (Object.keys(component.value).length == 0) return true;
+        return false;
+    }
+    return true;
 }
