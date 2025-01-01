@@ -76,9 +76,9 @@ export class BevyTreeService {
             }
         };
         const result = await this.remoteService.query(params);
-        return result
+        return Promise.all(result
             .filter(element => !element.components[PARENT_COMPONENT])
-            .map(toEntity);
+            .map(entity => this.toEntity(entity)));
     }
 
     public async listComponents(entityId: EntityId): Promise<Component[]> {
@@ -181,11 +181,47 @@ export class BevyTreeService {
             }
         };
         const result = await this.remoteService.query(params);
-        const allEntities = result.map(toEntity);
+        const allEntities = await Promise.all(result.map(entity => this.toEntity(entity)));
         return value.map(id => allEntities.filter(entity => entity.id === id)[0]);
+    }
+
+
+    private async toEntity(element: { entity: EntityId; components: Record<ComponentName, any>; }): Promise<Entity> {
+        let name = element.components[NAME_COMPONENT]?.name;
+        if (!name) {
+            let components = await this.remoteService.list({ entity: element.entity });
+            name = inferEntityName(components);
+        }
+
+        return new Entity(element.entity, name, element.components[PARENT_COMPONENT]);
     }
 }
 
-function toEntity(element: { entity: EntityId; components: Record<ComponentName, any>; }): Entity {
-    return new Entity(element.entity, element.components[NAME_COMPONENT]?.name, element.components[PARENT_COMPONENT]);
+
+function inferEntityName(components: string[]): string | null {
+    let associations: Record<ComponentName, string> = {
+        "bevy_window::window::PrimaryWindow": "Primary Window",
+        "bevy_core_pipeline::core_3d::camera_3d::Camera3d": "Camera3d",
+        "bevy_core_pipeline::core_2d::camera_2d::Camera2d": "Camera2d",
+        "bevy_pbr::light::point_light::PointLight": "PointLight",
+        "bevy_pbr::light::directional_light::DirectionalLight": "DirectionalLight",
+        "bevy_text::text::Text": "Text",
+        "bevy_ui::ui_node::Node": "Node",
+        "bevy_pbr::mesh_material::MeshMaterial3d<bevy_pbr::pbr_material::StandardMaterial>": "Pbr Mesh",
+        "bevy_window::window::Window": "Window",
+        "bevy_ecs::observer::runner::ObserverState": "Observer",
+        "bevy_window::monitor::Monitor": "Monitor",
+        "bevy_picking::pointer::PointerId": "Pointer",
+
+        "bevy_input::gamepad::Gamepad": "Gamepad",
+        "bevy_ecs::system::system_registry::SystemIdMarker": "System",
+    };
+    for (let component of components) {
+        let association = associations[component];
+        if (association) {
+            return association;
+        }
+    }
+
+    return null;
 }
