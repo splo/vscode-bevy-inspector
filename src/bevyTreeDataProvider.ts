@@ -122,5 +122,42 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
 }
 
 function shortenName(name: string): string {
-    return name.split("::").at(-1) ?? name;
+    const collapseTypeName = (string: string): string => {
+        const segments = string.split("::");
+        const last = segments.pop()!;
+        const secondLast = segments.pop();
+        if (secondLast && /^[A-Z]/.test(secondLast)) {
+            return `${secondLast}::${last}`;
+        }
+        return last;
+    };
+
+    let result = "";
+    let index = 0;
+
+    while (index < name.length) {
+        const rest = name.slice(index);
+        const specialCharIndex = rest.search(/[ <>()[\],;]/);
+        if (specialCharIndex === -1) {
+            result += collapseTypeName(rest);
+            break;
+        }
+
+        const segment = rest.slice(0, specialCharIndex);
+        result += collapseTypeName(segment);
+
+        const specialChar = rest[specialCharIndex];
+        result += specialChar;
+
+        if (["<", "("].includes(specialChar)) {
+            index += specialCharIndex + 1;
+        } else if ([">", ")"].includes(specialChar) && rest[specialCharIndex + 1] === ":") {
+            result += "::";
+            index += specialCharIndex + 3;
+        } else {
+            index += specialCharIndex + 1;
+        }
+    }
+
+    return result;
 }
