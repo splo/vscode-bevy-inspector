@@ -96,16 +96,16 @@ export class BevyTreeService {
         ).concat(Object.entries(result.errors).map(
             ([key, value]) => new Component(key, undefined, value.message)
         )).sort((a, b) => {
-            // Sort so that children are on top, then component name in lexicographical order.
+            // Sort so that children are on top, then component name in lexicographical order, and errors last.
             const aIsChildren = a.name === 'bevy_hierarchy::components::children::Children';
             const bIsChildren = b.name === 'bevy_hierarchy::components::children::Children';
-            if (aIsChildren) return -1;
-            else if (bIsChildren) return 1;
+            if (aIsChildren) { return -1; }
+            else if (bIsChildren) { return 1; }
             else {
-                let aHasErrors = a.errorMessage != undefined;
-                let bHasErrors = b.errorMessage != undefined;
-                if (aHasErrors && !bHasErrors) return 1;
-                if (bHasErrors && !aHasErrors) return -1;
+                let aHasErrors = a.errorMessage !== undefined;
+                let bHasErrors = b.errorMessage !== undefined;
+                if (aHasErrors && !bHasErrors) { return 1; }
+                if (bHasErrors && !aHasErrors) { return -1; }
                 return a.name.localeCompare(b.name);
             }
         });

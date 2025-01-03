@@ -137,8 +137,7 @@ function shortenName(name: string): string {
 
 function isPrimitiveComponent(component: Component) {
     if (component.value instanceof Object) {
-        if (Object.keys(component.value).length == 0) return true;
-        return false;
+        return Object.keys(component.value).length === 0;
     }
     return true;
 }
