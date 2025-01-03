@@ -13,6 +13,8 @@ Resources, assets and states aren't yet supported since the Bevy Remote Protocol
 
 ## Requirements
 
+There is an example server at [`examples/server`](./examples/server/).
+
 - A Rust project with the `bevy` dependency and the `bevy_remote` feature enabled.
 
 ```toml
@@ -32,4 +34,4 @@ fn main() {
 }
 ```
 
-By default the connection URL is `http://127.0.0.1:15702`. You can configure this under the "Bevy Inspector" settings group.
+By default the connection URL is `http://127.0.0.1:15702`. You can configure this under the "Bevy Inspector" group in the VS Code settings.
