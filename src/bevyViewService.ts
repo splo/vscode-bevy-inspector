@@ -195,8 +195,8 @@ export class BevyTreeService {
 
 
     private async toEntity(element: { entity: EntityId; components: Record<ComponentName, any>; }): Promise<Entity> {
-        let name = element.components[NAME_COMPONENT]?.name;
-        if (!name) {
+        let name = element.components[NAME_COMPONENT]?.name || element.components[NAME_COMPONENT];
+        if (!name || !(typeof name === "string")) {
             let components = await this.remoteService.list({ entity: element.entity });
             name = inferEntityName(components);
         }
