@@ -78,7 +78,7 @@ export class BevyTreeService {
         const result = await this.remoteService.query(params);
         return Promise.all(result
             .filter(element => !element.components[PARENT_COMPONENT])
-            .map(entity => this.toEntity(entity)));
+            .map(element => this.toEntity(element)));
     }
 
     public async listComponents(entityId: EntityId): Promise<Component[]> {
@@ -204,11 +204,9 @@ export class BevyTreeService {
         return new Entity(element.entity, name, element.components[PARENT_COMPONENT]);
     }
 }
-
-
 function inferEntityName(components: string[]): string | null {
     // https://github.com/jakobhellermann/bevy-inspector-egui/blob/b203ca5c3f688dddbe7245f87bfcd74acd4f5da3/crates/bevy-inspector-egui/src/utils.rs#L57
-    let associations: Record<ComponentName, string> = {
+    const COMPONENT_NAME_MAPPING: Record<ComponentName, string> = {
         "bevy_window::window::PrimaryWindow": "Primary Window",
         "bevy_core_pipeline::core_3d::camera_3d::Camera3d": "Camera3d",
         "bevy_core_pipeline::core_2d::camera_2d::Camera2d": "Camera2d",
@@ -216,21 +214,15 @@ function inferEntityName(components: string[]): string | null {
         "bevy_pbr::light::directional_light::DirectionalLight": "DirectionalLight",
         "bevy_text::text::Text": "Text",
         "bevy_ui::ui_node::Node": "Node",
-        "bevy_pbr::mesh_material::MeshMaterial3d<bevy_pbr::pbr_material::StandardMaterial>": "Pbr Mesh",
+        "bevy_pbr::mesh_material::MeshMaterial3d<bevy_pbr::pbr_material::StandardMaterial>": "PBR Mesh",
         "bevy_window::window::Window": "Window",
         "bevy_ecs::observer::runner::ObserverState": "Observer",
         "bevy_window::monitor::Monitor": "Monitor",
         "bevy_picking::pointer::PointerId": "Pointer",
-
         "bevy_input::gamepad::Gamepad": "Gamepad",
         "bevy_ecs::system::system_registry::SystemIdMarker": "System",
     };
-    for (let component of components) {
-        let association = associations[component];
-        if (association) {
-            return association;
-        }
-    }
-
-    return null;
+    return components
+        .filter(component => COMPONENT_NAME_MAPPING.hasOwnProperty(component))
+        .map(component => COMPONENT_NAME_MAPPING[component])[0];
 }
