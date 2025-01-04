@@ -19,8 +19,10 @@ There is an example server at [`examples/server`](./examples/server/).
 
 ```toml
 [dependencies]
-bevy = { version = "0.15.0", features = ["bevy_remote"] }
+bevy = { version = "0.15.1", features = ["bevy_remote"] }
 ```
+
+Only stable version of Bevy `0.15` is supported at the moment.
 
 - A Bevy application with the `RemotePlugin` and `RemoteHttpPlugin` plugins enabled.
 
