@@ -51,10 +51,13 @@ export class ComponentValue {
     }
 }
 
-const NAME_COMPONENT = "bevy_core::name::Name";
+export type BevyVersion = "<= 0.15" | "> 0.15";
+export const DEFAULT_BEVY_VERSION: BevyVersion = '<= 0.15';
+
 const PARENT_COMPONENT = "bevy_hierarchy::components::parent::Parent";
 
 export class BevyTreeService {
+    public bevyVersion: BevyVersion = '<= 0.15';
     private remoteService: BevyRemoteService;
 
     constructor(remoteService: BevyRemoteService) {
@@ -72,7 +75,7 @@ export class BevyTreeService {
     public async listTopLevelEntities(): Promise<Entity[]> {
         const params = {
             data: {
-                option: [NAME_COMPONENT, PARENT_COMPONENT]
+                option: [this.getNameComponentName(), PARENT_COMPONENT]
             }
         };
         const result = await this.remoteService.query(params);
@@ -121,6 +124,12 @@ export class BevyTreeService {
                 return this.buildChildrenTree(component.value);
         }
         return this.buildGenericTree(component.value, component.errorMessage);
+    }
+
+    private getNameComponentName(): ComponentName {
+        const NAME_COMPONENT_0_15 = "bevy_core::name::Name";
+        const NAME_COMPONENT_0_16 = "bevy_ecs::name::Name";
+        return this.bevyVersion === '<= 0.15' ? NAME_COMPONENT_0_15 : NAME_COMPONENT_0_16;
     }
 
     private buildGenericTree(value: any, errorMessage?: string): ComponentValue[] {
@@ -185,7 +194,7 @@ export class BevyTreeService {
     private async buildChildrenTree(value: EntityId[]): Promise<Entity[]> {
         const params = {
             data: {
-                option: [NAME_COMPONENT, PARENT_COMPONENT]
+                option: [this.getNameComponentName(), PARENT_COMPONENT]
             }
         };
         const result = await this.remoteService.query(params);
@@ -195,7 +204,8 @@ export class BevyTreeService {
 
 
     private async toEntity(element: { entity: EntityId; components: Record<ComponentName, any>; }): Promise<Entity> {
-        let name = element.components[NAME_COMPONENT]?.name || element.components[NAME_COMPONENT];
+        const nameComponent = this.getNameComponentName();
+        let name = element.components[nameComponent]?.name || element.components[nameComponent];
         if (!name || !(typeof name === "string")) {
             let components = await this.remoteService.list({ entity: element.entity });
             name = inferEntityName(components);
