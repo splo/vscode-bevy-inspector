@@ -120,6 +120,20 @@
           "format": "uri",
           "default": "http://127.0.0.1:15702"
         },
+        "bevyInspector.bevyVersion": {
+          "type": "string",
+          "title": "Bevy Version",
+          "description": "Version of Bevy that defines the Bevy Remote Protocol version.",
+          "default": "<= 0.15",
+          "enum": [
+            "<= 0.15",
+            "> 0.15"
+          ],
+          "enumItemLabels": [
+            "Version 0.15 or earlier",
+            "Version later than 0.15"
+          ]
+        },
         "bevyInspector.pollingDelay": {
           "type": "number",
           "title": "Polling delay",
