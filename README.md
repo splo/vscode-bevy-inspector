@@ -7,7 +7,8 @@ Display live data from your [Bevy](https://bevyengine.org/) application using th
 - Displays Bevy entities and components right in your editor side view.
 - Respects entity hierarchy (children entities displayed under their parent's `Children` component).
 - Refresh data when wanted or via automatic polling with configurable delay.
-- Destroy an entity simply by the power of a click (hover over an entity, the bin icon is to the right).
+- Destroy an entity simply by the power of a click (right click on an entity or hover over it, the bin icon is to the right).
+- Copy a component's full name (right click on a component).
 
 Resources, assets and states aren't yet supported since the Bevy Remote Protocol doesn't yet support them.
 

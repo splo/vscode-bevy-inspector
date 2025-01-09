@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { BevyTreeDataProvider } from './bevyTreeDataProvider';
-import { BevyTreeService, DEFAULT_BEVY_VERSION, Entity } from './bevyViewService';
+import { BevyTreeService, Component, DEFAULT_BEVY_VERSION, Entity } from './bevyViewService';
 import { JsonRpcBevyRemoteService } from './jsonRpcBrp';
 import { PollingService } from './polling';
 
@@ -20,6 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('bevyInspector.enablePolling', () => polling.enablePolling());
 	vscode.commands.registerCommand('bevyInspector.disablePolling', () => polling.disablePolling());
 	vscode.commands.registerCommand('bevyInspector.destroyEntity', (entity: Entity) => treeDataProvider.destroyEntity(entity));
+	vscode.commands.registerCommand('bevyInspector.copyComponentName', async (component: Component) => {
+		if (component?.name) {
+			await vscode.env.clipboard.writeText(component.name);
+		}
+	});
 	vscode.workspace.onDidChangeConfiguration((e) => {
 		if (e.affectsConfiguration('bevyInspector.url')) {
 			remoteService.url = vscode.workspace.getConfiguration('bevyInspector').get('url', DEFAULT_URL);

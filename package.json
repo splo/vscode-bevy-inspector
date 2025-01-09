@@ -64,6 +64,12 @@
         "title": "Destroy Entity",
         "icon": "$(trash)",
         "category": "Bevy Inspector"
+      },
+      {
+        "command": "bevyInspector.copyComponentName",
+        "title": "Copy Component Name",
+        "icon": "$(copy)",
+        "category": "Bevy Inspector"
       }
     ],
     "menus": {
@@ -93,6 +99,10 @@
         {
           "command": "bevyInspector.destroyEntity",
           "when": "view == bevyInspector && viewItem == entity"
+        },
+        {
+          "command": "bevyInspector.copyComponentName",
+          "when": "view == bevyInspector && viewItem == component"
         }
       ],
       "commandPalette": [
