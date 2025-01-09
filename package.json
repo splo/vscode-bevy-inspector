@@ -116,7 +116,7 @@
           "type": "string",
           "order": 0,
           "title": "Remote URL",
-          "description": "URL to the network interface where the application is running with the Bevy Remote HTTP plugin enabled",
+          "description": "URL to the network interface where the application is running with the Bevy Remote HTTP plugin enabled.",
           "format": "uri",
           "default": "http://127.0.0.1:15702"
         },
@@ -137,7 +137,7 @@
         "bevyInspector.pollingDelay": {
           "type": "number",
           "title": "Polling delay",
-          "description": "Interval in milliseconds between remote data refreshes, if polling is enabled",
+          "description": "Interval in milliseconds between remote data refreshes, if polling is enabled.",
           "minimum": 1,
           "default": "1000"
         }
