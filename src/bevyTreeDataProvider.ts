@@ -9,8 +9,9 @@ class ErrorItem {
 }
 
 export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
-
-    private _onDidChangeTreeData: EventEmitter<BevyTreeData | undefined | null | void> = new EventEmitter<BevyTreeData | undefined | null | void>();
+    private _onDidChangeTreeData: EventEmitter<BevyTreeData | undefined | null | void> = new EventEmitter<
+        BevyTreeData | undefined | null | void
+    >();
     readonly onDidChangeTreeData: Event<BevyTreeData | undefined | null | void> = this._onDidChangeTreeData.event;
 
     private service: BevyTreeService;
@@ -108,15 +109,24 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
         const treeItem = new TreeItem(name || '');
         treeItem.description = value === null ? 'null' : value?.toString() || '';
         treeItem.contextValue = 'value';
-        treeItem.collapsibleState = children.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
+        treeItem.collapsibleState =
+            children.length > 0 ? TreeItemCollapsibleState.Expanded : TreeItemCollapsibleState.None;
         if (hasError) {
             treeItem.iconPath = new ThemeIcon('warning');
         } else {
             switch (typeof value) {
-                case 'string': treeItem.iconPath = new ThemeIcon('symbol-string'); break;
-                case 'boolean': treeItem.iconPath = new ThemeIcon('symbol-boolean'); break;
-                case 'number': treeItem.iconPath = new ThemeIcon('symbol-number'); break;
-                case 'object': treeItem.iconPath = new ThemeIcon('symbol-object'); break;
+                case 'string':
+                    treeItem.iconPath = new ThemeIcon('symbol-string');
+                    break;
+                case 'boolean':
+                    treeItem.iconPath = new ThemeIcon('symbol-boolean');
+                    break;
+                case 'number':
+                    treeItem.iconPath = new ThemeIcon('symbol-number');
+                    break;
+                case 'object':
+                    treeItem.iconPath = new ThemeIcon('symbol-object');
+                    break;
             }
         }
 

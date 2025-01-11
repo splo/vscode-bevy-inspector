@@ -1,4 +1,30 @@
-import { BevyDestroyParams, BevyDestroyResult, BevyGetLenientResult, BevyGetParams, BevyGetResult, BevyGetStrictResult, BevyGetWatchParams, BevyGetWatchResult, BevyInsertParams, BevyInsertResult, BevyListParams, BevyListResult, BevyListWatchParams, BevyListWatchResult, BevyQueryParams, BevyQueryResult, BevyRemoteService, BevyRemoveParams, BevyRemoveResult, BevyReparentParams, BevyReparentResult, BevySpawnParams, BevySpawnResult, ComponentName, EntityId } from "../brp";
+import {
+    BevyDestroyParams,
+    BevyDestroyResult,
+    BevyGetLenientResult,
+    BevyGetParams,
+    BevyGetResult,
+    BevyGetStrictResult,
+    BevyGetWatchParams,
+    BevyGetWatchResult,
+    BevyInsertParams,
+    BevyInsertResult,
+    BevyListParams,
+    BevyListResult,
+    BevyListWatchParams,
+    BevyListWatchResult,
+    BevyQueryParams,
+    BevyQueryResult,
+    BevyRemoteService,
+    BevyRemoveParams,
+    BevyRemoveResult,
+    BevyReparentParams,
+    BevyReparentResult,
+    BevySpawnParams,
+    BevySpawnResult,
+    ComponentName,
+    EntityId,
+} from '../brp';
 
 export class InMemoryBevyRemoteService implements BevyRemoteService {
     public entities: Map<EntityId, Record<ComponentName, any>> = new Map();
@@ -77,7 +103,11 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
             }
 
             // Include the entity in the results
-            const result: { entity: EntityId; components: Record<ComponentName, any>; has?: Record<ComponentName, boolean> } = {
+            const result: {
+                entity: EntityId;
+                components: Record<ComponentName, any>;
+                has?: Record<ComponentName, boolean>;
+            } = {
                 entity,
                 components: resultComponents,
             };

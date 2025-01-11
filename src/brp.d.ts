@@ -21,15 +21,15 @@ export type EntityId = number;
 export type ComponentName = string;
 
 export type BevyGetParams = {
-    entity: EntityId,
-    components: ComponentName[],
-    strict?: boolean,
-}
+    entity: EntityId;
+    components: ComponentName[];
+    strict?: boolean;
+};
 
 export type BevyGetLenientResult = {
-    components: Record<ComponentName, any>,
-    errors: Record<ComponentName, BevyError>,
-}
+    components: Record<ComponentName, any>;
+    errors: Record<ComponentName, BevyError>;
+};
 
 export type BevyGetStrictResult = Record<ComponentName, any>;
 
@@ -37,80 +37,80 @@ export type BevyGetResult = BevyGetLenientResult | BevyGetStrictResult;
 
 export type BevyQueryParams = {
     data: {
-        components?: ComponentName[],
-        option?: ComponentName[],
-        has?: ComponentName[],
+        components?: ComponentName[];
+        option?: ComponentName[];
+        has?: ComponentName[];
     };
     filter?: {
-        with?: ComponentName[],
-        without?: ComponentName[],
-    }
-}
+        with?: ComponentName[];
+        without?: ComponentName[];
+    };
+};
 
 export type BevyQueryResult = {
-    entity: EntityId,
-    components: Record<ComponentName, any>,
-    has?: Record<ComponentName, boolean>,
-}[]
+    entity: EntityId;
+    components: Record<ComponentName, any>;
+    has?: Record<ComponentName, boolean>;
+}[];
 
 export type BevySpawnParams = {
-    components: Record<ComponentName, any>,
-}
+    components: Record<ComponentName, any>;
+};
 
 export type BevySpawnResult = {
-    entity: EntityId,
-}
+    entity: EntityId;
+};
 
 export type BevyDestroyParams = {
-    entity: EntityId,
-}
+    entity: EntityId;
+};
 
 export type BevyDestroyResult = null;
 
 export type BevyRemoveParams = {
-    entity: EntityId,
-    components: Record<ComponentName, any>,
-}
+    entity: EntityId;
+    components: Record<ComponentName, any>;
+};
 
 export type BevyRemoveResult = null;
 
 export type BevyInsertParams = {
-    entity: EntityId,
-    components: Record<ComponentName, any>,
-}
+    entity: EntityId;
+    components: Record<ComponentName, any>;
+};
 
 export type BevyInsertResult = null;
 
 export type BevyReparentParams = {
-    entities: EntityId[],
-    parent?: EntityId,
-}
+    entities: EntityId[];
+    parent?: EntityId;
+};
 
 export type BevyReparentResult = null;
 
 export type BevyListParams = {
-    entity: EntityId
+    entity: EntityId;
 };
 
 export type BevyListResult = string[];
 
 export type BevyGetWatchParams = {
-    entity: EntityId,
-    components: ComponentName[],
-    strict?: boolean,
-}
+    entity: EntityId;
+    components: ComponentName[];
+    strict?: boolean;
+};
 
 export type BevyGetWatchResult = {
-    components: Record<ComponentName, any>,
-    removed: ComponentName[],
-    errors?: Record<ComponentName, BevyError>,
-}
+    components: Record<ComponentName, any>;
+    removed: ComponentName[];
+    errors?: Record<ComponentName, BevyError>;
+};
 
 export type BevyListWatchParams = {
-    entity: EntityId,
-}
+    entity: EntityId;
+};
 
 export type BevyListWatchResult = {
-    added: ComponentName[],
-    removed: ComponentName[],
-}
+    added: ComponentName[];
+    removed: ComponentName[];
+};

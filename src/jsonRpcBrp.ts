@@ -1,6 +1,6 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { JsonRpcRequest, JsonRpcResponse, isJsonRpcSuccess } from "json-rpc-types";
-import * as brp from "./brp";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { JsonRpcRequest, JsonRpcResponse, isJsonRpcSuccess } from 'json-rpc-types';
+import * as brp from './brp';
 
 export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
     public static DEFAULT_URL = 'http://127.0.0.1:15702';
@@ -28,7 +28,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/get',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -38,7 +38,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/query',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -48,7 +48,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/spawn',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -58,7 +58,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/destroy',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -68,7 +68,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/remove',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -78,7 +78,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/insert',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -88,7 +88,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/reparent',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -98,7 +98,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/list',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -108,7 +108,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/get+watch',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -118,7 +118,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
             jsonrpc: '2.0',
             id: this.nextId(),
             method: 'bevy/list+watch',
-            params
+            params,
         };
         return await this.doRequest(request);
     }
@@ -133,8 +133,8 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
 
         const config: AxiosRequestConfig = {
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         };
         console.debug('request', request);
         const response = await axios.post<RS, AxiosResponse<RS>, RQ>(this.url, request, config);
@@ -152,7 +152,7 @@ class JsonRpcBevyError implements brp.BevyError {
     public readonly message?: string;
     public readonly data?: any;
 
-    constructor(error?: { code: number, message: string, data?: any }) {
+    constructor(error?: { code: number; message: string; data?: any }) {
         this.code = error?.code;
         this.message = error?.message;
         this.data = error?.data;
