@@ -2,7 +2,7 @@
   "name": "vscode-bevy-inspector",
   "publisher": "splo",
   "displayName": "Bevy Inspector",
-  "description": "Bevy Inspector Visual Studio Code Extension",
+  "description": "Display live data from your Bevy application using the Bevy Remote Protocol HTTP plugin.",
   "version": "0.1.1",
   "repository": {
     "url": "https://github.com/splo/vscode-bevy-inspector"
