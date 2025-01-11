@@ -52,11 +52,13 @@ export class ComponentValue {
 }
 
 export type BevyVersion = "<= 0.15" | "> 0.15";
-export const DEFAULT_BEVY_VERSION: BevyVersion = '<= 0.15';
 
 const PARENT_COMPONENT = "bevy_hierarchy::components::parent::Parent";
+const CHILDREN_COMPONENT = 'bevy_hierarchy::components::children::Children';
 
 export class BevyTreeService {
+    public static DEFAULT_BEVY_VERSION: BevyVersion = '<= 0.15';
+
     public bevyVersion: BevyVersion = '<= 0.15';
     private remoteService: BevyRemoteService;
 
@@ -100,8 +102,8 @@ export class BevyTreeService {
             ([key, value]) => new Component(key, undefined, value.message)
         )).sort((a, b) => {
             // Sort so that children are on top, then component name in lexicographical order, and errors last.
-            const aIsChildren = a.name === 'bevy_hierarchy::components::children::Children';
-            const bIsChildren = b.name === 'bevy_hierarchy::components::children::Children';
+            const aIsChildren = a.name === CHILDREN_COMPONENT;
+            const bIsChildren = b.name === CHILDREN_COMPONENT;
             if (aIsChildren) { return -1; }
             else if (bIsChildren) { return 1; }
             else {
@@ -120,7 +122,7 @@ export class BevyTreeService {
                 return this.buildTransformTree(component.value);
             case 'bevy_transform::components::global_transform::GlobalTransform':
                 return this.buildGlobalTransformTree(component.value);
-            case 'bevy_hierarchy::components::children::Children':
+            case CHILDREN_COMPONENT:
                 return this.buildChildrenTree(component.value);
         }
         return this.buildGenericTree(component.value, component.errorMessage);

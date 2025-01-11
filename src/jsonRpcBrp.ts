@@ -3,6 +3,7 @@ import { JsonRpcRequest, JsonRpcResponse, isJsonRpcSuccess } from "json-rpc-type
 import * as brp from "./brp";
 
 export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
+    public static DEFAULT_URL = 'http://127.0.0.1:15702';
     private _url: string;
     private _currentId: number;
 
