@@ -42,6 +42,12 @@
     ],
     "commands": [
       {
+        "command": "bevyInspector.goToDefinition",
+        "title": "Go to Definition",
+        "icon": "$(go-to-file)",
+        "category": "Bevy Inspector"
+      },
+      {
         "command": "bevyInspector.refresh",
         "title": "Refresh",
         "icon": "$(refresh)",
@@ -103,9 +109,16 @@
         {
           "command": "bevyInspector.copyComponentName",
           "when": "view == bevyInspector && viewItem == component"
+        },
+        {
+          "command": "bevyInspector.goToDefinition",
+          "when": "view == bevyInspector && viewItem == component"
         }
       ],
       "commandPalette": [
+        {
+          "command": "bevyInspector.goToDefinition"
+        },
         {
           "command": "bevyInspector.refresh"
         },
@@ -170,9 +183,11 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
+    "fast-levenshtein": "^3.0.0",
     "json-rpc-types": "^0.1.1"
   },
   "devDependencies": {
+    "@types/fast-levenshtein": "^0.0.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
     "@types/vscode": "^1.95.0",
