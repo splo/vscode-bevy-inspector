@@ -21,7 +21,7 @@
       "activitybar": [
         {
           "id": "bevyInspectorContainer",
-          "title": "Bevy",
+          "title": "Bevy Inspector",
           "icon": "resources/bevy-inspector.svg"
         }
       ]
