@@ -9,6 +9,7 @@ Display live data from your [Bevy](https://bevyengine.org/) application using th
 - Refresh data when wanted or via automatic polling with configurable delay.
 - Destroy an entity simply by the power of a click (right click on an entity or hover over it, the bin icon is to the right).
 - Copy a component's full name (right click on a component).
+- Navigate to a component's Rust struct definition, at the condition it's defined in the workspace (right click on a component).
 
 Resources, assets and states aren't yet supported since the Bevy Remote Protocol doesn't yet support them.
 
