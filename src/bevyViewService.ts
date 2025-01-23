@@ -53,9 +53,6 @@ export class ComponentValue {
 
 export type BevyVersion = '0.15' | '0.16';
 
-const PARENT_COMPONENT = 'bevy_hierarchy::components::parent::Parent';
-const CHILDREN_COMPONENT = 'bevy_hierarchy::components::children::Children';
-
 export class BevyTreeService {
     public static DEFAULT_BEVY_VERSION: BevyVersion = '0.15';
 
@@ -77,12 +74,14 @@ export class BevyTreeService {
     public async listTopLevelEntities(): Promise<Entity[]> {
         const params = {
             data: {
-                option: [this.getNameComponentName(), PARENT_COMPONENT],
+                option: [this.getNameComponentName(), this.getParentComponentName()],
             },
         };
         const result = await this.remoteService.query(params);
         return Promise.all(
-            result.filter((element) => !element.components[PARENT_COMPONENT]).map((element) => this.toEntity(element)),
+            result
+                .filter((element) => !element.components[this.getParentComponentName()])
+                .map((element) => this.toEntity(element)),
         );
     }
 
@@ -101,8 +100,9 @@ export class BevyTreeService {
             .concat(Object.entries(result.errors).map(([key, value]) => new Component(key, undefined, value.message)))
             .sort((a, b) => {
                 // Sort so that children are on top, then component name in lexicographical order, and errors last.
-                const aIsChildren = a.name === CHILDREN_COMPONENT;
-                const bIsChildren = b.name === CHILDREN_COMPONENT;
+                const childrenComponentName = this.getChildrenComponentName();
+                const aIsChildren = a.name === childrenComponentName;
+                const bIsChildren = b.name === childrenComponentName;
                 if (aIsChildren) {
                     return -1;
                 } else if (bIsChildren) {
@@ -127,7 +127,7 @@ export class BevyTreeService {
                 return this.buildTransformTree(component.value);
             case 'bevy_transform::components::global_transform::GlobalTransform':
                 return this.buildGlobalTransformTree(component.value);
-            case CHILDREN_COMPONENT:
+            case this.getChildrenComponentName():
                 return this.buildChildrenTree(component.value);
         }
         return this.buildGenericTree(component.value, component.errorMessage);
@@ -137,6 +137,18 @@ export class BevyTreeService {
         const NAME_COMPONENT_0_15 = 'bevy_core::name::Name';
         const NAME_COMPONENT_0_16 = 'bevy_ecs::name::Name';
         return this.bevyVersion === '0.15' ? NAME_COMPONENT_0_15 : NAME_COMPONENT_0_16;
+    }
+
+    private getChildrenComponentName(): ComponentName {
+        const CHILDREN_COMPONENT_0_15 = 'bevy_hierarchy::components::children::Children';
+        const CHILDREN_COMPONENT_0_16 = 'bevy_ecs::hierarchy::Children';
+        return this.bevyVersion === '0.15' ? CHILDREN_COMPONENT_0_15 : CHILDREN_COMPONENT_0_16;
+    }
+
+    private getParentComponentName(): ComponentName {
+        const PARENT_COMPONENT_0_15 = 'bevy_hierarchy::components::parent::Parent';
+        const PARENT_COMPONENT_0_16 = 'bevy_ecs::hierarchy::ChildOf';
+        return this.bevyVersion === '0.15' ? PARENT_COMPONENT_0_15 : PARENT_COMPONENT_0_16;
     }
 
     private buildGenericTree(value: any, errorMessage?: string): ComponentValue[] {
@@ -207,7 +219,7 @@ export class BevyTreeService {
     private async buildChildrenTree(value: EntityId[]): Promise<Entity[]> {
         const params = {
             data: {
-                option: [this.getNameComponentName(), PARENT_COMPONENT],
+                option: [this.getNameComponentName(), this.getParentComponentName()],
             },
         };
         const result = await this.remoteService.query(params);
