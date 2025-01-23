@@ -3,4 +3,4 @@ dist
 node_modules
 .vscode-test/
 *.vsix
-examples/server/target
+examples/*/target
