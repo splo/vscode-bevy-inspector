@@ -1,7 +1,7 @@
 import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { BevyTreeService, Category, CategoryType, Component, ComponentValue, Entity } from './bevyViewService';
+import { BevyTreeService, Category, CategoryType, Component, ComponentValue, Entity, Schema } from './bevyViewService';
 
-export type BevyTreeData = Category | Entity | Component | ComponentValue | ErrorItem;
+export type BevyTreeData = Category | Schema | Entity | Component | ComponentValue | ErrorItem;
 
 class ErrorItem {
     code?: string;
@@ -34,7 +34,12 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
             if (!element) {
                 return await this.service.listCategories();
             } else if (element instanceof Category) {
-                return await this.service.listTopLevelEntities();
+                switch (element.type) {
+                    case CategoryType.Schema:
+                        return await this.service.getRegistrySchemas();
+                    case CategoryType.Entities:
+                        return await this.service.listTopLevelEntities();
+                }
             } else if (element instanceof Entity) {
                 return await this.service.listComponents(element.id);
             } else if (element instanceof Component) {
@@ -57,6 +62,8 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
     getTreeItem(element: BevyTreeData | BevyTreeData[]): TreeItem {
         if (element instanceof Category) {
             return this.buildCategoryTreeItem(element);
+        } else if (element instanceof Schema) {
+            return this.buildSchemaTreeItem(element);
         } else if (element instanceof Entity) {
             return this.buildEntityTreeItem(element);
         } else if (element instanceof Component) {
@@ -72,9 +79,21 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
     }
 
     private buildCategoryTreeItem(category: Category): TreeItem {
-        const treeItem = new TreeItem(CategoryType[category.type], TreeItemCollapsibleState.Expanded);
+        const collapsableState =
+            category.type === CategoryType.Entities
+                ? TreeItemCollapsibleState.Expanded
+                : TreeItemCollapsibleState.Collapsed;
+        const treeItem = new TreeItem(CategoryType[category.type], collapsableState);
         treeItem.iconPath = new ThemeIcon('type-hierarchy');
         treeItem.contextValue = 'category';
+        return treeItem;
+    }
+
+    private buildSchemaTreeItem(schema: Schema): TreeItem {
+        const treeItem = new TreeItem(schema.name, TreeItemCollapsibleState.None);
+        treeItem.tooltip = schema.typePath;
+        treeItem.iconPath = new ThemeIcon('symbol-type-parameter');
+        treeItem.contextValue = 'schema';
         return treeItem;
     }
 

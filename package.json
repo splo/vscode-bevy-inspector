@@ -182,6 +182,7 @@
     "test": "vscode-test"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^11.7.3",
     "axios": "^1.7.9",
     "fast-levenshtein": "^3.0.0",
     "json-rpc-types": "^0.1.1"

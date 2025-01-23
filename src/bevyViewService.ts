@@ -1,7 +1,9 @@
-import { BevyGetLenientResult, BevyRemoteService, EntityId, TypePath } from './brp';
+import $RefParser, { JSONSchema } from '@apidevtools/json-schema-ref-parser';
+import { BevyGetLenientResult, BevyRemoteService, Schema as BrpSchema, EntityId, TypePath } from './brp';
 
 // Resources, assets, etc. are not yet supported by the official BRP plugin.
 export enum CategoryType {
+    Schema,
     Entities,
 }
 
@@ -10,6 +12,18 @@ export class Category {
 
     constructor(type: CategoryType) {
         this.type = type;
+    }
+}
+
+export class Schema {
+    name: string;
+    typePath: TypePath;
+    kind: string;
+
+    constructor(name: string, typePath: TypePath, kind: string) {
+        this.name = name;
+        this.typePath = typePath;
+        this.kind = kind;
     }
 }
 
@@ -68,7 +82,38 @@ export class BevyTreeService {
     }
 
     public async listCategories(): Promise<Category[]> {
-        return [new Category(CategoryType.Entities)];
+        return [new Category(CategoryType.Schema), new Category(CategoryType.Entities)];
+    }
+
+    public async getRegistrySchemas(): Promise<Schema[]> {
+        const params = { typeLimit: { with: ['core::any::TypeId'] } };
+        const schemas = await this.remoteService.registrySchema(params);
+        const document: JSONSchema = { $defs: schemas };
+        if (!document.$defs['core::any::TypeId']) {
+            console.warn('core::any::TypeId not found in registry schemas, adding it manually');
+            document.$defs['core::any::TypeId'] = {
+                items: false,
+                kind: 'Tuple',
+                prefixItems: [
+                    {
+                        type: {
+                            $ref: '#/$defs/u64',
+                        },
+                    },
+                    {
+                        type: {
+                            $ref: '#/$defs/u64',
+                        },
+                    },
+                ],
+                shortPath: 'TypeId',
+                type: 'array',
+                typePath: 'core::any::TypeId',
+            };
+        }
+        const resolvedSchema = await $RefParser.dereference(document, { mutateInputSchema: false });
+        // @ts-ignore
+        return Object.values(resolvedSchema.$defs).map((schema) => this.toSchema(schema));
     }
 
     public async listTopLevelEntities(): Promise<Entity[]> {
@@ -239,7 +284,12 @@ export class BevyTreeService {
 
         return new Entity(element.entity, name, element.components[this.getParentComponentName()]);
     }
+
+    private toSchema(schema: BrpSchema): Schema {
+        return new Schema(schema.shortPath, schema.typePath, schema.kind);
+    }
 }
+
 function inferEntityName(components: string[]): string | null {
     // https://github.com/jakobhellermann/bevy-inspector-egui/blob/b203ca5c3f688dddbe7245f87bfcd74acd4f5da3/crates/bevy-inspector-egui/src/utils.rs#L57
     const COMPONENT_NAME_MAPPING: Record<TypePath, string> = {
