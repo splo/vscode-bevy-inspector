@@ -147,14 +147,14 @@
           "type": "string",
           "title": "Bevy Version",
           "description": "Version of Bevy that defines the Bevy Remote Protocol version.",
-          "default": "<= 0.15",
+          "default": "0.15",
           "enum": [
-            "<= 0.15",
-            "> 0.15"
+            "0.15",
+            "0.16"
           ],
           "enumItemLabels": [
             "Version 0.15 or earlier",
-            "Version later than 0.15"
+            "Version 0.16 or later"
           ]
         },
         "bevyInspector.pollingDelay": {

@@ -51,15 +51,15 @@ export class ComponentValue {
     }
 }
 
-export type BevyVersion = '<= 0.15' | '> 0.15';
+export type BevyVersion = '0.15' | '0.16';
 
 const PARENT_COMPONENT = 'bevy_hierarchy::components::parent::Parent';
 const CHILDREN_COMPONENT = 'bevy_hierarchy::components::children::Children';
 
 export class BevyTreeService {
-    public static DEFAULT_BEVY_VERSION: BevyVersion = '<= 0.15';
+    public static DEFAULT_BEVY_VERSION: BevyVersion = '0.15';
 
-    public bevyVersion: BevyVersion = '<= 0.15';
+    public bevyVersion: BevyVersion = BevyTreeService.DEFAULT_BEVY_VERSION;
     private remoteService: BevyRemoteService;
 
     constructor(remoteService: BevyRemoteService) {
@@ -136,7 +136,7 @@ export class BevyTreeService {
     private getNameComponentName(): ComponentName {
         const NAME_COMPONENT_0_15 = 'bevy_core::name::Name';
         const NAME_COMPONENT_0_16 = 'bevy_ecs::name::Name';
-        return this.bevyVersion === '<= 0.15' ? NAME_COMPONENT_0_15 : NAME_COMPONENT_0_16;
+        return this.bevyVersion === '0.15' ? NAME_COMPONENT_0_15 : NAME_COMPONENT_0_16;
     }
 
     private buildGenericTree(value: any, errorMessage?: string): ComponentValue[] {

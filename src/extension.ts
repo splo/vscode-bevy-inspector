@@ -16,9 +16,12 @@ class BevyInspectorExtension {
     private polling: PollingService;
 
     constructor(context: vscode.ExtensionContext) {
-        const url = vscode.workspace.getConfiguration('bevyInspector').get('url', JsonRpcBevyRemoteService.DEFAULT_URL);
+        const config = vscode.workspace.getConfiguration('bevyInspector');
+        const url = config.get('url', JsonRpcBevyRemoteService.DEFAULT_URL);
+        const bevyVersion = config.get('bevyVersion', BevyTreeService.DEFAULT_BEVY_VERSION);
         this.remoteService = new JsonRpcBevyRemoteService(url);
         this.treeService = new BevyTreeService(this.remoteService);
+        this.treeService.bevyVersion = bevyVersion;
         this.treeDataProvider = new BevyTreeDataProvider(this.treeService);
         this.polling = new PollingService();
 
