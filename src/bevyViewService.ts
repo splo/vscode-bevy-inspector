@@ -237,7 +237,7 @@ export class BevyTreeService {
             name = inferEntityName(components);
         }
 
-        return new Entity(element.entity, name, element.components[PARENT_COMPONENT]);
+        return new Entity(element.entity, name, element.components[this.getParentComponentName()]);
     }
 }
 function inferEntityName(components: string[]): string | null {
