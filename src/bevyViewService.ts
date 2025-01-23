@@ -1,4 +1,4 @@
-import { BevyGetLenientResult, BevyRemoteService, ComponentName, EntityId } from './brp';
+import { BevyGetLenientResult, BevyRemoteService, EntityId, TypePath } from './brp';
 
 // Resources, assets, etc. are not yet supported by the official BRP plugin.
 export enum CategoryType {
@@ -26,7 +26,7 @@ export class Entity {
 }
 
 export class Component {
-    name: ComponentName;
+    name: TypePath;
     value?: any;
     errorMessage?: string;
 
@@ -133,19 +133,19 @@ export class BevyTreeService {
         return this.buildGenericTree(component.value, component.errorMessage);
     }
 
-    private getNameComponentName(): ComponentName {
+    private getNameComponentName(): TypePath {
         const NAME_COMPONENT_0_15 = 'bevy_core::name::Name';
         const NAME_COMPONENT_0_16 = 'bevy_ecs::name::Name';
         return this.bevyVersion === '0.15' ? NAME_COMPONENT_0_15 : NAME_COMPONENT_0_16;
     }
 
-    private getChildrenComponentName(): ComponentName {
+    private getChildrenComponentName(): TypePath {
         const CHILDREN_COMPONENT_0_15 = 'bevy_hierarchy::components::children::Children';
         const CHILDREN_COMPONENT_0_16 = 'bevy_ecs::hierarchy::Children';
         return this.bevyVersion === '0.15' ? CHILDREN_COMPONENT_0_15 : CHILDREN_COMPONENT_0_16;
     }
 
-    private getParentComponentName(): ComponentName {
+    private getParentComponentName(): TypePath {
         const PARENT_COMPONENT_0_15 = 'bevy_hierarchy::components::parent::Parent';
         const PARENT_COMPONENT_0_16 = 'bevy_ecs::hierarchy::ChildOf';
         return this.bevyVersion === '0.15' ? PARENT_COMPONENT_0_15 : PARENT_COMPONENT_0_16;
@@ -227,7 +227,7 @@ export class BevyTreeService {
         return value.map((id) => allEntities.filter((entity) => entity.id === id)[0]);
     }
 
-    private async toEntity(element: { entity: EntityId; components: Record<ComponentName, any> }): Promise<Entity> {
+    private async toEntity(element: { entity: EntityId; components: Record<TypePath, any> }): Promise<Entity> {
         const nameComponent = this.getNameComponentName();
         let name = element.components[nameComponent]?.name || element.components[nameComponent];
         if (!name || !(typeof name === 'string')) {
@@ -242,7 +242,7 @@ export class BevyTreeService {
 }
 function inferEntityName(components: string[]): string | null {
     // https://github.com/jakobhellermann/bevy-inspector-egui/blob/b203ca5c3f688dddbe7245f87bfcd74acd4f5da3/crates/bevy-inspector-egui/src/utils.rs#L57
-    const COMPONENT_NAME_MAPPING: Record<ComponentName, string> = {
+    const COMPONENT_NAME_MAPPING: Record<TypePath, string> = {
         'bevy_window::window::PrimaryWindow': 'Primary Window',
         'bevy_core_pipeline::core_3d::camera_3d::Camera3d': 'Camera3d',
         'bevy_core_pipeline::core_2d::camera_2d::Camera2d': 'Camera2d',

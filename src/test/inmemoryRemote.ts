@@ -15,6 +15,8 @@ import {
     BevyListWatchResult,
     BevyQueryParams,
     BevyQueryResult,
+    BevyRegistrySchemaParams,
+    BevyRegistrySchemaResult,
     BevyRemoteService,
     BevyRemoveParams,
     BevyRemoveResult,
@@ -22,12 +24,13 @@ import {
     BevyReparentResult,
     BevySpawnParams,
     BevySpawnResult,
-    ComponentName,
     EntityId,
+    SchemaType,
+    TypePath,
 } from '../brp';
 
 export class InMemoryBevyRemoteService implements BevyRemoteService {
-    public entities: Map<EntityId, Record<ComponentName, any>> = new Map();
+    public entities: Map<EntityId, Record<TypePath, any>> = new Map();
     public nextEntityId: EntityId = 1;
 
     async get(params: BevyGetParams): Promise<BevyGetResult> {
@@ -82,7 +85,7 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
             }
 
             // Fetch the required components and optionally fetch others
-            const resultComponents: Record<ComponentName, any> = {};
+            const resultComponents: Record<TypePath, any> = {};
             for (const component of components) {
                 if (component in entityComponents) {
                     resultComponents[component] = entityComponents[component];
@@ -95,7 +98,7 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
             }
 
             // Determine the presence of components in the 'has' list
-            const hasResult: Record<ComponentName, boolean> = {};
+            const hasResult: Record<TypePath, boolean> = {};
             if (has.length > 0) {
                 for (const component of has) {
                     hasResult[component] = component in entityComponents;
@@ -105,8 +108,8 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
             // Include the entity in the results
             const result: {
                 entity: EntityId;
-                components: Record<ComponentName, any>;
-                has?: Record<ComponentName, boolean>;
+                components: Record<TypePath, any>;
+                has?: Record<TypePath, boolean>;
             } = {
                 entity,
                 components: resultComponents,
@@ -167,6 +170,44 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
         }
 
         return Object.keys(entityComponents);
+    }
+
+    async registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult> {
+        const schemas: BevyRegistrySchemaResult = {};
+        Object.values(this.entities)
+            .map((entity: Record<string, any>) => Object.entries(entity))
+            .flat()
+            .forEach(([typePath, value]) => {
+                let valueType: SchemaType;
+                switch (typeof value) {
+                    case 'number':
+                        valueType = 'float';
+                        break;
+                    case 'string':
+                        valueType = 'string';
+                        break;
+                    case 'boolean':
+                        valueType = 'boolean';
+                        break;
+                    case 'object':
+                        if (Array.isArray(value)) {
+                            valueType = 'array';
+                        } else {
+                            valueType = 'object';
+                        }
+                        break;
+                    default:
+                        valueType = 'string';
+                        break;
+                }
+                schemas[typePath] = {
+                    type: valueType,
+                    kind: 'Value',
+                    shortPath: typePath.replaceAll(/\w*::/g, ''),
+                    typePath,
+                };
+            });
+        return schemas;
     }
 
     async getWatch(params: BevyGetWatchParams): Promise<BevyGetWatchResult> {

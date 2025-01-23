@@ -7,6 +7,7 @@ export interface BevyRemoteService {
     insert(params: BevyInsertParams): Promise<BevyInsertResult>;
     reparent(params: BevyReparentParams): Promise<BevyReparentResult>;
     list(params?: BevyListParams): Promise<BevyListResult>;
+    registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult>;
     getWatch(params: BevyGetWatchParams): Promise<BevyGetWatchResult>;
     listWatch(params: BevyListWatchParams): Promise<BevyListWatchResult>;
 }
@@ -18,43 +19,65 @@ export interface BevyError {
 }
 
 export type EntityId = number;
-export type ComponentName = string;
+export type TypePath = string;
+
+export type Schema = {
+    shortPath: string;
+    typePath: TypePath;
+    modulePath?: string;
+    crateName?: string;
+    reflectTypes?: string[];
+    kind: SchemaKind;
+    keyType?: Schema;
+    valueType?: Schema;
+    type: SchemaType;
+    additionalProperties?: boolean;
+    properties?: Record<string, Schema>;
+    required?: string[];
+    oneOf?: Schema[];
+    prefixItems?: Schema[];
+    items?: Schema | boolean;
+};
+
+export type SchemaKind = 'Enum' | 'List' | 'Map' | 'Set' | 'Struct' | 'Tuple' | 'TupleStruct' | 'Value';
+export type SchemaType = 'string' | 'float' | 'uint' | 'int' | 'object' | 'array' | 'boolean' | 'set' | Ref;
+export type Ref = { $ref: string };
 
 export type BevyGetParams = {
     entity: EntityId;
-    components: ComponentName[];
+    components: TypePath[];
     strict?: boolean;
 };
 
 export type BevyGetLenientResult = {
-    components: Record<ComponentName, any>;
-    errors: Record<ComponentName, BevyError>;
+    components: Record<TypePath, any>;
+    errors: Record<TypePath, BevyError>;
 };
 
-export type BevyGetStrictResult = Record<ComponentName, any>;
+export type BevyGetStrictResult = Record<TypePath, any>;
 
 export type BevyGetResult = BevyGetLenientResult | BevyGetStrictResult;
 
 export type BevyQueryParams = {
     data: {
-        components?: ComponentName[];
-        option?: ComponentName[];
-        has?: ComponentName[];
+        components?: TypePath[];
+        option?: TypePath[];
+        has?: TypePath[];
     };
     filter?: {
-        with?: ComponentName[];
-        without?: ComponentName[];
+        with?: TypePath[];
+        without?: TypePath[];
     };
 };
 
 export type BevyQueryResult = {
     entity: EntityId;
-    components: Record<ComponentName, any>;
-    has?: Record<ComponentName, boolean>;
+    components: Record<TypePath, any>;
+    has?: Record<TypePath, boolean>;
 }[];
 
 export type BevySpawnParams = {
-    components: Record<ComponentName, any>;
+    components: Record<TypePath, any>;
 };
 
 export type BevySpawnResult = {
@@ -69,14 +92,14 @@ export type BevyDestroyResult = null;
 
 export type BevyRemoveParams = {
     entity: EntityId;
-    components: Record<ComponentName, any>;
+    components: Record<TypePath, any>;
 };
 
 export type BevyRemoveResult = null;
 
 export type BevyInsertParams = {
     entity: EntityId;
-    components: Record<ComponentName, any>;
+    components: Record<TypePath, any>;
 };
 
 export type BevyInsertResult = null;
@@ -94,16 +117,27 @@ export type BevyListParams = {
 
 export type BevyListResult = string[];
 
+export type BevyRegistrySchemaParams = {
+    withoutCrates?: string[];
+    withCrates?: string[];
+    typeLimit?: {
+        without?: string[];
+        with?: string[];
+    };
+};
+
+export type BevyRegistrySchemaResult = Record<TypePath, Schema>;
+
 export type BevyGetWatchParams = {
     entity: EntityId;
-    components: ComponentName[];
+    components: TypePath[];
     strict?: boolean;
 };
 
 export type BevyGetWatchResult = {
-    components: Record<ComponentName, any>;
-    removed: ComponentName[];
-    errors?: Record<ComponentName, BevyError>;
+    components: Record<TypePath, any>;
+    removed: TypePath[];
+    errors?: Record<TypePath, BevyError>;
 };
 
 export type BevyListWatchParams = {
@@ -111,6 +145,6 @@ export type BevyListWatchParams = {
 };
 
 export type BevyListWatchResult = {
-    added: ComponentName[];
-    removed: ComponentName[];
+    added: TypePath[];
+    removed: TypePath[];
 };
