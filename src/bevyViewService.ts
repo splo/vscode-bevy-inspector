@@ -86,8 +86,7 @@ export class BevyTreeService {
     }
 
     public async getRegistrySchemas(): Promise<Schema[]> {
-        const params = { typeLimit: { with: ['core::any::TypeId'] } };
-        const schemas = await this.remoteService.registrySchema(params);
+        const schemas = await this.remoteService.registrySchema();
         const document: JSONSchema = { $defs: schemas };
         if (!document.$defs['core::any::TypeId']) {
             console.warn('core::any::TypeId not found in registry schemas, adding it manually');
