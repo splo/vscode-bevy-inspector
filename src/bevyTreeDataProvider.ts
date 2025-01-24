@@ -22,6 +22,7 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
 
     refresh(): void {
         console.debug('Refreshing...');
+        this.service.invalidateCache();
         this._onDidChangeTreeData.fire();
     }
 

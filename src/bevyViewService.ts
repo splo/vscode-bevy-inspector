@@ -72,6 +72,9 @@ export class BevyTreeService {
 
     public bevyVersion: BevyVersion = BevyTreeService.DEFAULT_BEVY_VERSION;
     private remoteService: BevyRemoteService;
+    private schema?: JSONSchema;
+    private entities?: Entity[];
+    private components: Map<EntityId, Component[]> = new Map();
 
     constructor(remoteService: BevyRemoteService) {
         this.remoteService = remoteService;
@@ -86,6 +89,47 @@ export class BevyTreeService {
     }
 
     public async getRegistrySchemas(): Promise<Schema[]> {
+        if (!this.schema) {
+            this.schema = await this.retrieveSchema();
+        }
+        // @ts-ignore
+        return Object.values(this.schema.$defs).map((schema) => this.toSchema(schema));
+    }
+
+    public async listTopLevelEntities(): Promise<Entity[]> {
+        if (!this.entities) {
+            this.entities = await this.retrieveEntities();
+        }
+        return this.entities.filter((entity) => !entity.parentId);
+    }
+
+    public async listComponents(entityId: EntityId): Promise<Component[]> {
+        let components = this.components.get(entityId);
+        if (!components) {
+            components = await this.retrieveComponents(entityId);
+            this.components.set(entityId, components);
+        }
+        return components;
+    }
+
+    public async buildComponentValueTree(component: Component): Promise<(ComponentValue | Entity)[]> {
+        switch (component.name) {
+            case 'bevy_transform::components::transform::Transform':
+                return this.buildTransformTree(component.value);
+            case 'bevy_transform::components::global_transform::GlobalTransform':
+                return this.buildGlobalTransformTree(component.value);
+            case this.getChildrenComponentName():
+                return this.buildChildrenTree(component.value);
+        }
+        return this.buildGenericTree(component.value, component.errorMessage);
+    }
+
+    public async invalidateCache() {
+        this.entities = undefined;
+        this.components.clear();
+    }
+
+    private async retrieveSchema(): Promise<JSONSchema> {
         const schemas = await this.remoteService.registrySchema();
         const document: JSONSchema = { $defs: schemas };
         if (!document.$defs['core::any::TypeId']) {
@@ -110,26 +154,20 @@ export class BevyTreeService {
                 typePath: 'core::any::TypeId',
             };
         }
-        const resolvedSchema = await $RefParser.dereference(document, { mutateInputSchema: false });
-        // @ts-ignore
-        return Object.values(resolvedSchema.$defs).map((schema) => this.toSchema(schema));
+        return await $RefParser.dereference(document, { mutateInputSchema: false });
     }
 
-    public async listTopLevelEntities(): Promise<Entity[]> {
+    private async retrieveEntities(): Promise<Entity[]> {
         const params = {
             data: {
                 option: [this.getNameComponentName(), this.getParentComponentName()],
             },
         };
         const result = await this.remoteService.query(params);
-        return Promise.all(
-            result
-                .filter((element) => !element.components[this.getParentComponentName()])
-                .map((element) => this.toEntity(element)),
-        );
+        return Promise.all(result.map((element) => this.toEntity(element)));
     }
 
-    public async listComponents(entityId: EntityId): Promise<Component[]> {
+    private async retrieveComponents(entityId: EntityId): Promise<Component[]> {
         const listParams = {
             entity: entityId,
         };
@@ -163,18 +201,6 @@ export class BevyTreeService {
                     return a.name.localeCompare(b.name);
                 }
             });
-    }
-
-    public async buildComponentValueTree(component: Component): Promise<(ComponentValue | Entity)[]> {
-        switch (component.name) {
-            case 'bevy_transform::components::transform::Transform':
-                return this.buildTransformTree(component.value);
-            case 'bevy_transform::components::global_transform::GlobalTransform':
-                return this.buildGlobalTransformTree(component.value);
-            case this.getChildrenComponentName():
-                return this.buildChildrenTree(component.value);
-        }
-        return this.buildGenericTree(component.value, component.errorMessage);
     }
 
     private getNameComponentName(): TypePath {
@@ -261,24 +287,18 @@ export class BevyTreeService {
     }
 
     private async buildChildrenTree(value: EntityId[]): Promise<Entity[]> {
-        const params = {
-            data: {
-                option: [this.getNameComponentName(), this.getParentComponentName()],
-            },
-        };
-        const result = await this.remoteService.query(params);
-        const allEntities = await Promise.all(result.map((entity) => this.toEntity(entity)));
-        return value.map((id) => allEntities.filter((entity) => entity.id === id)[0]);
+        if (!this.entities) {
+            this.entities = await this.retrieveEntities();
+        }
+        return value.map((id) => this.entities!.filter((entity) => entity.id === id)[0]);
     }
 
     private async toEntity(element: { entity: EntityId; components: Record<TypePath, any> }): Promise<Entity> {
         const nameComponent = this.getNameComponentName();
         let name = element.components[nameComponent]?.name || element.components[nameComponent];
         if (!name || !(typeof name === 'string')) {
-            let components = await this.remoteService.list({
-                entity: element.entity,
-            });
-            name = inferEntityName(components);
+            let components = await this.listComponents(element.entity);
+            name = inferEntityName(components.map((component) => component.name));
         }
 
         return new Entity(element.entity, name, element.components[this.getParentComponentName()]);
