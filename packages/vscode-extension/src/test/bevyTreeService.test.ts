@@ -7,10 +7,12 @@ suite('BevyTreeService Test Suite', () => {
     const treeService = new BevyTreeService(remoteService);
 
     const setupEmptyDataSet = () => {
+        treeService.invalidateCache();
         remoteService.entities.clear();
     };
 
     const setupSimpleDataSet = () => {
+        treeService.invalidateCache();
         remoteService.entities.clear();
         remoteService.entities.set(1, {
             'bevy_core::name::Name': { hash: 11, name: 'foo' },
@@ -32,7 +34,7 @@ suite('BevyTreeService Test Suite', () => {
     test('listCategories', async () => {
         setupEmptyDataSet();
         const categories = await treeService.listCategories();
-        assert.deepEqual(categories, [new Category(CategoryType.Entities)]);
+        assert.deepEqual(categories, [new Category(CategoryType.Schema), new Category(CategoryType.Entities)]);
     });
 
     test('listTopLevelEntities doesnt return children', async () => {
