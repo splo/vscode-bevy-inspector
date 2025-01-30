@@ -31,12 +31,6 @@
                 "group": "build"
             },
             "group": "build"
-        },
-        {
-            "label": "Format all TypeScript files",
-            "type": "shell",
-            "command": "npx prettier --write \"src/**/*.ts\"",
-            "problemMatcher": []
         }
     ]
 }
