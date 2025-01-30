@@ -14,4 +14,7 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 .github/**
 cliff.toml
+.turbo
+turbo.json
 examples/**
+packages/**

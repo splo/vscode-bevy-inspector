@@ -4,58 +4,36 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "watch",
-            "dependsOn": ["npm: watch:tsc", "npm: watch:esbuild"],
+            "label": "Watch source",
+            "icon": { "id": "repo-sync", "color": "terminal.ansiYellow" },
+            "type": "npm",
+            "script": "watch",
+            "isBackground": true,
             "presentation": {
                 "reveal": "never"
             },
+            "problemMatcher": "$esbuild-watch",
             "group": {
                 "kind": "build",
+                "group": "build",
                 "isDefault": true
             }
         },
         {
-            "type": "npm",
-            "script": "watch:esbuild",
-            "group": "build",
-            "problemMatcher": "$esbuild-watch",
-            "isBackground": true,
-            "label": "npm: watch:esbuild",
-            "presentation": {
-                "group": "watch",
-                "reveal": "never"
-            }
-        },
-        {
-            "type": "npm",
-            "script": "watch:tsc",
-            "group": "build",
-            "problemMatcher": "$tsc-watch",
-            "isBackground": true,
-            "label": "npm: watch:tsc",
-            "presentation": {
-                "group": "watch",
-                "reveal": "never"
-            }
-        },
-        {
+            "label": "Watch tests",
+            "icon": { "id": "beaker", "color": "terminal.ansiBlue" },
             "type": "npm",
             "script": "watch-tests",
-            "problemMatcher": "$tsc-watch",
+            "problemMatcher": "$esbuild-watch",
             "isBackground": true,
             "presentation": {
                 "reveal": "never",
-                "group": "watchers"
+                "group": "build"
             },
             "group": "build"
         },
         {
-            "label": "tasks: watch-tests",
-            "dependsOn": ["npm: watch", "npm: watch-tests"],
-            "problemMatcher": []
-        },
-        {
-            "label": "format all TypeScript files",
+            "label": "Format all TypeScript files",
             "type": "shell",
             "command": "npx prettier --write \"src/**/*.ts\"",
             "problemMatcher": []
