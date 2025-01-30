@@ -179,7 +179,8 @@
     "postbuild": "copyfiles --flat packages/*/dist/*.js dist",
     "watch": "turbo watch build",
     "test": "turbo test",
-    "watch-tests": "turbo watch test"
+    "watch-tests": "turbo watch test",
+    "clean": "npm run --workspaces --if-present clean && rimraf dist"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.22.0",

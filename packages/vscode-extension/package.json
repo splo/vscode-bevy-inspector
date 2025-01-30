@@ -8,7 +8,8 @@
         "build": "node esbuild.mjs",
         "build-tests": "tsc -p . --outDir out",
         "pretest": "npm run build-tests && npm run lint && npm run build",
-        "test": "vscode-test --config ../../.vscode-test.mjs"
+        "test": "vscode-test --config ../../.vscode-test.mjs",
+        "clean": "rimraf dist out .vscode-test"
     },
     "dependencies": {
         "@apidevtools/json-schema-ref-parser": "^11.7.3",
