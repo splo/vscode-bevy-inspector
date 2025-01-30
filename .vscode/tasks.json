@@ -1,36 +1,36 @@
 // See https://go.microsoft.com/fwlink/?LinkId=733558
 // for the documentation about the tasks.json format
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Watch source",
-            "icon": { "id": "repo-sync", "color": "terminal.ansiYellow" },
-            "type": "npm",
-            "script": "watch",
-            "isBackground": true,
-            "presentation": {
-                "reveal": "never"
-            },
-            "problemMatcher": "$esbuild-watch",
-            "group": {
-                "kind": "build",
-                "group": "build",
-                "isDefault": true
-            }
-        },
-        {
-            "label": "Watch tests",
-            "icon": { "id": "beaker", "color": "terminal.ansiBlue" },
-            "type": "npm",
-            "script": "watch-tests",
-            "problemMatcher": "$esbuild-watch",
-            "isBackground": true,
-            "presentation": {
-                "reveal": "never",
-                "group": "build"
-            },
-            "group": "build"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Watch source",
+      "icon": { "id": "repo-sync", "color": "terminal.ansiYellow" },
+      "type": "npm",
+      "script": "watch",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never"
+      },
+      "problemMatcher": "$esbuild-watch",
+      "group": {
+        "kind": "build",
+        "group": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Watch tests",
+      "icon": { "id": "beaker", "color": "terminal.ansiBlue" },
+      "type": "npm",
+      "script": "watch-tests",
+      "problemMatcher": "$esbuild-watch",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "never",
+        "group": "build"
+      },
+      "group": "build"
+    }
+  ]
 }
