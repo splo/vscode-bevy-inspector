@@ -181,6 +181,7 @@
     "test": "turbo test",
     "watch-tests": "turbo watch test",
     "clean": "npm run --workspaces --if-present clean && rimraf dist",
+    "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write ."
   },
   "devDependencies": {
