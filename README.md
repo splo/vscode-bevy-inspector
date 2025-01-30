@@ -1,6 +1,6 @@
 # Bevy Inspector Visual Studio Code Extension
 
-Display live data from your [Bevy](https://bevyengine.org/) application using the [Bevy Remote Protocol HTTP plugin](https://docs.rs/bevy_remote/latest/bevy_remote/).
+Display live data from your [Bevy](https://bevyengine.org/) application using the [Bevy Remote Protocol HTTP plugin](https://docs.rs/bevy/0.15.1/bevy/remote/index.html).
 
 ## Features
 
@@ -15,7 +15,7 @@ Resources, assets and states aren't yet supported since the Bevy Remote Protocol
 
 ## Requirements
 
-There is an example server at [`examples/server`](./examples/server/).
+There is an example server at [`examples/server`](./examples/server).
 
 - A Rust project with the `bevy` dependency and the `bevy_remote` feature enabled.
 
