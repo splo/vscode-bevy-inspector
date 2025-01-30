@@ -4,7 +4,8 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Watch source",
+      "label": "watch-source",
+      "detail": "Watch source files and rebuild on change",
       "icon": { "id": "repo-sync", "color": "terminal.ansiYellow" },
       "type": "npm",
       "script": "watch",
@@ -20,7 +21,8 @@
       }
     },
     {
-      "label": "Watch tests",
+      "label": "watch-tests",
+      "detail": "Watch test files and run tests on change",
       "icon": { "id": "beaker", "color": "terminal.ansiBlue" },
       "type": "npm",
       "script": "watch-tests",
@@ -31,6 +33,30 @@
         "group": "build"
       },
       "group": "build"
+    },
+    {
+      "label": "start-server-example-stable",
+      "detail": "Start the stable server example",
+      "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
+      "type": "process",
+      "command": "cargo",
+      "args": ["run"],
+      "options": {
+        "cwd": "${workspaceFolder}/examples/server"
+      },
+      "problemMatcher": ["$rustc"]
+    },
+    {
+      "label": "start-server-example-dev",
+      "detail": "Start the development server example",
+      "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
+      "type": "process",
+      "command": "cargo",
+      "args": ["run"],
+      "options": {
+        "cwd": "${workspaceFolder}/examples/server-dev"
+      },
+      "problemMatcher": ["$rustc"]
     }
   ]
 }
