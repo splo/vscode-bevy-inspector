@@ -5,19 +5,51 @@
   "tasks": [
     {
       "label": "watch-source",
-      "detail": "Watch source files and rebuild on change",
-      "icon": { "id": "repo-sync", "color": "terminal.ansiYellow" },
-      "type": "npm",
-      "script": "watch",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "never"
-      },
-      "problemMatcher": "$esbuild-watch",
+      "detail": "Watch all source files and rebuild on change",
+      "icon": { "id": "eye-watch", "color": "terminal.ansiBlack" },
+      "dependsOn": ["watch-extension", "watch-webview"],
       "group": {
         "kind": "build",
         "group": "build",
         "isDefault": true
+      }
+    },
+    {
+      "label": "watch-extension",
+      "detail": "Watch extension source files and rebuild on change",
+      "icon": { "id": "vscode", "color": "terminal.ansiBlue" },
+      "type": "npm",
+      "path": "packages/vscode-extension",
+      "script": "watch",
+      "isBackground": true,
+      "presentation": {
+        "group": "build",
+        "reveal": "silent",
+        "revealProblems": "onProblem"
+      },
+      "problemMatcher": "$esbuild-watch",
+      "group": {
+        "kind": "build",
+        "group": "build"
+      }
+    },
+    {
+      "label": "watch-webview",
+      "detail": "Watch webview source files and rebuild on change",
+      "icon": { "id": "preview", "color": "terminal.ansiCyan" },
+      "type": "npm",
+      "path": "packages/selection-view",
+      "script": "watch",
+      "isBackground": true,
+      "presentation": {
+        "group": "build",
+        "reveal": "silent",
+        "revealProblems": "onProblem"
+      },
+      "problemMatcher": "$tsc-watch",
+      "group": {
+        "kind": "build",
+        "group": "build"
       }
     },
     {

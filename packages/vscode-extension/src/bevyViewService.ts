@@ -1,5 +1,14 @@
-import $RefParser, { JSONSchema } from '@apidevtools/json-schema-ref-parser';
-import { BevyGetLenientResult, BevyRemoteService, Schema as BrpSchema, EntityId, TypePath } from './brp';
+import $RefParser from '@apidevtools/json-schema-ref-parser';
+import type { JSONSchema7, JSONSchema7Definition } from 'json-schema';
+import type {
+  BevyGetLenientResult,
+  BevyRegistrySchemaResult,
+  BevyRemoteService,
+  Schema as BrpSchema,
+  EntityId,
+  Reference,
+  TypePath,
+} from './brp';
 
 // Resources, assets, etc. are not yet supported by the official BRP plugin.
 export enum CategoryType {
@@ -72,7 +81,7 @@ export class BevyTreeService {
 
   public bevyVersion: BevyVersion = BevyTreeService.DEFAULT_BEVY_VERSION;
   private remoteService: BevyRemoteService;
-  private schema?: JSONSchema;
+  private schema?: JSONSchema7;
   private entities?: Entity[];
   private components: Map<EntityId, Component[]> = new Map();
 
@@ -88,12 +97,12 @@ export class BevyTreeService {
     return [new Category(CategoryType.Schema), new Category(CategoryType.Entities)];
   }
 
-  public async getRegistrySchemas(): Promise<Schema[]> {
+  public async getRegistrySchemas(): Promise<JSONSchema7> {
     if (!this.schema) {
       this.schema = await this.retrieveSchema();
     }
     // @ts-ignore
-    return Object.values(this.schema.$defs).map((schema) => this.toSchema(schema));
+    return this.schema;
   }
 
   public async listTopLevelEntities(): Promise<Entity[]> {
@@ -129,32 +138,12 @@ export class BevyTreeService {
     this.components.clear();
   }
 
-  private async retrieveSchema(): Promise<JSONSchema> {
+  private async retrieveSchema(): Promise<JSONSchema7> {
     const schemas = await this.remoteService.registrySchema();
-    const document: JSONSchema = { $defs: schemas };
-    if (!document.$defs['core::any::TypeId']) {
-      console.warn('core::any::TypeId not found in registry schemas, adding it manually');
-      document.$defs['core::any::TypeId'] = {
-        items: false,
-        kind: 'Tuple',
-        prefixItems: [
-          {
-            type: {
-              $ref: '#/$defs/u64',
-            },
-          },
-          {
-            type: {
-              $ref: '#/$defs/u64',
-            },
-          },
-        ],
-        shortPath: 'TypeId',
-        type: 'array',
-        typePath: 'core::any::TypeId',
-      };
-    }
-    return await $RefParser.dereference(document, { mutateInputSchema: false });
+    const document = toJsonSchema(schemas);
+    const fixedDocument = fixDocument(document);
+    const dereferenced = await $RefParser.dereference(fixedDocument);
+    return dereferenced as JSONSchema7;
   }
 
   private async retrieveEntities(): Promise<Entity[]> {
@@ -297,10 +286,6 @@ export class BevyTreeService {
 
     return new Entity(element.entity, name, element.components[this.getParentComponentName()]);
   }
-
-  private toSchema(schema: BrpSchema): Schema {
-    return new Schema(schema.shortPath, schema.typePath, schema.kind);
-  }
 }
 
 function inferEntityName(components: string[]): string | null {
@@ -324,4 +309,255 @@ function inferEntityName(components: string[]): string | null {
   return components
     .filter((component) => COMPONENT_NAME_MAPPING.hasOwnProperty(component))
     .map((component) => COMPONENT_NAME_MAPPING[component])[0];
+}
+
+function toJsonSchema(registry: BevyRegistrySchemaResult): JSONSchema7 {
+  return {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    $defs: Object.fromEntries(
+      Object.entries(registry).map(([key, value]) => {
+        const definition = toDefinition(value);
+        // @ts-expect-error
+        definition.shortPath = value.shortPath;
+        // @ts-expect-error
+        definition.typePath = value.typePath;
+        return [key, definition];
+      }),
+    ),
+  };
+}
+
+function toDefinition(schema: BrpSchema): JSONSchema7 {
+  switch (schema.kind) {
+    case 'Value': {
+      switch (schema.type) {
+        case 'boolean':
+          return {
+            type: 'boolean',
+            default: false,
+          };
+        case 'float':
+          return {
+            type: 'number',
+            default: 0,
+          };
+        case 'int':
+          return {
+            type: 'number',
+            default: 0,
+            multipleOf: 1,
+          };
+        case 'uint':
+          return {
+            type: 'number',
+            default: 0,
+            multipleOf: 1,
+            minimum: 0,
+          };
+        case 'string':
+          return {
+            type: 'string',
+          };
+        case 'object':
+          return {
+            type: 'object',
+          };
+      }
+    }
+    case 'List':
+    case 'Array':
+      return {
+        type: 'array',
+        items: (schema.items as Reference)?.type,
+      };
+    case 'Struct':
+      const properties = Object.fromEntries(
+        Object.entries(schema.properties || {}).map(([key, value]) => [key, value.type]),
+      );
+      return {
+        type: 'object',
+        required: schema.required || [],
+        properties,
+      };
+    case 'Tuple': {
+      const items = (schema.prefixItems || []).map((ref) => ref.type);
+      return {
+        type: 'array',
+        items,
+      };
+    }
+    case 'TupleStruct':
+      return {
+        $ref: (schema.prefixItems || [])[0]?.type.$ref,
+      };
+    case 'Set': {
+      return {
+        type: 'array',
+        items: (schema.items as Reference)?.type,
+      };
+    }
+    case 'Map':
+      return {
+        type: 'object',
+        additionalProperties: schema.valueType?.type,
+      };
+    case 'Enum':
+      const oneOf: JSONSchema7[] = (schema.oneOf || []).map((value: string | BrpSchema) => {
+        if (typeof value === 'string') {
+          return {
+            type: 'string',
+            const: value,
+            title: value,
+          };
+        } else if (!value.kind) {
+          return {
+            type: 'string',
+            const: value.shortPath,
+            title: value.shortPath,
+          };
+        } else if (value.kind === 'Tuple') {
+          const properties: Record<string, JSONSchema7> = {};
+          properties[value.shortPath] = (value.prefixItems || []).map((ref) => ref.type)[0];
+          return {
+            type: 'object',
+            required: [value.shortPath],
+            properties,
+            title: value.shortPath,
+          };
+        } else {
+          // if (value.kind === 'Struct')
+          const properties = Object.fromEntries(
+            Object.entries(schema.properties || {}).map(([key, value]) => [key, value.type]),
+          );
+          return {
+            type: 'object',
+            required: schema.required || [],
+            properties,
+            title: schema.shortPath,
+          };
+        }
+      });
+      const enumSchema: JSONSchema7 = {
+        oneOf,
+      };
+      // const types = [
+      //   ...new Set(
+      //     oneOf
+      //       .map((element) => element.type as JSONSchema7TypeName)
+      //       .filter((type) => type !== undefined && typeof type !== 'boolean'),
+      //   ),
+      // ];
+      // switch (types.length) {
+      //   case 0:
+      //     break;
+      //   case 1:
+      //     enumSchema.type = types[0];
+      //     break;
+      //   default:
+      //     enumSchema.type = types;
+      // }
+      return enumSchema;
+  }
+}
+
+function fixDocument(document: JSONSchema7): JSONSchema7 {
+  // Let TypeScript stop complaining about possibly undefined $defs.
+  if (!document.$defs) {
+    document.$defs = {};
+  }
+  // Add missing TypeId type.
+  if (!document.$defs['core::any::TypeId']) {
+    document.$defs['core::any::TypeId'] = {
+      $ref: '#/$defs/u128',
+    };
+  }
+  // Fix some definitions.
+  document.$defs = Object.fromEntries(Object.entries(document.$defs).map(fixDefinition));
+  return document;
+}
+
+function fixDefinition([name, definition]: [string, JSONSchema7Definition]): [string, JSONSchema7Definition] {
+  if (typeof definition === 'boolean') {
+    return [name, definition];
+  }
+  // Replace Option::None values from 'None' to null.
+  if (name.startsWith('core::option::Option')) {
+    definition.oneOf = definition.oneOf?.map((oneOfDef) => {
+      if (typeof oneOfDef === 'boolean') {
+        return oneOfDef;
+      }
+      if (oneOfDef.const === 'None') {
+        return {
+          type: 'null',
+          const: null,
+          title: 'None',
+        };
+      } else {
+        return {
+          // @ts-expect-error
+          $ref: oneOfDef.properties.Some.$ref,
+          // @ts-expect-error
+          title: `Some${definition.shortPath ? `<${definition.shortPath}>` : ''}`,
+        };
+      }
+    });
+    // def.type = [...new Set(def.oneOf?.map((element) => (element as JSONSchema7).type as JSONSchema7TypeName))];
+    return [name, definition];
+  } else {
+    switch (name) {
+      case 'bevy_ecs::name::Name':
+      case 'alloc::borrow::Cow<str>':
+      case 'smol_str::SmolStr':
+      case 'uuid::Uuid':
+      case 'std::path::PathBuf':
+      case 'bevy_asset::path::AssetPath':
+      case 'bevy_asset::render_asset::RenderAssetUsages':
+        return [name, { type: 'string' }];
+      case 'bevy_ecs::entity::Entity':
+        return [name, { $ref: '#/$defs/u64' }];
+      case 'core::num::NonZeroI16':
+        return [name, { $ref: '#/$defs/i16' }];
+      case 'core::num::NonZeroU16':
+        return [name, { $ref: '#/$defs/u16' }];
+      case 'core::num::NonZeroU32':
+        return [name, { $ref: '#/$defs/u32' }];
+      case 'core::ops::Range<f32>':
+        return [
+          name,
+          {
+            type: 'object',
+            properties: {
+              start: { $ref: '#/$defs/f32' },
+              end: { $ref: '#/$defs/f32' },
+            },
+            required: ['start', 'end'],
+          },
+        ];
+      case 'core::ops::Range<u32>':
+        return [
+          name,
+          {
+            type: 'object',
+            properties: {
+              start: { $ref: '#/$defs/u32' },
+              end: { $ref: '#/$defs/u32' },
+            },
+            required: ['start', 'end'],
+          },
+        ];
+      case 'core::time::Duration':
+        return [
+          name,
+          {
+            type: 'object',
+            properties: {
+              nanos: { $ref: '#/$defs/u32' },
+              secs: { $ref: '#/$defs/u32' },
+            },
+            required: ['nanos', 'secs'],
+          },
+        ];
+    }
+  }
+  return [name, definition];
 }

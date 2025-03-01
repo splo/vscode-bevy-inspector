@@ -1,7 +1,9 @@
 import levenshtein from 'fast-levenshtein';
+import fs from 'fs';
 import * as vscode from 'vscode';
 import { BevyTreeDataProvider } from './bevyTreeDataProvider';
-import { BevyTreeService, Component, Entity } from './bevyViewService';
+import type { Component } from './bevyViewService';
+import { BevyTreeService, Entity } from './bevyViewService';
 import { JsonRpcBevyRemoteService } from './jsonRpcBrp';
 import { PollingService } from './polling';
 
@@ -14,6 +16,8 @@ class BevyInspectorExtension {
   private treeService: BevyTreeService;
   private treeDataProvider: BevyTreeDataProvider;
   private polling: PollingService;
+  private detailsView?: vscode.Webview;
+  private selectedEntities?: Entity[];
 
   constructor(context: vscode.ExtensionContext) {
     const config = vscode.workspace.getConfiguration('bevyInspector');
@@ -25,9 +29,10 @@ class BevyInspectorExtension {
     this.treeDataProvider = new BevyTreeDataProvider(this.treeService);
     this.polling = new PollingService();
 
-    vscode.window.createTreeView('bevyInspector', {
+    const treeView = vscode.window.createTreeView('bevyInspector', {
       treeDataProvider: this.treeDataProvider,
       showCollapseAll: true,
+      canSelectMany: true,
     });
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.refresh', () => this.refresh()),
@@ -35,8 +40,53 @@ class BevyInspectorExtension {
       vscode.commands.registerCommand('bevyInspector.disablePolling', () => this.disablePolling()),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', (arg: any) => this.destroyEntity(arg)),
       vscode.commands.registerCommand('bevyInspector.copyComponentName', (arg: any) => this.copyComponentName(arg)),
+      vscode.commands.registerCommand('bevyInspector.copyComponentValue', (arg: any) => this.copyComponentValue(arg)),
       vscode.commands.registerCommand('bevyInspector.goToDefinition', (arg: any) => this.goToDefinition(arg)),
     );
+
+    vscode.window.registerWebviewViewProvider('bevyDetails', {
+      resolveWebviewView: (webviewView) => {
+        this.detailsView = webviewView.webview;
+        webviewView.webview.options = {
+          enableScripts: true,
+        };
+        const detailsScriptPath = webviewView.webview.asWebviewUri(
+          vscode.Uri.joinPath(context.extensionUri, 'dist', 'details.js'),
+        );
+        // const detailsCssPath = webviewView.webview.asWebviewUri(
+        //   vscode.Uri.joinPath(context.extensionUri, 'dist', 'details.css'),
+        // );
+        // <link rel="stylesheet" href="${detailsCssPath}">
+        const html = fs.readFileSync(
+          webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(context.extensionUri, 'dist', 'selection-view', 'index.html'),
+          ).fsPath,
+          'utf-8',
+        );
+        const updatedHtml = html.replace(/(src|href)=["']([^"']*)["']/g, (_match, attr, path) => {
+          if (path.startsWith('data:')) {
+            return `${attr}="${path}"`;
+          }
+          const newUri = webviewView.webview.asWebviewUri(
+            vscode.Uri.joinPath(context.extensionUri, 'dist', 'selection-view', path),
+          );
+          return `${attr}="${newUri}"`;
+        });
+        webviewView.webview.html = updatedHtml;
+      },
+    });
+    treeView.onDidChangeSelection(async (selectionChanged) => {
+      this.selectedEntities = [];
+      if (selectionChanged.selection instanceof Entity) {
+        this.selectedEntities.push(selectionChanged.selection);
+      } else if (
+        Array.isArray(selectionChanged.selection) &&
+        selectionChanged.selection.every((item) => item instanceof Entity)
+      ) {
+        this.selectedEntities.push(...selectionChanged.selection);
+      }
+      await this.refreshDetailsView(this.selectedEntities);
+    });
 
     vscode.workspace.onDidChangeConfiguration((e) => {
       const config = vscode.workspace.getConfiguration('bevyInspector');
@@ -53,8 +103,26 @@ class BevyInspectorExtension {
     });
   }
 
+  private async refreshDetailsView(selectedEntities?: Entity[]) {
+    const schema = await this.treeService.getRegistrySchemas();
+    const entities = await Promise.all(
+      (selectedEntities || []).map(async (entity) => {
+        const components = await this.treeService.listComponents(entity.id);
+        return {
+          name: entity.name || entity.id.toString(),
+          components: components.map((c) => ({
+            name: c.name,
+            value: c.value,
+          })),
+        };
+      }),
+    );
+    this.detailsView!.postMessage({ entities, schema });
+  }
+
   private async refresh() {
     this.treeDataProvider.refresh();
+    await this.refreshDetailsView(this.selectedEntities);
   }
 
   private async enablePolling() {
@@ -74,6 +142,12 @@ class BevyInspectorExtension {
   private async copyComponentName(component: Component) {
     if (component?.name) {
       await vscode.env.clipboard.writeText(component.name);
+    }
+  }
+
+  private async copyComponentValue(component: Component) {
+    if (component?.value) {
+      await vscode.env.clipboard.writeText(JSON.stringify(component.value, null, 2));
     }
   }
 
