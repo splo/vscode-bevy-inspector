@@ -1,15 +1,16 @@
 {
   "name": "@bevy-inspector/vscode-extension",
-  "main": "./dist/extension.js",
+  "main": "../../dist/extension.js",
   "scripts": {
-    "lint": "eslint src",
-    "check-types": "tsc --noEmit",
     "prebuild": "npm run check-types",
-    "build": "node esbuild.mjs",
-    "build-tests": "tsc -p . --outDir out",
-    "pretest": "npm run build-tests && npm run lint && npm run build",
+    "build": "node esbuild.mjs --production",
+    "build-tests": "tsc --noEmit false",
+    "check-types": "tsc",
+    "clean": "rimraf out ../../.vscode-test",
+    "lint": "eslint src",
+    "pretest": "npm run build-tests && npm run lint",
     "test": "vscode-test --config ../../.vscode-test.mjs",
-    "clean": "rimraf dist out .vscode-test"
+    "watch": "node esbuild.mjs --watch"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^11.7.3",

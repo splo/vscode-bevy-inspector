@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/vscode-extension/tsconfig.json" },
+    { "path": "./packages/selection-view/tsconfig.json" }
+  ]
+}
