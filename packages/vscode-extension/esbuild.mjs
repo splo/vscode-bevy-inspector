@@ -6,7 +6,7 @@ const production = process.argv.includes('--production');
 async function main() {
   console.info(`Production mode: ${production ? 'enabled' : 'disabled'}`);
   const ctx = await esbuild.context({
-    entryPoints: ['src/extension.ts'],
+    entryPoints: ['src/index.ts'],
     bundle: true,
     format: 'cjs',
     minify: production,
@@ -14,7 +14,7 @@ async function main() {
     sourcesContent: false,
     platform: 'node',
     target: 'node20',
-    outdir: 'dist',
+    outdir: '../../dist/vscode-extension',
     external: ['vscode'],
     logLevel: 'silent',
     plugins: [esbuildProblemMatcherPlugin],

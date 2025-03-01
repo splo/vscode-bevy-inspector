@@ -1,0 +1,45 @@
+{
+  "private": true,
+  "name": "@bevy-inspector/selection-view",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --build && vite build",
+    "dev": "vite",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest run --browser.headless",
+    "update-public": "copyfiles -f -E -V `node_modules @vscode/codicons`/@vscode/codicons/dist/codicon.{css,ttf} public",
+    "watch": "npm-run-all -p watch:*",
+    "watch:build": "vite build --watch",
+    "watch:types": "tsc --build --watch",
+    "watch-tests": "vitest watch"
+  },
+  "dependencies": {
+    "@vscode-elements/elements": "^1.13.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@tsconfig/vite-react": "^3.4.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/browser": "^3.0.7",
+    "@vscode-elements/webview-playground": "^1.6.0",
+    "@vscode/codicons": "^0.0.36",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "node_modules-path": "^2.0.8",
+    "playwright": "^1.50.1",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^6.2.0",
+    "vitest": "^3.0.7",
+    "vitest-browser-react": "^0.1.1",
+    "workspace-root": "^3.3.1"
+  }
+}

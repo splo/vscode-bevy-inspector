@@ -1,5 +1,14 @@
 import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { BevyTreeService, Category, CategoryType, Component, ComponentValue, Entity, Schema } from './bevyViewService';
+import { BevyTreeService, Category, CategoryType, Component, ComponentValue, Entity } from './bevyViewService';
+
+class Schema {
+  name: string;
+  typePath: string;
+  constructor(name: string, typePath: string) {
+    this.name = name;
+    this.typePath = typePath;
+  }
+}
 
 export type BevyTreeData = Category | Schema | Entity | Component | ComponentValue | ErrorItem;
 
@@ -37,7 +46,11 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
       } else if (element instanceof Category) {
         switch (element.type) {
           case CategoryType.Schema:
-            return await this.service.getRegistrySchemas();
+            const jsonSchema = await this.service.getRegistrySchemas();
+            const schemas: Schema[] = Object.keys(jsonSchema.$defs || {}).map(
+              (typePath) => new Schema(shortenName(typePath), typePath),
+            );
+            return schemas;
           case CategoryType.Entities:
             return await this.service.listTopLevelEntities();
         }
