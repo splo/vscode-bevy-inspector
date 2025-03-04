@@ -24,8 +24,7 @@
       "isBackground": true,
       "presentation": {
         "group": "build",
-        "reveal": "silent",
-        "revealProblems": "onProblem"
+        "reveal": "never"
       },
       "problemMatcher": "$esbuild-watch",
       "group": {
@@ -43,8 +42,7 @@
       "isBackground": true,
       "presentation": {
         "group": "build",
-        "reveal": "silent",
-        "revealProblems": "onProblem"
+        "reveal": "never"
       },
       "problemMatcher": "$tsc-watch",
       "group": {
