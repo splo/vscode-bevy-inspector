@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@tomjs/vscode-webview": "^2.0.2",
     "@tsconfig/vite-react": "^3.4.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
