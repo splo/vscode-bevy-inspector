@@ -38,10 +38,18 @@ class BevyInspectorExtension {
       vscode.commands.registerCommand('bevyInspector.refresh', () => this.refresh()),
       vscode.commands.registerCommand('bevyInspector.enablePolling', () => this.enablePolling()),
       vscode.commands.registerCommand('bevyInspector.disablePolling', () => this.disablePolling()),
-      vscode.commands.registerCommand('bevyInspector.destroyEntity', (arg: any) => this.destroyEntity(arg)),
-      vscode.commands.registerCommand('bevyInspector.copyComponentName', (arg: any) => this.copyComponentName(arg)),
-      vscode.commands.registerCommand('bevyInspector.copyComponentValue', (arg: any) => this.copyComponentValue(arg)),
-      vscode.commands.registerCommand('bevyInspector.goToDefinition', (arg: any) => this.goToDefinition(arg)),
+      vscode.commands.registerCommand('bevyInspector.destroyEntity', (arg: unknown) =>
+        this.destroyEntity(arg as Entity),
+      ),
+      vscode.commands.registerCommand('bevyInspector.copyComponentName', (arg: unknown) =>
+        this.copyComponentName(arg as Component),
+      ),
+      vscode.commands.registerCommand('bevyInspector.copyComponentValue', (arg: unknown) =>
+        this.copyComponentValue(arg as Component),
+      ),
+      vscode.commands.registerCommand('bevyInspector.goToDefinition', (arg: unknown) =>
+        this.goToDefinition(arg as Component),
+      ),
     );
 
     vscode.window.registerWebviewViewProvider('bevyDetails', {
@@ -50,13 +58,6 @@ class BevyInspectorExtension {
         webviewView.webview.options = {
           enableScripts: true,
         };
-        const detailsScriptPath = webviewView.webview.asWebviewUri(
-          vscode.Uri.joinPath(context.extensionUri, 'dist', 'details.js'),
-        );
-        // const detailsCssPath = webviewView.webview.asWebviewUri(
-        //   vscode.Uri.joinPath(context.extensionUri, 'dist', 'details.css'),
-        // );
-        // <link rel="stylesheet" href="${detailsCssPath}">
         const html = fs.readFileSync(
           webviewView.webview.asWebviewUri(
             vscode.Uri.joinPath(context.extensionUri, 'dist', 'selection-view', 'index.html'),
@@ -73,6 +74,7 @@ class BevyInspectorExtension {
           return `${attr}="${newUri}"`;
         });
         webviewView.webview.html = updatedHtml;
+        this.detailsView.onDidReceiveMessage((e) => console.log('Event from webview:', e));
       },
     });
     treeView.onDidChangeSelection(async (selectionChanged) => {
@@ -104,7 +106,7 @@ class BevyInspectorExtension {
   }
 
   private async refreshDetailsView(selectedEntities?: Entity[]) {
-    const schema = await this.treeService.getRegistrySchemas();
+    // const schema = await this.treeService.getRegistrySchemas();
     const entities = await Promise.all(
       (selectedEntities || []).map(async (entity) => {
         const components = await this.treeService.listComponents(entity.id);
@@ -117,7 +119,8 @@ class BevyInspectorExtension {
         };
       }),
     );
-    this.detailsView!.postMessage({ entities, schema });
+    // const _data = { entities, schema };
+    this.detailsView!.postMessage({ type: 'EntitySelected', data: entities[0] });
   }
 
   private async refresh() {

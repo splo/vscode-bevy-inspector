@@ -1,9 +1,17 @@
-import { StrictMode } from 'react';
+import { JSX, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import { SelectionView } from './SelectionView.tsx';
 
-createRoot(document.getElementById('root')!).render(
+let vscodeToolbar: JSX.Element | null = null;
+if (import.meta.env.DEV) {
+  await import('@vscode-elements/webview-playground');
+  vscodeToolbar = <vscode-dev-toolbar />;
+}
+
+const root = createRoot(document.getElementById('root')!);
+root.render(
   <StrictMode>
-    <App />
+    {vscodeToolbar}
+    <SelectionView />
   </StrictMode>,
 );
