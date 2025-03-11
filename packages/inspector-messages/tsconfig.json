@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    // Type Checking
+    "strict": true,
+    "skipLibCheck": true,
+
+    // Modules
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node10",
+    "paths": {
+      "@bevy-inspector/messenger/*": ["../messenger/*"]
+    },
+
+    // Emit
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "sourceMap": true,
+
+    // JavaScript Support
+    "allowJs": false,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+
+    // Language and Environment
+    "target": "ESNext"
+  }
+}

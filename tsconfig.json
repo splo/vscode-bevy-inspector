@@ -1,6 +1,8 @@
 {
   "files": [],
   "references": [
+    { "path": "./packages/messenger/tsconfig.json" },
+    { "path": "./packages/inspector-messages/tsconfig.json" },
     { "path": "./packages/vscode-extension/tsconfig.json" },
     { "path": "./packages/selection-view/tsconfig.json" }
   ]

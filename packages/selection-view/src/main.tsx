@@ -1,4 +1,4 @@
-import { JSX, StrictMode } from 'react';
+import { JSX } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SelectionView } from './SelectionView.tsx';
 
@@ -10,8 +10,8 @@ if (import.meta.env.DEV) {
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
-  <StrictMode>
+  <>
     {vscodeToolbar}
     <SelectionView />
-  </StrictMode>,
+  </>,
 );

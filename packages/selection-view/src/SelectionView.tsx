@@ -1,22 +1,13 @@
-import '@vscode-elements/elements/dist/vscode-icon';
-import { useEffect, useState } from 'react';
-import { Empty } from './components/Empty';
-import { Entity } from './components/Entity';
-import { Error } from './components/Error';
-import { useWebviewApi } from './WebviewApiContext';
+import { EntitySelectedData, InspectorMessage } from '@bevy-inspector/inspector-messages';
+import { EmptyDetails } from './components/EmptyDetails';
+import { EntityDetails } from './components/EntityDetails';
+import { useEvent } from './useEvent';
 
 export function SelectionView() {
-  const [entity, setEntity] = useState(null);
-  const [error, setError] = useState(null);
-  const webviewApi = useWebviewApi();
-  useEffect(() => {
-    webviewApi.on('EntitySelected', setEntity, setError);
-    console.info('Listening to EntitySelected events ...');
-  }, [webviewApi]);
-  if (entity) {
-    return <Entity entity={entity} />;
-  } else if (error) {
-    return Error(error);
+  const entitySelected = useEvent<EntitySelectedData>(InspectorMessage.EntitySelected);
+  if (!entitySelected) {
+    return <EmptyDetails />;
+  } else {
+    return <EntityDetails entity={entitySelected.entity} />;
   }
-  return <Empty />;
 }

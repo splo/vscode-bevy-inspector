@@ -1,7 +1,7 @@
-import './Empty.css';
+import './EmptyDetails.css';
 import '@vscode-elements/elements/dist/vscode-icon';
 
-export function Empty() {
+export function EmptyDetails() {
   return (
     <p className="warning">
       <vscode-icon name="warning"></vscode-icon>

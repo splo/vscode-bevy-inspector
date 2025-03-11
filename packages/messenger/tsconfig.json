@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    // Type Checking
+    "strict": true,
+    "skipLibCheck": true,
+
+    // Modules
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node10",
+
+    // Emit
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "sourceMap": true,
+
+    // JavaScript Support
+    "allowJs": false,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+
+    // Language and Environment
+    "lib": ["DOM"],
+    "target": "ESNext"
+  }
+}
