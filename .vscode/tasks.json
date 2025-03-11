@@ -10,7 +10,6 @@
       "dependsOn": ["watch-extension", "watch-webview"],
       "group": {
         "kind": "build",
-        "group": "build",
         "isDefault": true
       }
     },
@@ -27,10 +26,7 @@
         "reveal": "never"
       },
       "problemMatcher": "$esbuild-watch",
-      "group": {
-        "kind": "build",
-        "group": "build"
-      }
+      "group": "build"
     },
     {
       "label": "watch-webview",
@@ -45,10 +41,7 @@
         "reveal": "never"
       },
       "problemMatcher": "$tsc-watch",
-      "group": {
-        "kind": "build",
-        "group": "build"
-      }
+      "group": "build"
     },
     {
       "label": "watch-tests",
