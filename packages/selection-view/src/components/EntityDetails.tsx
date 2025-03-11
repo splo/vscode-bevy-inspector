@@ -33,12 +33,14 @@ export function EntityDetails({ entity }: EntityProps) {
         <vscode-label htmlFor={id}>ID</vscode-label>
         <vscode-textfield id={id} type="number" readonly value={entity.id.toString()}></vscode-textfield>
       </vscode-form-group>
-      <ComponentList components={response?.components || []} />
+      <ComponentList entityId={entity.id} components={response?.components || []} />
       {error ? <ErrorCard error={error.toString()} /> : null}
     </vscode-form-container>
   );
 }
 
-function ComponentList({ components }: ListComponentsResponseData) {
-  return components?.map((component) => <ComponentDetails key={component.typePath} component={component} />);
+function ComponentList({ entityId, components }: ListComponentsResponseData & { entityId: number }) {
+  return components?.map((component) => (
+    <ComponentDetails key={component.typePath} entityId={entityId} component={component} />
+  ));
 }

@@ -4,6 +4,7 @@ import {
   InspectorMessage,
   InspectorRequest,
   ListComponentsResponseData,
+  SetComponentValueResponseData,
 } from '@bevy-inspector/inspector-messages';
 import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import levenshtein from 'fast-levenshtein';
@@ -108,6 +109,16 @@ class BevyInspectorExtension {
                 const response: ResponseMessage<GetSchemaResponseData> = {
                   requestId: request.id,
                   data: { schema: schema.$defs![request.data.componentTypePath] as JSONSchema7 },
+                };
+                this.detailsView?.postMessage(response);
+              });
+              break;
+            }
+            case InspectorMessage.SetComponentValue: {
+              const { entityId, typePath, newValue } = request.data;
+              this.treeService.updateComponent(entityId, typePath, newValue).then(() => {
+                const response: SetComponentValueResponseData = {
+                  success: true,
                 };
                 this.detailsView?.postMessage(response);
               });

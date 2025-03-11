@@ -17,6 +17,7 @@ export enum InspectorMessage {
   EntitySelected = 'EntitySelected',
   ListComponents = 'ListComponents',
   GetSchema = 'GetSchema',
+  SetComponentValue = 'SetComponentValue',
 }
 
 export interface EntitySelectedData {
@@ -39,6 +40,17 @@ export interface GetSchemaResponseData {
   schema: JSONSchema7;
 }
 
+export interface SetComponentValueRequestData {
+  entityId: number;
+  typePath: string;
+  newValue: unknown;
+}
+
+export interface SetComponentValueResponseData {
+  success: boolean;
+}
+
 export type InspectorRequest =
   | (RequestMessage<ListComponentsRequestData> & { type: InspectorMessage.ListComponents })
-  | (RequestMessage<GetSchemaRequestData> & { type: InspectorMessage.GetSchema });
+  | (RequestMessage<GetSchemaRequestData> & { type: InspectorMessage.GetSchema })
+  | (RequestMessage<SetComponentValueRequestData> & { type: InspectorMessage.SetComponentValue });

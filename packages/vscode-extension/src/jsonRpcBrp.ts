@@ -103,6 +103,16 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
     return await this.doRequest(request);
   }
 
+  public async mutateComponent(params: brp.BevyMutateComponentParams): Promise<brp.BevyMutateComponentResult> {
+    const request: JsonRpcRequest<any> = {
+      jsonrpc: '2.0',
+      id: this.nextId(),
+      method: 'bevy/mutate_component',
+      params,
+    };
+    return await this.doRequest(request);
+  }
+
   public async registrySchema(params?: brp.BevyRegistrySchemaParams): Promise<brp.BevyRegistrySchemaResult> {
     const request: JsonRpcRequest<any> = {
       jsonrpc: '2.0',

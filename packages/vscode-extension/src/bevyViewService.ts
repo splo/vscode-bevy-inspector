@@ -2,6 +2,7 @@ import $RefParser from '@apidevtools/json-schema-ref-parser';
 import type { JSONSchema7, JSONSchema7Definition } from 'json-schema';
 import type {
   BevyGetLenientResult,
+  BevyMutateComponentParams,
   BevyRegistrySchemaResult,
   BevyRemoteService,
   Schema as BrpSchema,
@@ -131,6 +132,16 @@ export class BevyTreeService {
         return this.buildChildrenTree(component.value);
     }
     return this.buildGenericTree(component.value, component.errorMessage);
+  }
+
+  public async updateComponent(entityId: EntityId, typePath: TypePath, newValue: unknown) {
+    const params: BevyMutateComponentParams = {
+      entity: entityId,
+      component: typePath,
+      path: '',
+      value: newValue,
+    };
+    await this.remoteService.mutateComponent(params);
   }
 
   public async invalidateCache() {
