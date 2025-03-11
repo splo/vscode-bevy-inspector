@@ -8,6 +8,7 @@ export interface BevyRemoteService {
   destroy(params: BevyDestroyParams): Promise<BevyDestroyResult>;
   reparent(params: BevyReparentParams): Promise<BevyReparentResult>;
   list(params?: BevyListParams): Promise<BevyListResult>;
+  mutateComponent(params: BevyMutateComponentParams): Promise<BevyMutateComponentResult>;
   getWatch(params: BevyGetWatchParams): Promise<BevyGetWatchResult>;
   listWatch(params: BevyListWatchParams): Promise<BevyListWatchResult>;
   registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult>;
@@ -121,6 +122,15 @@ export interface BevyListParams {
 }
 
 export type BevyListResult = string[];
+
+export interface BevyMutateComponentParams {
+  entity: EntityId;
+  component: TypePath;
+  path: string;
+  value: unknown;
+}
+
+export type BevyMutateComponentResult = null;
 
 export interface BevyGetWatchParams {
   entity: EntityId;
