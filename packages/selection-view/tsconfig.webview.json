@@ -1,4 +1,10 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
-  "include": ["src", "tests"]
+  "compilerOptions": {
+    "paths": {
+      "@bevy-inspector/messenger/*": ["../messenger/*"],
+      "@bevy-inspector/inspector-messages": ["../inspector-messages/index"]
+    }
+  },
+  "include": ["src", "tests", "../messenger", "../inspector-messages"]
 }
