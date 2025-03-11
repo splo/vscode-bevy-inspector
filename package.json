@@ -191,11 +191,13 @@
         {
           "id": "bevyInspector",
           "name": "Tree",
+          "icon": "resources/bevy-inspector.png",
           "type": "tree"
         },
         {
           "id": "bevyDetails",
           "name": "Details",
+          "icon": "resources/bevy-inspector.png",
           "type": "webview"
         }
       ]
