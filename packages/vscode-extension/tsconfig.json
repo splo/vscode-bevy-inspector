@@ -1,10 +1,15 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node16",
     "types": ["node", "vscode", "mocha", "fast-levenshtein"],
-    "rootDir": "src",
     "outDir": "out",
+    "paths": {
+      "@bevy-inspector/messenger/*": ["../messenger/*"],
+      "@bevy-inspector/inspector-messages": ["../inspector-messages/index"]
+    },
     "inlineSourceMap": true,
     "noEmit": true
-  }
+  },
+  "include": ["src", "../messenger", "../inspector-messages"]
 }

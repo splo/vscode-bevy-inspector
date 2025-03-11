@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild';
+import * as console from 'node:console';
 import * as process from 'node:process';
 
 const production = process.argv.includes('--production');

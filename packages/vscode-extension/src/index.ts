@@ -1,5 +1,14 @@
+import {
+  EntitySelectedData,
+  GetSchemaResponseData,
+  InspectorMessage,
+  InspectorRequest,
+  ListComponentsResponseData,
+} from '@bevy-inspector/inspector-messages';
+import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import levenshtein from 'fast-levenshtein';
 import fs from 'fs';
+import type { JSONSchema7 } from 'json-schema';
 import * as vscode from 'vscode';
 import { BevyTreeDataProvider } from './bevyTreeDataProvider';
 import type { Component } from './bevyViewService';
@@ -74,7 +83,40 @@ class BevyInspectorExtension {
           return `${attr}="${newUri}"`;
         });
         webviewView.webview.html = updatedHtml;
-        this.detailsView.onDidReceiveMessage((e) => console.log('Event from webview:', e));
+        this.detailsView.onDidReceiveMessage((request: InspectorRequest) => {
+          console.debug('Extension received request:', request);
+          switch (request.type) {
+            case InspectorMessage.ListComponents: {
+              this.treeService.listComponents(request.data.entityId).then((components) => {
+                const response: ResponseMessage<ListComponentsResponseData> = {
+                  requestId: request.id,
+                  data: {
+                    components: components.map((component) => ({
+                      typePath: component.name,
+                      shortPath: shortenName(component.name),
+                      value: component.value,
+                      error: component.errorMessage,
+                    })),
+                  },
+                };
+                this.detailsView?.postMessage(response);
+              });
+              break;
+            }
+            case InspectorMessage.GetSchema: {
+              this.treeService.getRegistrySchemas().then((schema) => {
+                const response: ResponseMessage<GetSchemaResponseData> = {
+                  requestId: request.id,
+                  data: { schema: schema.$defs![request.data.componentTypePath] as JSONSchema7 },
+                };
+                this.detailsView?.postMessage(response);
+              });
+              break;
+            }
+            default:
+              console.warn(`Received an unexpected message from webview:`, request);
+          }
+        });
       },
     });
     treeView.onDidChangeSelection(async (selectionChanged) => {
@@ -106,21 +148,21 @@ class BevyInspectorExtension {
   }
 
   private async refreshDetailsView(selectedEntities?: Entity[]) {
-    // const schema = await this.treeService.getRegistrySchemas();
     const entities = await Promise.all(
       (selectedEntities || []).map(async (entity) => {
         const components = await this.treeService.listComponents(entity.id);
         return {
+          id: entity.id,
           name: entity.name || entity.id.toString(),
-          components: components.map((c) => ({
+          components: components.map((c: Component) => ({
             name: c.name,
             value: c.value,
           })),
         };
       }),
     );
-    // const _data = { entities, schema };
-    this.detailsView!.postMessage({ type: 'EntitySelected', data: entities[0] });
+    const data: EntitySelectedData = { entity: entities[0] };
+    this.detailsView!.postMessage({ type: InspectorMessage.EntitySelected, data });
   }
 
   private async refresh() {
@@ -190,4 +232,8 @@ async function findSymbolLocation(componentName: string): Promise<vscode.Locatio
     }
   }
   return null;
+}
+
+function shortenName(name: string): string {
+  return name.replaceAll(/\w*::/g, '');
 }
