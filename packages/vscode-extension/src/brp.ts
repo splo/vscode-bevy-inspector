@@ -3,14 +3,14 @@ export interface BevyRemoteService {
   get(params: BevyGetParams): Promise<BevyGetResult>;
   query(params: BevyQueryParams): Promise<BevyQueryResult>;
   spawn(params: BevySpawnParams): Promise<BevySpawnResult>;
-  destroy(params: BevyDestroyParams): Promise<BevyDestroyResult>;
-  remove(params: BevyRemoveParams): Promise<BevyRemoveResult>;
   insert(params: BevyInsertParams): Promise<BevyInsertResult>;
+  remove(params: BevyRemoveParams): Promise<BevyRemoveResult>;
+  destroy(params: BevyDestroyParams): Promise<BevyDestroyResult>;
   reparent(params: BevyReparentParams): Promise<BevyReparentResult>;
   list(params?: BevyListParams): Promise<BevyListResult>;
-  registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult>;
   getWatch(params: BevyGetWatchParams): Promise<BevyGetWatchResult>;
   listWatch(params: BevyListWatchParams): Promise<BevyListWatchResult>;
+  registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult>;
 }
 
 export interface BevyError {
@@ -89,11 +89,12 @@ export interface BevySpawnResult {
   entity: EntityId;
 }
 
-export interface BevyDestroyParams {
+export interface BevyInsertParams {
   entity: EntityId;
+  components: Record<TypePath, any>;
 }
 
-export type BevyDestroyResult = null;
+export type BevyInsertResult = null;
 
 export interface BevyRemoveParams {
   entity: EntityId;
@@ -102,12 +103,11 @@ export interface BevyRemoveParams {
 
 export type BevyRemoveResult = null;
 
-export interface BevyInsertParams {
+export interface BevyDestroyParams {
   entity: EntityId;
-  components: Record<TypePath, any>;
 }
 
-export type BevyInsertResult = null;
+export type BevyDestroyResult = null;
 
 export interface BevyReparentParams {
   entities: EntityId[];
@@ -121,17 +121,6 @@ export interface BevyListParams {
 }
 
 export type BevyListResult = string[];
-
-export interface BevyRegistrySchemaParams {
-  withoutCrates?: string[];
-  withCrates?: string[];
-  typeLimit?: {
-    without?: string[];
-    with?: string[];
-  };
-}
-
-export type BevyRegistrySchemaResult = Record<TypePath, Schema>;
 
 export interface BevyGetWatchParams {
   entity: EntityId;
@@ -153,3 +142,14 @@ export interface BevyListWatchResult {
   added: TypePath[];
   removed: TypePath[];
 }
+
+export interface BevyRegistrySchemaParams {
+  withoutCrates?: string[];
+  withCrates?: string[];
+  typeLimit?: {
+    without?: string[];
+    with?: string[];
+  };
+}
+
+export type BevyRegistrySchemaResult = Record<TypePath, Schema>;
