@@ -23,6 +23,8 @@ export default tseslint.config(
       curly: 'warn',
       eqeqeq: 'warn',
       'no-throw-literal': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
   {

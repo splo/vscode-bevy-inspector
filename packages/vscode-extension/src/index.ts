@@ -1,11 +1,11 @@
-import {
+import type {
   EntitySelectedData,
   GetSchemaResponseData,
-  InspectorMessage,
   InspectorRequest,
   ListComponentsResponseData,
   SetComponentValueResponseData,
 } from '@bevy-inspector/inspector-messages';
+import { InspectorMessage } from '@bevy-inspector/inspector-messages';
 import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import levenshtein from 'fast-levenshtein';
 import fs from 'fs';
