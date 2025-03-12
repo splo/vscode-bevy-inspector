@@ -1,6 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { JsonRpcRequest, JsonRpcResponse, isJsonRpcSuccess } from 'json-rpc-types';
-import * as brp from './brp';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
+import type { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-types';
+import { isJsonRpcSuccess } from 'json-rpc-types';
+import type * as brp from './brp';
 
 export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
   public static DEFAULT_URL = 'http://127.0.0.1:15702';
