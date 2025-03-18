@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { EventMessage, RequestMessage, ResponseMessage } from './types';
+import type { EventMessage, RequestMessage, ResponseMessage } from './types';
 
 export class Messenger extends EventTarget {
   private requestResolvers = new Map<string, (data: unknown) => void>();
