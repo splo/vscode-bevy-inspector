@@ -27,141 +27,101 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
   }
 
   public async get(params: brp.BevyGetParams): Promise<brp.BevyGetResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/get',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/get');
   }
 
   public async query(params: brp.BevyQueryParams): Promise<brp.BevyQueryResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/query',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/query');
   }
 
   public async spawn(params: brp.BevySpawnParams): Promise<brp.BevySpawnResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/spawn',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/spawn');
   }
 
   public async destroy(params: brp.BevyDestroyParams): Promise<brp.BevyDestroyResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/destroy',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/destroy');
   }
 
   public async remove(params: brp.BevyRemoveParams): Promise<brp.BevyRemoveResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/remove',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/remove');
   }
 
   public async insert(params: brp.BevyInsertParams): Promise<brp.BevyInsertResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/insert',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/insert');
   }
 
   public async reparent(params: brp.BevyReparentParams): Promise<brp.BevyReparentResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/reparent',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/reparent');
   }
 
   public async list(params?: brp.BevyListParams): Promise<brp.BevyListResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/list',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/list');
   }
 
   public async mutateComponent(params: brp.BevyMutateComponentParams): Promise<brp.BevyMutateComponentResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/mutate_component',
-      params,
-    };
-    return await this.doRequest(request);
-  }
-
-  public async registrySchema(params?: brp.BevyRegistrySchemaParams): Promise<brp.BevyRegistrySchemaResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/registry/schema',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/mutate_component');
   }
 
   public async getWatch(params: brp.BevyGetWatchParams): Promise<brp.BevyGetWatchResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/get+watch',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/get+watch');
   }
 
   public async listWatch(params: brp.BevyListWatchParams): Promise<brp.BevyListWatchResult> {
-    const request: JsonRpcRequest<any> = {
-      jsonrpc: '2.0',
-      id: this.nextId(),
-      method: 'bevy/list+watch',
-      params,
-    };
-    return await this.doRequest(request);
+    return await this.doRequest(params, 'bevy/list+watch');
+  }
+
+  public async getResource(params: brp.BevyGetResourceParams): Promise<brp.BevyGetResourceResult> {
+    return await this.doRequest(params, 'bevy/get_resource');
+  }
+
+  public async insertResource(params: brp.BevyInsertResourceParams): Promise<brp.BevyInsertResourceResult> {
+    return await this.doRequest(params, 'bevy/insert_resource');
+  }
+
+  public async removeResource(params: brp.BevyRemoveResourceParams): Promise<brp.BevyRemoveResourceResult> {
+    return await this.doRequest(params, 'bevy/remove_resource');
+  }
+
+  public async mutateResource(params: brp.BevyMutateResourceParams): Promise<brp.BevyMutateResourceResult> {
+    return await this.doRequest(params, 'bevy/mutate_resource');
+  }
+
+  public async listResources(params: brp.BevyListResourcesParams): Promise<brp.BevyListResourcesResult> {
+    return await this.doRequest(params, 'bevy/list_resources');
+  }
+
+  public async registrySchema(params?: brp.BevyRegistrySchemaParams): Promise<brp.BevyRegistrySchemaResult> {
+    return await this.doRequest(params, 'bevy/registry/schema');
+  }
+
+  public async discover(params: brp.RpcDiscoverParams): Promise<brp.RpcDiscoverResult> {
+    return await this.doRequest(params, 'rpc.discover');
   }
 
   private nextId(): number {
     return ++this._currentId;
   }
 
-  private async doRequest<P, R>(request: JsonRpcRequest<P>): Promise<R> {
-    type RQ = JsonRpcRequest<P>;
+  private async doRequest<P, R>(params: P, method: string): Promise<R> {
+    // Fix JsonRpcRequest that requires params to have type "P[]" instead of just "P".
+    type RQ = Omit<JsonRpcRequest<P>, 'params'> & { params: P };
     type RS = JsonRpcResponse<R>;
+
+    const request: RQ = {
+      jsonrpc: '2.0',
+      id: this.nextId(),
+      method,
+      params,
+    };
 
     const config: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'application/json',
       },
     };
-    console.debug('request', request);
+    console.debug('BRP request:', request);
     const response = await axios.post<RS, AxiosResponse<RS>, RQ>(this.url, request, config);
-    console.debug('response.data', response.data);
+    console.debug('BRP response:', response.data);
     if (isJsonRpcSuccess<R>(response.data)) {
       return response.data.result;
     } else {

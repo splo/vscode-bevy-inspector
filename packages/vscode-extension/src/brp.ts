@@ -11,7 +11,13 @@ export interface BevyRemoteService {
   mutateComponent(params: BevyMutateComponentParams): Promise<BevyMutateComponentResult>;
   getWatch(params: BevyGetWatchParams): Promise<BevyGetWatchResult>;
   listWatch(params: BevyListWatchParams): Promise<BevyListWatchResult>;
+  getResource(params: BevyGetResourceParams): Promise<BevyGetResourceResult>;
+  insertResource(params: BevyInsertResourceParams): Promise<BevyInsertResourceResult>;
+  removeResource(params: BevyRemoveResourceParams): Promise<BevyRemoveResourceResult>;
+  mutateResource(params: BevyMutateResourceParams): Promise<BevyMutateResourceResult>;
+  listResources(params: BevyListResourcesParams): Promise<BevyListResourcesResult>;
   registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult>;
+  discover(params: RpcDiscoverParams): Promise<RpcDiscoverResult>;
 }
 
 export interface BevyError {
@@ -121,7 +127,7 @@ export interface BevyListParams {
   entity: EntityId;
 }
 
-export type BevyListResult = string[];
+export type BevyListResult = TypePath[];
 
 export interface BevyMutateComponentParams {
   entity: EntityId;
@@ -153,6 +159,39 @@ export interface BevyListWatchResult {
   removed: TypePath[];
 }
 
+export interface BevyGetResourceParams {
+  resource: TypePath;
+}
+
+export interface BevyGetResourceResult {
+  value: any;
+}
+
+export interface BevyInsertResourceParams {
+  resource: TypePath;
+  value: any;
+}
+
+export type BevyInsertResourceResult = null;
+
+export interface BevyRemoveResourceParams {
+  resource: TypePath;
+}
+
+export type BevyRemoveResourceResult = null;
+
+export interface BevyMutateResourceParams {
+  resource: TypePath;
+  path: string;
+  value: any;
+}
+
+export type BevyMutateResourceResult = null;
+
+export type BevyListResourcesParams = null;
+
+export type BevyListResourcesResult = TypePath[];
+
 export interface BevyRegistrySchemaParams {
   withoutCrates?: string[];
   withCrates?: string[];
@@ -163,3 +202,23 @@ export interface BevyRegistrySchemaParams {
 }
 
 export type BevyRegistrySchemaResult = Record<TypePath, Schema>;
+
+export type RpcDiscoverParams = null;
+
+export interface RpcDiscoverResult {
+  info: {
+    title: string;
+    version: string;
+    description?: string;
+  };
+  methods: {
+    name: string;
+    params: unknown[];
+  }[];
+  openrpc: string;
+  servers: {
+    name: string;
+    url: string;
+    description?: string;
+  }[];
+}
