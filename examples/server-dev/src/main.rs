@@ -1,14 +1,12 @@
-// Example adapted from https://raw.githubusercontent.com/bevyengine/bevy/refs/tags/v0.15.0/examples/remote/server.rs
+// Example adapted from https://raw.githubusercontent.com/bevyengine/bevy/refs/heads/main/examples/remote/server.rs
 //! A Bevy app that you can connect to with the BRP and edit.
 
-use bevy::color::palettes::tailwind;
-use bevy::math::ops::cos;
+use bevy::prelude::*;
 use bevy::{
-    input::common_conditions::input_just_pressed,
-    prelude::*,
+    color::palettes::tailwind,
+    math::ops::cos,
     remote::{http::RemoteHttpPlugin, RemotePlugin},
 };
-use serde::{Deserialize, Serialize};
 
 fn main() {
     App::new()
@@ -16,10 +14,21 @@ fn main() {
         .add_plugins(RemotePlugin::default())
         .add_plugins(RemoteHttpPlugin::default())
         .add_systems(Startup, setup)
-        .add_systems(Update, remove.run_if(input_just_pressed(KeyCode::Space)))
         .add_systems(Update, move_cube)
         .register_type::<Cube>()
+        .register_type::<MyObject>()
         .run();
+}
+
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+struct Cube(f32);
+
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+struct MyObject {
+    vec3: Vec3,
+    color: Color,
 }
 
 fn setup(
@@ -29,42 +38,43 @@ fn setup(
 ) {
     // circular base
     commands.spawn((
-        Name::from("Circular base"),
+        Name::new("Circular base"),
         Mesh3d(meshes.add(Circle::new(4.0))),
-        MeshMaterial3d(materials.add(Color::WHITE)),
+        MeshMaterial3d(materials.add(Color::from(tailwind::GREEN_300))),
         Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
     ));
 
+    // unnamed object
+    commands.spawn(MyObject {
+        vec3: Vec3::new(1.0, 2.0, 3.0),
+        color: Color::from(tailwind::BLUE_500),
+    });
+
     // cube
-    commands
-        .spawn((
-            Name::from("Cube"),
-            Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
-            MeshMaterial3d(materials.add(Color::srgb_u8(124, 144, 255))),
-            Transform::from_xyz(0.0, 0.5, 0.0),
-            Cube(1.0),
-        ))
-        .with_children(|parent| {
-            parent
-                .spawn((
-                    Name::from("Sub-cube"),
-                    Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
-                    MeshMaterial3d(materials.add(Color::from(tailwind::AMBER_500))),
-                    Transform::from_xyz(0.0, 1.5, 0.0),
-                ))
-                .with_children(|parent| {
-                    parent.spawn((
-                        Name::from("Sub-sub-cube"),
-                        Mesh3d(meshes.add(Cuboid::new(1.0, 1.0, 1.0))),
-                        MeshMaterial3d(materials.add(Color::from(tailwind::BLUE_500))),
-                        Transform::from_xyz(1.5, 0.0, 0.0),
-                    ));
-                });
-        });
+    let cube_handle = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+    commands.spawn((
+        Name::new("Cube"),
+        Mesh3d(cube_handle.clone()),
+        MeshMaterial3d(materials.add(Color::from(tailwind::RED_200))),
+        Transform::from_xyz(0.0, 0.5, 0.0),
+        Cube(1.0),
+        children![(
+            Name::new("Sub-cube"),
+            Mesh3d(cube_handle.clone()),
+            MeshMaterial3d(materials.add(Color::from(tailwind::GREEN_500))),
+            Transform::from_xyz(0.0, 1.5, 0.0),
+            children![(
+                Name::new("Sub-sub-cube"),
+                Mesh3d(cube_handle),
+                MeshMaterial3d(materials.add(Color::from(tailwind::BLUE_800))),
+                Transform::from_xyz(1.5, 0.0, 0.0),
+            )]
+        )],
+    ));
 
     // light
     commands.spawn((
-        Name::from("Light"),
+        Name::new("Light"),
         PointLight {
             shadows_enabled: true,
             ..default()
@@ -74,7 +84,7 @@ fn setup(
 
     // camera
     commands.spawn((
-        Name::from("Camera"),
+        Name::new("Camera"),
         Camera3d::default(),
         Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
     ));
@@ -85,11 +95,3 @@ fn move_cube(mut query: Query<&mut Transform, With<Cube>>, time: Res<Time>) {
         transform.translation.y = -cos(time.elapsed_secs()) + 1.5;
     }
 }
-
-fn remove(mut commands: Commands, cube_entity: Single<Entity, With<Cube>>) {
-    commands.entity(*cube_entity).remove::<Cube>();
-}
-
-#[derive(Component, Reflect, Serialize, Deserialize)]
-#[reflect(Component, Serialize, Deserialize)]
-struct Cube(f32);

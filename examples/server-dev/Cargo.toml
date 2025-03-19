@@ -1,12 +1,9 @@
 [package]
-name = "server"
+name = "server-dev"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-# bevy = { version = "0.15.0", features = ["bevy_remote", "serialize"] }
 bevy = { git = "https://github.com/bevyengine/bevy.git", features = [
     "bevy_remote",
-    "serialize",
 ] }
-serde = "1.0.217"
