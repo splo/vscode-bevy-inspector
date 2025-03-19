@@ -36,11 +36,11 @@ test('renders entity and components', async () => {
             schema: { type: typePath === 'bevy::PI' ? 'number' : 'string' },
           },
         };
-        window.postMessage({ type: 'message', data: response });
+        window.postMessage(response);
         break;
       }
       default:
-        console.log('Unhandled message type:', request.type);
+        console.warn('Unhandled message type:', request.type);
     }
   };
 
