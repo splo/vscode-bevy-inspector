@@ -58,21 +58,21 @@
       "group": "build"
     },
     {
-      "label": "start-server-example-stable",
-      "detail": "Start the stable server example",
+      "label": "start-server-0.15-example",
+      "detail": "Start the 0.15 server example",
       "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
       "type": "process",
       "command": "cargo",
       "args": ["run"],
       "options": {
-        "cwd": "${workspaceFolder}/examples/server"
+        "cwd": "${workspaceFolder}/examples/server-0.15"
       },
       "problemMatcher": ["$rustc"]
     },
     {
-      "label": "start-server-example-dev",
+      "label": "start-server-dev-example",
       "detail": "Start the development server example",
-      "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
+      "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
       "type": "process",
       "command": "cargo",
       "args": ["run"],
