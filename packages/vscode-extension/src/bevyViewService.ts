@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import type { JSONSchema7, JSONSchema7Definition } from 'json-schema';
 import type {
@@ -84,7 +85,7 @@ export class BevyTreeService {
   private remoteService: BevyRemoteService;
   private schema?: JSONSchema7;
   private entities?: Entity[];
-  private components: Map<EntityId, Component[]> = new Map();
+  private components = new Map<EntityId, Component[]>();
 
   constructor(remoteService: BevyRemoteService) {
     this.remoteService = remoteService;
@@ -102,7 +103,6 @@ export class BevyTreeService {
     if (!this.schema) {
       this.schema = await this.retrieveSchema();
     }
-    // @ts-ignore
     return this.schema;
   }
 
@@ -190,8 +190,8 @@ export class BevyTreeService {
         } else if (bIsChildren) {
           return 1;
         } else {
-          let aHasErrors = a.errorMessage !== undefined;
-          let bHasErrors = b.errorMessage !== undefined;
+          const aHasErrors = a.errorMessage !== undefined;
+          const bHasErrors = b.errorMessage !== undefined;
           if (aHasErrors && !bHasErrors) {
             return 1;
           }
@@ -228,7 +228,7 @@ export class BevyTreeService {
     if (typeof value === 'object' && value !== null) {
       return Object.entries(value).map(([childKey, childValue]) => this.keyValueToItem(childKey, childValue));
     }
-    let hasError = errorMessage !== undefined;
+    const hasError = errorMessage !== undefined;
     return [new ComponentValue(null, hasError ? errorMessage : value, [], hasError)];
   }
 
@@ -291,7 +291,7 @@ export class BevyTreeService {
     const nameComponent = this.getNameComponentName();
     let name = element.components[nameComponent]?.name || element.components[nameComponent];
     if (!name || !(typeof name === 'string')) {
-      let components = await this.listComponents(element.entity);
+      const components = await this.listComponents(element.entity);
       name = inferEntityName(components.map((component) => component.name));
     }
 
@@ -318,7 +318,7 @@ function inferEntityName(components: string[]): string | null {
     'bevy_ecs::system::system_registry::SystemIdMarker': 'System',
   };
   return components
-    .filter((component) => COMPONENT_NAME_MAPPING.hasOwnProperty(component))
+    .filter((component) => Object.prototype.hasOwnProperty.call(COMPONENT_NAME_MAPPING, component))
     .map((component) => COMPONENT_NAME_MAPPING[component])[0];
 }
 
@@ -328,9 +328,9 @@ function toJsonSchema(registry: BevyRegistrySchemaResult): JSONSchema7 {
     $defs: Object.fromEntries(
       Object.entries(registry).map(([key, value]) => {
         const definition = toDefinition(value);
-        // @ts-expect-error
+        // @ts-expect-error shortPath is a Bevy extension to JSON schema.
         definition.shortPath = value.shortPath;
-        // @ts-expect-error
+        // @ts-expect-error typePath is a Bevy extension to JSON schema.
         definition.typePath = value.typePath;
         return [key, definition];
       }),
@@ -375,13 +375,14 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
           };
       }
     }
+    // Falls through.
     case 'List':
     case 'Array':
       return {
         type: 'array',
         items: (schema.items as Reference)?.type,
       };
-    case 'Struct':
+    case 'Struct': {
       const properties = Object.fromEntries(
         Object.entries(schema.properties || {}).map(([key, value]) => [key, value.type]),
       );
@@ -390,6 +391,7 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
         required: schema.required || [],
         properties,
       };
+    }
     case 'Tuple': {
       const items = (schema.prefixItems || []).map((ref) => ref.type);
       return {
@@ -412,7 +414,7 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
         type: 'object',
         additionalProperties: schema.valueType?.type,
       };
-    case 'Enum':
+    case 'Enum': {
       const oneOf: JSONSchema7[] = (schema.oneOf || []).map((value: string | BrpSchema) => {
         if (typeof value === 'string') {
           return {
@@ -468,6 +470,7 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
       //     enumSchema.type = types;
       // }
       return enumSchema;
+    }
   }
 }
 
@@ -505,9 +508,9 @@ function fixDefinition([name, definition]: [string, JSONSchema7Definition]): [st
         };
       } else {
         return {
-          // @ts-expect-error
+          // @ts-expect-error properties cannot be undefined.
           $ref: oneOfDef.properties.Some.$ref,
-          // @ts-expect-error
+          // @ts-expect-error shortPath is a Bevy extension to JSON schema.
           title: `Some${definition.shortPath ? `<${definition.shortPath}>` : ''}`,
         };
       }

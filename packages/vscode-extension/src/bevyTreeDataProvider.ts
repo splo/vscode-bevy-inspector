@@ -1,5 +1,7 @@
-import { Event, EventEmitter, ThemeIcon, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { BevyTreeService, Category, CategoryType, Component, ComponentValue, Entity } from './bevyViewService';
+import type { Event, TreeDataProvider } from 'vscode';
+import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import type { BevyTreeService } from './bevyViewService';
+import { Category, CategoryType, Component, ComponentValue, Entity } from './bevyViewService';
 
 class Schema {
   name: string;
@@ -45,12 +47,13 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
         return await this.service.listCategories();
       } else if (element instanceof Category) {
         switch (element.type) {
-          case CategoryType.Schema:
+          case CategoryType.Schema: {
             const jsonSchema = await this.service.getRegistrySchemas();
             const schemas: Schema[] = Object.keys(jsonSchema.$defs || {}).map(
               (typePath) => new Schema(shortenName(typePath), typePath),
             );
             return schemas;
+          }
           case CategoryType.Entities:
             return await this.service.listTopLevelEntities();
         }
@@ -63,11 +66,17 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
       } else if (element instanceof ComponentValue) {
         return element.children;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.warn('Error while contacting server', error);
       const item = new ErrorItem();
-      item.code = error.code;
-      item.message = error.message;
+      if (typeof error === 'object' && error !== null) {
+        if ('code' in error && typeof error.code === 'string') {
+          item.code = error.code;
+        }
+        if ('message' in error && typeof error.message === 'string') {
+          item.message = error.message;
+        }
+      }
       return [item];
     }
     return [];
@@ -120,11 +129,11 @@ export class BevyTreeDataProvider implements TreeDataProvider<BevyTreeData> {
   }
 
   private buildComponentNameTreeItem(component: Component): TreeItem {
-    let { name, errorMessage } = component;
+    const { name, errorMessage } = component;
     const treeItem = new TreeItem(shortenName(name));
     treeItem.tooltip = name;
 
-    let isPrimitive = isPrimitiveComponent(component);
+    const isPrimitive = isPrimitiveComponent(component);
     if (isPrimitive) {
       treeItem.description = JSON.stringify(component.value);
     }
