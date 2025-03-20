@@ -5,24 +5,26 @@
     "skipLibCheck": true,
 
     // Modules
-    "baseUrl": ".",
     "module": "ESNext",
     "moduleResolution": "node10",
+    "rootDir": "src",
 
     // Emit
     "declaration": true,
     "declarationMap": true,
-    "outDir": "dist",
+    "noEmit": false,
+    "outDir": "out",
     "sourceMap": true,
-
-    // JavaScript Support
-    "allowJs": false,
 
     // Interop Constraints
     "esModuleInterop": true,
 
     // Language and Environment
     "lib": ["DOM"],
-    "target": "ESNext"
+    "target": "ESNext",
+
+    // Project
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/messenger.tsbuildinfo"
   }
 }

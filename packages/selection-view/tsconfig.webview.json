@@ -1,10 +1,26 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
   "compilerOptions": {
+    "outDir": "out",
+    "rootDir": "src",
+    "allowImportingTsExtensions": false,
+    "noEmit": true,
+    "sourceMap": true,
+    "declarationMap": true,
     "paths": {
-      "@bevy-inspector/messenger/*": ["../messenger/*"],
-      "@bevy-inspector/inspector-messages": ["../inspector-messages/index"]
-    }
+      "@bevy-inspector/messenger/*": ["../messenger/out/*"],
+      "@bevy-inspector/inspector-messages": ["../inspector-messages/out/index"]
+    },
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/selection-view.tsbuildinfo"
   },
-  "include": ["src", "tests", "../messenger", "../inspector-messages"]
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../messenger"
+    },
+    {
+      "path": "../inspector-messages"
+    }
+  ]
 }

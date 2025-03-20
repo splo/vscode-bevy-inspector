@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: [
-      { find: '@bevy-inspector/messenger', replacement: fileURLToPath(new URL('../messenger', import.meta.url)) },
-      { find: '@bevy-inspector/inspector-messages', replacement: fileURLToPath(new URL('../inspector-messages', import.meta.url)) },
+      { find: '@bevy-inspector/messenger', replacement: fileURLToPath(new URL('../messenger/out', import.meta.url)) },
+      { find: '@bevy-inspector/inspector-messages', replacement: fileURLToPath(new URL('../inspector-messages/out', import.meta.url)) },
     ],
   },
   build: {
@@ -27,8 +27,8 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['tests/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
-    setupFiles: 'tests/setup.ts',
+    include: ['src/tests/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    setupFiles: 'src/tests/setup.ts',
     browser: {
       enabled: true,
       provider: 'playwright',
