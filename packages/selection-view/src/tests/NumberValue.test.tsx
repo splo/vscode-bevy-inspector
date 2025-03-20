@@ -1,7 +1,7 @@
 /// <reference types="@vitest/browser/providers/playwright" />
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { NumberValue } from '../src/components/NumberValue';
+import { NumberValue } from '../components/NumberValue';
 
 test('renders number value with name', async () => {
   const { getByRole } = render(<NumberValue name="HP" value={123} />);

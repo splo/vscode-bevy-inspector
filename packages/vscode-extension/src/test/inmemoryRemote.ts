@@ -1,36 +1,51 @@
-import {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type {
   BevyDestroyParams,
   BevyDestroyResult,
   BevyGetLenientResult,
   BevyGetParams,
+  BevyGetResourceParams,
+  BevyGetResourceResult,
   BevyGetResult,
   BevyGetStrictResult,
   BevyGetWatchParams,
   BevyGetWatchResult,
   BevyInsertParams,
+  BevyInsertResourceParams,
+  BevyInsertResourceResult,
   BevyInsertResult,
   BevyListParams,
+  BevyListResourcesParams,
+  BevyListResourcesResult,
   BevyListResult,
   BevyListWatchParams,
   BevyListWatchResult,
+  BevyMutateComponentParams,
+  BevyMutateComponentResult,
+  BevyMutateResourceParams,
+  BevyMutateResourceResult,
   BevyQueryParams,
   BevyQueryResult,
   BevyRegistrySchemaParams,
   BevyRegistrySchemaResult,
   BevyRemoteService,
   BevyRemoveParams,
+  BevyRemoveResourceParams,
+  BevyRemoveResourceResult,
   BevyRemoveResult,
   BevyReparentParams,
   BevyReparentResult,
   BevySpawnParams,
   BevySpawnResult,
   EntityId,
+  RpcDiscoverParams,
+  RpcDiscoverResult,
   SchemaType,
   TypePath,
 } from '../brp';
 
 export class InMemoryBevyRemoteService implements BevyRemoteService {
-  public entities: Map<EntityId, Record<TypePath, any>> = new Map();
+  public entities = new Map<EntityId, Record<TypePath, unknown>>();
   public nextEntityId: EntityId = 1;
 
   async get(params: BevyGetParams): Promise<BevyGetResult> {
@@ -85,7 +100,7 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
       }
 
       // Fetch the required components and optionally fetch others
-      const resultComponents: Record<TypePath, any> = {};
+      const resultComponents: Record<TypePath, unknown> = {};
       for (const component of components) {
         if (component in entityComponents) {
           resultComponents[component] = entityComponents[component];
@@ -108,7 +123,7 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
       // Include the entity in the results
       const result: {
         entity: EntityId;
-        components: Record<TypePath, any>;
+        components: Record<TypePath, unknown>;
         has?: Record<TypePath, boolean>;
       } = {
         entity,
@@ -175,7 +190,7 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
   async registrySchema(params?: BevyRegistrySchemaParams): Promise<BevyRegistrySchemaResult> {
     const schemas: BevyRegistrySchemaResult = {};
     Object.values(this.entities)
-      .map((entity: Record<string, any>) => Object.entries(entity))
+      .map((entity: Record<string, unknown>) => Object.entries(entity))
       .flat()
       .forEach(([typePath, value]) => {
         let valueType: SchemaType;
@@ -240,5 +255,33 @@ export class InMemoryBevyRemoteService implements BevyRemoteService {
     }
     // TODO: Implement this.
     return { added: [], removed: [] };
+  }
+
+  mutateComponent(params: BevyMutateComponentParams): Promise<BevyMutateComponentResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  getResource(params: BevyGetResourceParams): Promise<BevyGetResourceResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  insertResource(params: BevyInsertResourceParams): Promise<BevyInsertResourceResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  removeResource(params: BevyRemoveResourceParams): Promise<BevyRemoveResourceResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  mutateResource(params: BevyMutateResourceParams): Promise<BevyMutateResourceResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  listResources(params: BevyListResourcesParams): Promise<BevyListResourcesResult> {
+    throw new Error('Method not implemented.');
+  }
+
+  discover(params: RpcDiscoverParams): Promise<RpcDiscoverResult> {
+    throw new Error('Method not implemented.');
   }
 }

@@ -1,7 +1,7 @@
 /// <reference types="@vitest/browser/providers/playwright" />
 import { describe, expect, it } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { BooleanValue } from '../src/components/BooleanValue';
+import { BooleanValue } from '../components/BooleanValue';
 
 describe.skip('Aria role "checkbox" query does not seem to be working with vscode-checkbox', () => {
   it('renders boolean value with name', async () => {

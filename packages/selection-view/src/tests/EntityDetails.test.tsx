@@ -8,7 +8,7 @@ import {
 import { RequestMessage, ResponseMessage } from '@bevy-inspector/messenger/types';
 import { expect, test } from 'vitest';
 import { render } from 'vitest-browser-react';
-import { EntityDetails } from '../src/components/EntityDetails';
+import { EntityDetails } from '../components/EntityDetails';
 
 test('renders entity and components', async () => {
   window.vscodeApiMock.handler = (message: unknown) => {

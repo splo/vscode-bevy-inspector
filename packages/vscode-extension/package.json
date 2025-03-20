@@ -1,6 +1,6 @@
 {
   "name": "@bevy-inspector/vscode-extension",
-  "main": "../../dist/extension.js",
+  "main": "../../dist/vscode-extension/index.js",
   "scripts": {
     "prebuild": "npm run check-types",
     "build": "node esbuild.mjs --production",

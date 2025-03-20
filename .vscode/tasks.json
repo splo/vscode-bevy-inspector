@@ -7,7 +7,7 @@
       "label": "watch-source",
       "detail": "Watch all source files and rebuild on change",
       "icon": { "id": "eye-watch", "color": "terminal.ansiBlack" },
-      "dependsOn": ["watch-extension", "watch-webview"],
+      "dependsOn": ["watch-libs", "watch-extension", "watch-webview"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -35,6 +35,20 @@
       "type": "npm",
       "path": "packages/selection-view",
       "script": "watch",
+      "isBackground": true,
+      "presentation": {
+        "group": "build",
+        "reveal": "never"
+      },
+      "problemMatcher": "$tsc-watch",
+      "group": "build"
+    },
+    {
+      "label": "watch-libs",
+      "detail": "Watch TypeScript files and rebuild on change",
+      "icon": { "id": "preview", "color": "terminal.ansiYellow" },
+      "type": "npm",
+      "script": "watch:libs",
       "isBackground": true,
       "presentation": {
         "group": "build",
