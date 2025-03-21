@@ -13,16 +13,16 @@
     "watch": "node esbuild.mjs --watch"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^11.7.3",
-    "axios": "^1.7.9",
+    "@apidevtools/json-schema-ref-parser": "^11.9.3",
+    "axios": "^1.8.4",
     "fast-levenshtein": "^3.0.0",
-    "json-rpc-types": "^0.1.1"
+    "json-rpc-types": "^0.1.2"
   },
   "devDependencies": {
     "@types/fast-levenshtein": "^0.0.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.95.0",
+    "@types/node": "^20.17.25",
+    "@types/vscode": "^1.98.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1"
   }
