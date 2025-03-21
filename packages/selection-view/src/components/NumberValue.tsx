@@ -8,7 +8,13 @@ export function NumberValue({ name, value }: { name?: string; value: number }) {
   return (
     <vscode-form-group variant="horizontal">
       {name && <vscode-label htmlFor={id}>{name}</vscode-label>}
-      <vscode-textfield id={id} type="number" value={String(value)}></vscode-textfield>
+      <vscode-textfield
+        id={id}
+        type="number"
+        value={String(value)}
+        // @ts-expect-error "any" is valid for step.
+        step={'any'}
+      ></vscode-textfield>
     </vscode-form-group>
   );
 }

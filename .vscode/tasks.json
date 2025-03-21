@@ -67,9 +67,23 @@
       "isBackground": true,
       "presentation": {
         "reveal": "never",
-        "group": "build"
+        "group": "test"
       },
-      "group": "build"
+      "group": "test"
+    },
+    {
+      "label": "run-storybook",
+      "detail": "Run Storybook",
+      "icon": { "id": "book", "color": "terminal.ansiMagenta" },
+      "type": "npm",
+      "path": "packages/selection-view",
+      "script": "storybook",
+      "isBackground": true,
+      "presentation": {
+        "group": "test",
+        "reveal": "never"
+      },
+      "group": "test"
     },
     {
       "label": "start-server-0.15-example",
