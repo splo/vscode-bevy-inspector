@@ -571,6 +571,49 @@ function fixDefinition([name, definition]: [string, JSONSchema7Definition]): [st
             required: ['nanos', 'secs'],
           },
         ];
+      case 'glam::Vec2':
+        return [
+          name,
+          {
+            type: 'array',
+            items: { $ref: '#/$defs/f32' },
+            minItems: 2,
+            maxItems: 2,
+            // @ts-expect-error shortPath is a Bevy extension to JSON schema.
+            shortPath: definition.shortPath,
+            // @ts-expect-error typePath is a Bevy extension to JSON schema.
+            typePath: definition.typePath,
+          },
+        ];
+      case 'glam::Vec3':
+        return [
+          name,
+          {
+            type: 'array',
+            items: { $ref: '#/$defs/f32' },
+            minItems: 3,
+            maxItems: 3,
+            // @ts-expect-error shortPath is a Bevy extension to JSON schema.
+            shortPath: definition.shortPath,
+            // @ts-expect-error typePath is a Bevy extension to JSON schema.
+            typePath: definition.typePath,
+          },
+        ];
+      case 'glam::Vec4':
+      case 'glam::Quat':
+        return [
+          name,
+          {
+            type: 'array',
+            items: { $ref: '#/$defs/f32' },
+            minItems: 4,
+            maxItems: 4,
+            // @ts-expect-error shortPath is a Bevy extension to JSON schema.
+            shortPath: definition.shortPath,
+            // @ts-expect-error typePath is a Bevy extension to JSON schema.
+            typePath: definition.typePath,
+          },
+        ];
     }
   }
   return [name, definition];
