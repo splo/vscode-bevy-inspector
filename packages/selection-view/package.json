@@ -9,13 +9,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "test": "vitest run --browser.headless",
     "update-public": "copyfiles -f -E -V `node_modules @vscode/codicons`/@vscode/codicons/dist/codicon.{css,ttf} public",
     "prewatch": "npm run update-public",
     "watch": "npm-run-all -p watch:*",
     "watch:build": "vite build --watch",
-    "watch:types": "tsc --build --watch",
-    "watch-tests": "vitest watch"
+    "watch:types": "tsc --build --watch"
   },
   "dependencies": {
     "@vscode-elements/elements": "^1.14.0",
@@ -35,7 +33,6 @@
     "@types/react-dom": "^19.0.4",
     "@types/vscode-webview": "^1.57.5",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitest/browser": "^3.0.7",
     "@vscode-elements/webview-playground": "^1.6.0",
     "@vscode/codicons": "^0.0.36",
     "copyfiles": "^2.4.1",
@@ -46,13 +43,10 @@
     "eslint-plugin-storybook": "^0.11.6",
     "globals": "^16.0.0",
     "node_modules-path": "^2.0.8",
-    "playwright": "^1.51.1",
     "storybook": "^8.6.7",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.27.0",
     "vite": "^6.2.2",
-    "vitest": "^3.0.7",
-    "vitest-browser-react": "^0.1.1",
     "workspace-root": "^3.3.1"
   },
   "eslintConfig": {
