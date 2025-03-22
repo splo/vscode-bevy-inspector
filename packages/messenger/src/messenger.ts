@@ -30,18 +30,21 @@ export class Messenger extends EventTarget {
     });
   }
 
-  public handleIncomingMessage(message: ResponseMessage<unknown> | EventMessage<unknown>) {
+  public handleIncomingMessage(message: unknown) {
     console.debug('View received message:', message);
-    if ('requestId' in message) {
-      // Resolve the pending request promise.
-      const callback = this.requestResolvers.get(message.requestId);
-      if (callback) {
-        callback(message.data);
-        this.requestResolvers.delete(message.requestId);
+    if (typeof message === 'object' && message !== null) {
+      const messengerMessage = message as ResponseMessage<unknown> | EventMessage<unknown>;
+      if ('requestId' in messengerMessage) {
+        // Resolve the pending request promise.
+        const callback = this.requestResolvers.get(messengerMessage.requestId);
+        if (callback) {
+          callback(messengerMessage.data);
+          this.requestResolvers.delete(messengerMessage.requestId);
+        }
+      } else if ('type' in messengerMessage) {
+        // Dispatch an event for all listeners.
+        this.dispatchEvent(new CustomEvent(messengerMessage.type, { detail: messengerMessage.data }));
       }
-    } else if ('type' in message) {
-      // Dispatch an event for all listeners.
-      this.dispatchEvent(new CustomEvent(message.type, { detail: message.data }));
     }
   }
 }
