@@ -1,6 +1,25 @@
 import type { RequestMessage } from '@bevy-inspector/messenger/types';
 import type { JSONSchema7 } from 'json-schema';
 
+interface BevyJsonSchemaExtension {
+  typePath: string;
+  shortPath: string;
+}
+
+// Recursive type to extend JSONSchema7 with BevyJsonSchemaExtension
+export type BevyJsonSchema = Omit<
+  JSONSchema7,
+  '$defs' | 'items' | 'additionalItems' | 'properties' | 'patternProperties' | 'additionalProperties'
+> &
+  BevyJsonSchemaExtension & {
+    $defs?: Record<string, BevyJsonSchema>;
+    items?: BevyJsonSchema | BevyJsonSchema[];
+    additionalItems?: BevyJsonSchema;
+    properties?: Record<string, BevyJsonSchema>;
+    patternProperties?: Record<string, BevyJsonSchema>;
+    additionalProperties?: BevyJsonSchema | boolean;
+  };
+
 export interface Entity {
   id: number;
   name: string | undefined;
@@ -37,7 +56,7 @@ export interface GetSchemaRequestData {
 }
 
 export interface GetSchemaResponseData {
-  schema: JSONSchema7;
+  schema: BevyJsonSchema;
 }
 
 export interface SetComponentValueRequestData {
