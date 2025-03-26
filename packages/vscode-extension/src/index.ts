@@ -1,6 +1,6 @@
 import type {
+  BevyJsonSchema,
   EntitySelectedData,
-  GetSchemaResponseData,
   InspectorRequest,
   ListComponentsResponseData,
   SetComponentValueResponseData,
@@ -9,7 +9,6 @@ import { InspectorMessage } from '@bevy-inspector/inspector-messages';
 import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import levenshtein from 'fast-levenshtein';
 import fs from 'fs';
-import type { JSONSchema7 } from 'json-schema';
 import * as vscode from 'vscode';
 import { BevyTreeDataProvider } from './bevyTreeDataProvider';
 import type { Component } from './bevyViewService';
@@ -88,29 +87,22 @@ class BevyInspectorExtension {
           console.debug('Extension received request:', request);
           switch (request.type) {
             case InspectorMessage.ListComponents: {
-              this.treeService.listComponents(request.data.entityId).then((components) => {
-                const response: ResponseMessage<ListComponentsResponseData> = {
-                  requestId: request.id,
-                  data: {
-                    components: components.map((component) => ({
-                      typePath: component.name,
-                      shortPath: shortenName(component.name),
-                      value: component.value,
-                      error: component.errorMessage,
-                    })),
-                  },
-                };
-                this.detailsView?.postMessage(response);
-              });
-              break;
-            }
-            case InspectorMessage.GetSchema: {
               this.treeService.getRegistrySchemas().then((schema) => {
-                const response: ResponseMessage<GetSchemaResponseData> = {
-                  requestId: request.id,
-                  data: { schema: schema.$defs![request.data.componentTypePath] as JSONSchema7 },
-                };
-                this.detailsView?.postMessage(response);
+                this.treeService.listComponents(request.data.entityId).then((backComponents) => {
+                  const components = backComponents.map((component) => {
+                    const componentSchema = schema.$defs![component.name] as BevyJsonSchema;
+                    return {
+                      value: component.value,
+                      schema: componentSchema,
+                      error: component.errorMessage,
+                    };
+                  });
+                  const response: ResponseMessage<ListComponentsResponseData> = {
+                    requestId: request.id,
+                    data: { components },
+                  };
+                  this.detailsView?.postMessage(response);
+                });
               });
               break;
             }
@@ -243,8 +235,4 @@ async function findSymbolLocation(componentName: string): Promise<vscode.Locatio
     }
   }
   return null;
-}
-
-function shortenName(name: string): string {
-  return name.replaceAll(/\w*::/g, '');
 }

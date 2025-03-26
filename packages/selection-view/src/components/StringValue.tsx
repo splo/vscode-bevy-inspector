@@ -1,9 +1,10 @@
+import { BevyJsonSchema } from '@bevy-inspector/inspector-messages';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
 import { useId } from 'react';
 
-export function StringValue({ name, value }: { name?: string; value: string }) {
+export function StringValue({ name, value }: { name?: string; value: string; schema?: BevyJsonSchema }) {
   const id = useId().replace(/:/g, '');
   return (
     <vscode-form-group variant="horizontal">

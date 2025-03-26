@@ -1,5 +1,4 @@
-import { BevyJsonSchema, GetSchemaRequestData, GetSchemaResponseData } from '@bevy-inspector/inspector-messages';
-import { RequestMessage, ResponseMessage } from '@bevy-inspector/messenger/types';
+import { BevyJsonSchema } from '@bevy-inspector/inspector-messages';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ComponentDetails } from '../components/ComponentDetails';
 
@@ -24,7 +23,7 @@ const getSchema = (typePath: string): BevyJsonSchema => {
     case 'custom::UnitType':
       return { type: 'string', typePath, shortPath: 'UnitType' };
     case 'custom::HitPoints':
-      return { type: 'number', typePath, shortPath: 'HitPoints' };
+      return { type: 'number', typePath, shortPath: 'HitPoints', minimum: 0, multipleOf: 1 };
     case 'custom::Enabled':
       return { type: 'boolean', typePath, shortPath: 'Enabled' };
     case 'bevy_ecs::name::Name':
@@ -79,33 +78,21 @@ const getSchema = (typePath: string): BevyJsonSchema => {
               x_axis: {
                 type: 'object',
                 required: ['x', 'y', 'z'],
-                properties: {
-                  x: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  y: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  z: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                },
+                properties: { x: getSchema('f32'), y: getSchema('f32'), z: getSchema('f32') },
                 shortPath: 'Vec3A',
                 typePath: 'glam::Vec3A',
               },
               y_axis: {
                 type: 'object',
                 required: ['x', 'y', 'z'],
-                properties: {
-                  x: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  y: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  z: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                },
+                properties: { x: getSchema('f32'), y: getSchema('f32'), z: getSchema('f32') },
                 shortPath: 'Vec3A',
                 typePath: 'glam::Vec3A',
               },
               z_axis: {
                 type: 'object',
                 required: ['x', 'y', 'z'],
-                properties: {
-                  x: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  y: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                  z: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-                },
+                properties: { x: getSchema('f32'), y: getSchema('f32'), z: getSchema('f32') },
                 shortPath: 'Vec3A',
                 typePath: 'glam::Vec3A',
               },
@@ -116,11 +103,7 @@ const getSchema = (typePath: string): BevyJsonSchema => {
           translation: {
             type: 'object',
             required: ['x', 'y', 'z'],
-            properties: {
-              x: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-              y: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-              z: { type: 'number', shortPath: 'f32', typePath: 'f32' },
-            },
+            properties: { x: getSchema('f32'), y: getSchema('f32'), z: getSchema('f32') },
             shortPath: 'Vec3A',
             typePath: 'glam::Vec3A',
           },
@@ -131,14 +114,6 @@ const getSchema = (typePath: string): BevyJsonSchema => {
   }
 };
 
-window.vscodeApiMock.handler = (message) => {
-  const request = message as RequestMessage<unknown>;
-  const { componentTypePath } = request.data as GetSchemaRequestData;
-  const schema = getSchema(componentTypePath);
-  const response: ResponseMessage<GetSchemaResponseData> = { requestId: request.id, data: { schema } };
-  window.postMessage(response);
-};
-
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -146,13 +121,12 @@ export const PrimitiveObjectComponent: Story = {
   args: {
     entityId: 1000,
     component: {
-      typePath: 'custom::Unit',
-      shortPath: 'Unit',
       value: {
         type: 'Soldier',
         hit_points: 25,
         enabled: true,
       },
+      schema: getSchema('custom::Unit'),
     },
   },
 };
@@ -161,9 +135,8 @@ export const StringComponent: Story = {
   args: {
     entityId: 1001,
     component: {
-      typePath: 'bevy_ecs::name::Name',
-      shortPath: 'Name',
       value: 'Test',
+      schema: getSchema('bevy_ecs::name::Name'),
     },
   },
 };
@@ -172,9 +145,8 @@ export const NumberComponent: Story = {
   args: {
     entityId: 1002,
     component: {
-      typePath: 'custom::Length',
-      shortPath: 'Length',
       value: 42.07,
+      schema: getSchema('custom::Length'),
     },
   },
 };
@@ -183,9 +155,8 @@ export const BooleanComponent: Story = {
   args: {
     entityId: 1003,
     component: {
-      typePath: 'bevy_render::view::visibility::InheritedVisibility',
-      shortPath: 'InheritedVisibility',
       value: true,
+      schema: getSchema('bevy_render::view::visibility::InheritedVisibility'),
     },
   },
 };
@@ -194,13 +165,12 @@ export const TransformComponent: Story = {
   args: {
     entityId: 1004,
     component: {
-      typePath: 'bevy_transform::components::transform::Transform',
-      shortPath: 'Transform',
       value: {
         translation: [1, -2, 1.5],
         rotation: [0, 0, 0, 1],
         scale: [1, 1, 1],
       },
+      schema: getSchema('bevy_transform::components::transform::Transform'),
     },
   },
 };
@@ -209,9 +179,8 @@ export const GlobalTransformComponent: Story = {
   args: {
     entityId: 1005,
     component: {
-      typePath: 'bevy_transform::components::global_transform::GlobalTransform',
-      shortPath: 'GlobalTransform',
       value: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4532573223114014, 0],
+      schema: getSchema('bevy_transform::components::global_transform::GlobalTransform'),
     },
   },
 };
