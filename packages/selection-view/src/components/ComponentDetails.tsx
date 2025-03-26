@@ -1,8 +1,6 @@
 import {
   BevyJsonSchema,
   Component,
-  GetSchemaRequestData,
-  GetSchemaResponseData,
   InspectorMessage,
   SetComponentValueRequestData,
   SetComponentValueResponseData,
@@ -14,13 +12,13 @@ import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-progress-ring';
 import '@vscode-elements/elements/dist/vscode-textfield';
 import { VscodeTextfield } from '@vscode-elements/elements/dist/vscode-textfield';
-import { FormEvent, useMemo } from 'react';
-import { useRequest } from '../useRequest';
+import { FormEvent } from 'react';
 import { messenger } from '../vscodeMessenger';
 import { BooleanValue } from './BooleanValue';
 import { ErrorCard } from './ErrorCard';
 import { NumberValue } from './NumberValue';
 import { StringValue } from './StringValue';
+import { VectorValue } from './VectorValue';
 
 interface ComponentProps {
   entityId: number;
@@ -28,41 +26,21 @@ interface ComponentProps {
 }
 
 export function ComponentDetails({ entityId, component }: ComponentProps) {
-  const data: GetSchemaRequestData = useMemo(
-    () => ({
-      componentTypePath: component.typePath,
-    }),
-    [component.typePath],
-  );
-
-  const { response, error } = useRequest<GetSchemaResponseData>(InspectorMessage.GetSchema, data);
-
-  let errorMessage: string | undefined;
-  if (error || component.error) {
-    errorMessage = component.error || String(error);
+  if (component.error || !component.schema) {
+    const errorMessage = component.error || 'No schema found.';
+    return (
+      <vscode-collapsible title={component.schema?.shortPath} description={component.schema?.typePath}>
+        <vscode-icon style={{ color: 'var(--vscode-errorForeground)' }} slot="decorations" name="error"></vscode-icon>
+        <ErrorCard error={errorMessage} />
+      </vscode-collapsible>
+    );
   }
 
   return (
-    <vscode-collapsible
-      key={component.shortPath}
-      title={component.shortPath}
-      description={component.typePath}
-      open={!component.error}
-    >
-      {!response && !errorMessage && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-          <vscode-progress-ring />
-        </div>
+    <vscode-collapsible title={component.schema.shortPath} description={component.schema.typePath} open>
+      {typeof component.value === 'undefined' ? null : (
+        <ComponentValue value={component.value} schema={component.schema} />
       )}
-      {typeof component.value === 'undefined' || typeof response?.schema === 'undefined' ? null : (
-        <ComponentValue value={component.value} schema={response.schema} />
-      )}
-      {errorMessage ? (
-        <>
-          <vscode-icon style={{ color: 'var(--vscode-errorForeground)' }} slot="decorations" name="error"></vscode-icon>
-          <ErrorCard error={errorMessage} />
-        </>
-      ) : null}
     </vscode-collapsible>
   );
 
@@ -81,45 +59,22 @@ export function ComponentDetails({ entityId, component }: ComponentProps) {
                 z_axis: { x: gtValue[8], y: gtValue[7], z: gtValue[8] },
               }}
             />
-            <ComponentValue
-              name="translation"
-              schema={schema.properties!.translation}
-              value={{
-                x: gtValue[9],
-                y: gtValue[10],
-                z: gtValue[11],
-              }}
-            />
+            <VectorValue name="translation" values={[gtValue[9], gtValue[10], gtValue[11]]}></VectorValue>
           </>
         );
       }
       case 'glam::Vec3':
-        return (
-          <>
-            {name && <vscode-label>{name}</vscode-label>}
-            <NumberValue name="x" value={(value as number[])[0]}></NumberValue>
-            <NumberValue name="y" value={(value as number[])[1]}></NumberValue>
-            <NumberValue name="z" value={(value as number[])[2]}></NumberValue>
-          </>
-        );
+        return <VectorValue name={name} values={value as number[]}></VectorValue>;
       case 'glam::Quat':
-        return (
-          <>
-            {name && <vscode-label>{name}</vscode-label>}
-            <NumberValue name="x" value={(value as number[])[0]}></NumberValue>
-            <NumberValue name="y" value={(value as number[])[1]}></NumberValue>
-            <NumberValue name="z" value={(value as number[])[2]}></NumberValue>
-            <NumberValue name="w" value={(value as number[])[3]}></NumberValue>
-          </>
-        );
+        return <VectorValue name={name} values={value as number[]}></VectorValue>;
     }
     switch (schema.type) {
       case 'string':
-        return <StringValue name={name} value={value as string}></StringValue>;
+        return <StringValue name={name} value={value as string} schema={schema}></StringValue>;
       case 'number':
-        return <NumberValue name={name} value={value as number}></NumberValue>;
+        return <NumberValue name={name} value={value as number} schema={schema}></NumberValue>;
       case 'boolean':
-        return <BooleanValue name={name} value={value as boolean}></BooleanValue>;
+        return <BooleanValue name={name} value={value as boolean} schema={schema}></BooleanValue>;
       case 'array':
         return (
           <>
@@ -160,7 +115,7 @@ export function ComponentDetails({ entityId, component }: ComponentProps) {
   function onValueChanged(event: FormEvent<VscodeTextfield>) {
     const data: SetComponentValueRequestData = {
       entityId,
-      typePath: component.typePath,
+      typePath: component.schema.typePath,
       newValue: JSON.parse(event.currentTarget.value),
     };
     messenger

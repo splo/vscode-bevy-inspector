@@ -26,10 +26,9 @@ export interface Entity {
 }
 
 export interface Component {
-  typePath: string;
-  shortPath: string;
   value: unknown;
   error?: string;
+  schema: BevyJsonSchema;
 }
 
 export enum InspectorMessage {

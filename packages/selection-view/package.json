@@ -13,9 +13,11 @@
     "prewatch": "npm run update-public",
     "watch": "npm-run-all -p watch:*",
     "watch:build": "vite build --watch",
-    "watch:types": "tsc --build --watch"
+    "watch:types": "tsc --build --watch",
+    "postinstall": "npm --prefix `node_modules @designbyadrian/react-interactive-input`/@designbyadrian/react-interactive-input/ run build"
   },
   "dependencies": {
+    "@designbyadrian/react-interactive-input": "https://github.com/splo/react-interactive-input/tarball/main",
     "@vscode-elements/elements": "^1.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

@@ -1,0 +1,23 @@
+.vector-value {
+  border-left-style: solid;
+  border-width: 4px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  padding: 1px 4px 1px 4px;
+  font-size: medium;
+  color: var(--vscode-editor-background);
+  background-color: var(--vscode-editor-foreground);
+  text-transform: capitalize;
+}
+
+.vector-x {
+  border-color: red;
+}
+
+.vector-y {
+  border-color: green;
+}
+
+.vector-z {
+  border-color: blue;
+}

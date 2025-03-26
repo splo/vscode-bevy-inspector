@@ -18,7 +18,7 @@ export class VsCodeApiMock implements WebviewApi<unknown> {
     this.handler(message);
   }
 
-  public getState() {
+  public getState(): unknown {
     const state = sessionStorage.getItem('vscodeState');
     return state ? JSON.parse(state) : undefined;
   }
@@ -28,4 +28,3 @@ export class VsCodeApiMock implements WebviewApi<unknown> {
     return newState;
   }
 }
-    

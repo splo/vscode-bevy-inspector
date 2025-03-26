@@ -1,9 +1,10 @@
+import { BevyJsonSchema } from '@bevy-inspector/inspector-messages';
 import '@vscode-elements/elements/dist/vscode-checkbox';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import { useId } from 'react';
 
-export function BooleanValue({ name, value }: { name?: string; value: boolean }) {
+export function BooleanValue({ name, value }: { name?: string; value: boolean; schema?: BevyJsonSchema }) {
   const id = useId().replace(/:/g, '');
   return (
     <vscode-form-group variant="horizontal">
