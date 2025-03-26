@@ -40,7 +40,7 @@ export function EntityDetails({ entity }: EntityProps) {
 }
 
 function ComponentList({ entityId, components }: ListComponentsResponseData & { entityId: number }) {
-  return components?.map((component) => (
-    <ComponentDetails key={component.typePath} entityId={entityId} component={component} />
+  return components?.map((component, index) => (
+    <ComponentDetails key={`${entityId}-${index}`} entityId={entityId} component={component} />
   ));
 }

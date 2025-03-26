@@ -345,25 +345,24 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
         case 'boolean':
           return {
             type: 'boolean',
-            default: false,
           };
         case 'float':
           return {
             type: 'number',
-            default: 0,
           };
         case 'int':
           return {
             type: 'number',
-            default: 0,
             multipleOf: 1,
+            minimum: intMin(schema.typePath),
+            maximum: intMax(schema.typePath),
           };
         case 'uint':
           return {
             type: 'number',
-            default: 0,
             multipleOf: 1,
             minimum: 0,
+            maximum: uintMax(schema.typePath),
           };
         case 'string':
           return {
@@ -471,6 +470,64 @@ function toDefinition(schema: BrpSchema): JSONSchema7 {
       // }
       return enumSchema;
     }
+  }
+}
+
+function intMin(typePath: string): number {
+  switch (typePath) {
+    case 'i8':
+      return -128;
+    case 'i16':
+      return -32768;
+    case 'i32':
+      return -2147483648;
+    case 'i64':
+      // Should be -9223372036854775808 ...
+      return Number.MIN_SAFE_INTEGER;
+    case 'i128':
+      // Should be -170141183460469231731687303715884105728 ...
+      return Number.MIN_VALUE;
+    default:
+      return 0;
+  }
+}
+
+function intMax(typePath: string): number {
+  switch (typePath) {
+    case 'i8':
+      return 128;
+    case 'i16':
+      return 32768;
+    case 'i32':
+      return 2147483648;
+    case 'i64':
+      // Should be 9223372036854775808 ...
+      return Number.MAX_SAFE_INTEGER;
+    case 'i128':
+      // Should be 170141183460469231731687303715884105728 ...
+      return Number.MAX_VALUE;
+
+    default:
+      return 0;
+  }
+}
+
+function uintMax(typePath: string): number {
+  switch (typePath) {
+    case 'u8':
+      return 255;
+    case 'u16':
+      return 65535;
+    case 'u32':
+      return 4294967295;
+    case 'u64':
+      // Should be 18446744073709551615 ...
+      return Number.MAX_SAFE_INTEGER;
+    case 'u128':
+      // Should be 340282366920938463463374607431768211455 ...
+      return Number.MAX_VALUE;
+    default:
+      return 0;
   }
 }
 
