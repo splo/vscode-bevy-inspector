@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios';
 import type { JsonRpcRequest, JsonRpcResponse } from 'json-rpc-types';
 import { isJsonRpcSuccess } from 'json-rpc-types';
-import type * as brp from './brp';
+import type * as brp from '../brp';
 
 export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
   public static DEFAULT_URL = 'http://127.0.0.1:15702';
@@ -26,7 +25,9 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
     return this._currentId.toString();
   }
 
-  public async get(params: brp.BevyGetParams): Promise<brp.BevyGetResult> {
+  async get(params: brp.BevyGetStrictParams): Promise<brp.BevyGetStrictResult>;
+  async get(params: brp.BevyGetLenientParams): Promise<brp.BevyGetLenientResult>;
+  async get(params: brp.BevyGetParams): Promise<brp.BevyGetResult> {
     return await this.doRequest(params, 'bevy/get');
   }
 
@@ -133,9 +134,9 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
 class JsonRpcBevyError implements brp.BevyError {
   public readonly code?: number;
   public readonly message?: string;
-  public readonly data?: any;
+  public readonly data?: unknown;
 
-  constructor(error?: { code: number; message: string; data?: any }) {
+  constructor(error?: { code: number; message: string; data?: unknown }) {
     this.code = error?.code;
     this.message = error?.message;
     this.data = error?.data;

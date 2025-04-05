@@ -1,13 +1,18 @@
-import { EntitySelectedData, InspectorMessage } from '@bevy-inspector/inspector-messages';
+import { SelectionChanged, SelectionChangedData } from '@bevy-inspector/inspector-data/messages';
+import { ComponentDetails } from './components/ComponentDetails';
 import { EmptyDetails } from './components/EmptyDetails';
 import { EntityDetails } from './components/EntityDetails';
 import { useEvent } from './useEvent';
 
 export function SelectionView() {
-  const entitySelected = useEvent<EntitySelectedData>(InspectorMessage.EntitySelected);
-  if (!entitySelected) {
-    return <EmptyDetails />;
-  } else {
-    return <EntityDetails entity={entitySelected.entity} />;
+  const selectionChanged = useEvent<SelectionChangedData>(SelectionChanged);
+  switch (selectionChanged?.type) {
+    case undefined:
+    case 'NonInspectable':
+      return <EmptyDetails />;
+    case 'Resource':
+      return <ComponentDetails component={selectionChanged.resource} />;
+    case 'Entity':
+      return <EntityDetails entity={selectionChanged.entity} />;
   }
 }

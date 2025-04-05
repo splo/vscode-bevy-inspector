@@ -1,15 +1,25 @@
-import { BevyJsonSchema } from '@bevy-inspector/inspector-messages';
+import { BevyJsonSchema } from '@bevy-inspector/inspector-data/types';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
 import { useId } from 'react';
+import { capitalCase } from 'text-capital-case';
 
-export function StringValue({ name, value }: { name?: string; value: string; schema?: BevyJsonSchema }) {
+export function StringValue({
+  name,
+  value,
+  readOnly,
+}: {
+  name?: string;
+  value: string;
+  schema?: BevyJsonSchema;
+  readOnly?: boolean;
+}) {
   const id = useId().replace(/:/g, '');
   return (
     <vscode-form-group variant="horizontal">
-      {name && <vscode-label htmlFor={id}>{name}</vscode-label>}
-      <vscode-textfield id={id} value={value}></vscode-textfield>
+      {name && <vscode-label htmlFor={id}>{capitalCase(name)}</vscode-label>}
+      <vscode-textfield id={id} value={value} disabled={readOnly}></vscode-textfield>
     </vscode-form-group>
   );
 }

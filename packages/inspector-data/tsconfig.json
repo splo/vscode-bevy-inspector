@@ -27,7 +27,7 @@
 
     // Project
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/inspector-messages.tsbuildinfo"
+    "tsBuildInfoFile": "../../node_modules/.tmp/inspector-data.tsbuildinfo"
   },
   "references": [{ "path": "../messenger" }]
 }

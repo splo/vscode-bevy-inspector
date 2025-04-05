@@ -12,8 +12,8 @@ export default defineConfig({
     alias: [
       { find: '@bevy-inspector/messenger', replacement: fileURLToPath(new URL('../messenger/out', import.meta.url)) },
       {
-        find: '@bevy-inspector/inspector-messages',
-        replacement: fileURLToPath(new URL('../inspector-messages/out', import.meta.url)),
+        find: '@bevy-inspector/inspector-data',
+        replacement: fileURLToPath(new URL('../inspector-data/out', import.meta.url)),
       },
     ],
   },

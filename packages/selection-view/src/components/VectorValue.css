@@ -1,3 +1,21 @@
+.vector vscode-label {
+  width: auto;
+  text-transform: capitalize;
+}
+
+.vector-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 80px), 1fr));
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.vector-item {
+  display: flex;
+  min-width: 0;
+}
+
 .vector-value {
   border-left-style: solid;
   border-width: 4px;
@@ -8,6 +26,12 @@
   color: var(--vscode-editor-background);
   background-color: var(--vscode-editor-foreground);
   text-transform: capitalize;
+}
+
+.vector-input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 .vector-x {

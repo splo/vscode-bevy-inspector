@@ -1,0 +1,29 @@
+import type { EventMessage, RequestMessage } from '@bevy-inspector/messenger/types';
+import type { Entity, Resource } from './types';
+
+export const SelectionChanged = 'SelectionChanged';
+
+export type SelectionChangedData =
+  | { type: 'NonInspectable' }
+  | { type: 'Resource'; resource: Resource }
+  | { type: 'Entity'; entity: Entity };
+
+export type SelectionChangedEvent = EventMessage<SelectionChangedData> & {
+  type: typeof SelectionChanged;
+};
+
+export type InspectorEvent = SelectionChangedEvent;
+
+export const SetComponentValue = 'SetComponentValue';
+
+export interface SetComponentValueRequestData {
+  entityId: number;
+  typePath: string;
+  newValue: unknown;
+}
+
+export interface SetComponentValueResponseData {
+  success: boolean;
+}
+
+export type InspectorRequest = RequestMessage<SetComponentValueRequestData> & { type: typeof SetComponentValue };

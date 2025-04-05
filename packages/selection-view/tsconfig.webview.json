@@ -9,7 +9,7 @@
     "declarationMap": true,
     "paths": {
       "@bevy-inspector/messenger/*": ["../messenger/out/*"],
-      "@bevy-inspector/inspector-messages": ["../inspector-messages/out/index"]
+      "@bevy-inspector/inspector-data/*": ["../inspector-data/out/*"]
     },
     "composite": true,
     "tsBuildInfoFile": "../../node_modules/.tmp/selection-view.tsbuildinfo"
@@ -20,7 +20,7 @@
       "path": "../messenger"
     },
     {
-      "path": "../inspector-messages"
+      "path": "../inspector-data"
     }
   ]
 }

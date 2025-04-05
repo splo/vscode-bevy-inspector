@@ -11,12 +11,12 @@
   "main": "./dist/vscode-extension/index.js",
   "scripts": {
     "build": "npm-run-all --sequential build:libs build:webview build:extension",
-    "build:libs": "tsc --build packages/messenger packages/inspector-messages",
+    "build:libs": "tsc --build packages/messenger packages/inspector-data",
     "build:extension": "npm run --workspace packages/vscode-extension build",
     "build:webview": "npm run --workspace packages/selection-view build",
     "clean": "npm-run-all --parallel clean:*",
     "clean:packages": "npm run --workspaces --if-present clean",
-    "clean:libs": "rimraf dist packages/{messenger,inspector-messages}/out",
+    "clean:libs": "rimraf dist packages/{messenger,inspector-data}/out",
     "clean:main": "rimraf dist node_modules/.tmp",
     "format": "prettier --write .",
     "lint": "eslint",
@@ -25,7 +25,7 @@
     "test:webview": "npm run --workspace packages/selection-view test",
     "vscode:prepublish": "npm run build",
     "watch": "npm-run-all --parallel watch:*",
-    "watch:libs": "tsc --build --watch --preserveWatchOutput packages/messenger packages/inspector-messages",
+    "watch:libs": "tsc --build --watch --preserveWatchOutput packages/messenger packages/inspector-data",
     "watch:extension": "npm run --workspace packages/vscode-extension watch",
     "watch:webview": "npm run --workspace packages/selection-view watch",
     "watch-tests": "npm run --workspaces --if-present watch-tests"
@@ -34,11 +34,9 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@tsconfig/node20": "^20.1.4",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
     "copyfiles": "^2.4.1",
-    "esbuild": "^0.24.2",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
@@ -60,7 +58,8 @@
         "command": "bevyInspector.goToDefinition",
         "title": "Go to Definition",
         "icon": "$(go-to-file)",
-        "category": "Bevy Inspector"
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.selection && viewItem == definition"
       },
       {
         "command": "bevyInspector.refresh",
@@ -84,19 +83,8 @@
         "command": "bevyInspector.destroyEntity",
         "title": "Destroy Entity",
         "icon": "$(trash)",
-        "category": "Bevy Inspector"
-      },
-      {
-        "command": "bevyInspector.copyComponentName",
-        "title": "Copy Component Name",
-        "icon": "$(copy)",
-        "category": "Bevy Inspector"
-      },
-      {
-        "command": "bevyInspector.copyComponentValue",
-        "title": "Copy Component Value as JSON",
-        "icon": "$(copy)",
-        "category": "Bevy Inspector"
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.tree && viewItem == entity"
       }
     ],
     "configuration": {
@@ -137,47 +125,32 @@
       "view/title": [
         {
           "command": "bevyInspector.refresh",
-          "when": "view == bevyInspector",
+          "when": "view == bevyInspector.tree",
           "group": "navigation"
         },
         {
           "command": "bevyInspector.enablePolling",
-          "when": "view == bevyInspector && !bevyInspector.pollingEnabled",
+          "when": "view == bevyInspector.tree && !bevyInspector.pollingEnabled",
           "group": "navigation"
         },
         {
           "command": "bevyInspector.disablePolling",
-          "when": "view == bevyInspector && bevyInspector.pollingEnabled",
+          "when": "view == bevyInspector.tree && bevyInspector.pollingEnabled",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector && viewItem == entity",
+          "when": "view == bevyInspector.tree && viewItem == entity",
           "group": "inline"
         },
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector && viewItem == entity"
-        },
-        {
-          "command": "bevyInspector.copyComponentName",
-          "when": "view == bevyInspector && viewItem == component"
-        },
-        {
-          "command": "bevyInspector.copyComponentValue",
-          "when": "view == bevyInspector && viewItem == component"
-        },
-        {
-          "command": "bevyInspector.goToDefinition",
-          "when": "view == bevyInspector && viewItem == component"
+          "when": "view == bevyInspector.tree && viewItem == entity"
         }
       ],
       "commandPalette": [
-        {
-          "command": "bevyInspector.goToDefinition"
-        },
         {
           "command": "bevyInspector.refresh"
         },
@@ -194,14 +167,14 @@
     "views": {
       "bevyInspectorContainer": [
         {
-          "id": "bevyInspector",
+          "id": "bevyInspector.tree",
           "name": "Tree",
           "icon": "resources/bevy-inspector.png",
           "type": "tree"
         },
         {
-          "id": "bevyDetails",
-          "name": "Details",
+          "id": "bevyInspector.selection",
+          "name": "Selection",
           "icon": "resources/bevy-inspector.png",
           "type": "webview"
         }
@@ -218,7 +191,7 @@
     },
     "viewsWelcome": [
       {
-        "view": "bevyInspector",
+        "view": "bevyInspector.tree",
         "contents": "Connecting to the server running the Bevy Remote Plugin...\n[Refresh](command:bevyInspector.refresh)"
       }
     ]
