@@ -95,6 +95,7 @@
       "options": {
         "cwd": "${workspaceFolder}/examples/server-0.15"
       },
+      "isBackground": true,
       "problemMatcher": ["$rustc"]
     },
     {
@@ -107,6 +108,7 @@
       "options": {
         "cwd": "${workspaceFolder}/examples/server-dev"
       },
+      "isBackground": true,
       "problemMatcher": ["$rustc"]
     }
   ]
