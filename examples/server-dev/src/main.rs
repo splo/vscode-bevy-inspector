@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use bevy::{
     color::palettes::tailwind,
     math::ops::cos,
-    remote::{http::RemoteHttpPlugin, RemotePlugin},
+    remote::{RemotePlugin, http::RemoteHttpPlugin},
 };
 
 fn main() {
@@ -36,14 +36,6 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    // circular base
-    commands.spawn((
-        Name::new("Circular base"),
-        Mesh3d(meshes.add(Circle::new(4.0))),
-        MeshMaterial3d(materials.add(Color::from(tailwind::GREEN_300))),
-        Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
-    ));
-
     // unnamed object
     commands.spawn(MyObject {
         vec3: Vec3::new(1.0, 2.0, 3.0),
@@ -72,6 +64,14 @@ fn setup(
         )],
     ));
 
+    // circular base
+    commands.spawn((
+        Name::new("Circular base"),
+        Mesh3d(meshes.add(Circle::new(4.0))),
+        MeshMaterial3d(materials.add(Color::from(tailwind::GREEN_300))),
+        Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
+    ));
+
     // light
     commands.spawn((
         Name::new("Light"),
@@ -86,7 +86,7 @@ fn setup(
     commands.spawn((
         Name::new("Camera"),
         Camera3d::default(),
-        Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Transform::from_xyz(-2.5, 4.5, 9.0).looking_at(Vec3::Y, Vec3::Y),
     ));
 }
 
