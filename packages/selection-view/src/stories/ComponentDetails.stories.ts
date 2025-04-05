@@ -1,4 +1,4 @@
-import { BevyJsonSchema } from '@bevy-inspector/inspector-messages';
+import { BevyJsonSchema } from '@bevy-inspector/inspector-data/types';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ComponentDetails } from '../components/ComponentDetails';
 
@@ -34,6 +34,35 @@ const getSchema = (typePath: string): BevyJsonSchema => {
       return { type: 'boolean', typePath, shortPath: 'InheritedVisibility' };
     case 'f32':
       return { type: 'number', typePath, shortPath: 'f32' };
+    case 'core::option::Option<f32>':
+      return {
+        oneOf: [
+          {
+            type: 'null',
+            const: null,
+            title: 'None',
+          },
+          {
+            type: 'number',
+            default: 0,
+            shortPath: 'f32',
+            typePath: 'f32',
+            title: 'Some<Option<f32>>',
+          },
+        ],
+        shortPath: 'Option<f32>',
+        typePath: 'core::option::Option<f32>',
+      };
+    case 'bevy_picking::hover::PickingInteraction':
+      return {
+        oneOf: [
+          { type: 'string', const: 'Pressed', title: 'Pressed' },
+          { type: 'string', const: 'Hovered', title: 'Hovered' },
+          { type: 'string', const: 'None', title: 'None' },
+        ],
+        shortPath: 'PickingInteraction',
+        typePath: 'bevy_picking::hover::PickingInteraction',
+      };
     case 'glam::Vec3':
       return {
         type: 'array',
@@ -119,7 +148,6 @@ type Story = StoryObj<typeof meta>;
 
 export const PrimitiveObjectComponent: Story = {
   args: {
-    entityId: 1000,
     component: {
       value: {
         type: 'Soldier',
@@ -131,9 +159,18 @@ export const PrimitiveObjectComponent: Story = {
   },
 };
 
+export const ErrorComponent: Story = {
+  args: {
+    component: {
+      value: undefined,
+      error: 'Unable to read the value of "bevy_ecs::name::Name".',
+      schema: getSchema('bevy_ecs::name::Name'),
+    },
+  },
+};
+
 export const StringComponent: Story = {
   args: {
-    entityId: 1001,
     component: {
       value: 'Test',
       schema: getSchema('bevy_ecs::name::Name'),
@@ -143,7 +180,6 @@ export const StringComponent: Story = {
 
 export const NumberComponent: Story = {
   args: {
-    entityId: 1002,
     component: {
       value: 42.07,
       schema: getSchema('custom::Length'),
@@ -153,7 +189,6 @@ export const NumberComponent: Story = {
 
 export const BooleanComponent: Story = {
   args: {
-    entityId: 1003,
     component: {
       value: true,
       schema: getSchema('bevy_render::view::visibility::InheritedVisibility'),
@@ -161,9 +196,26 @@ export const BooleanComponent: Story = {
   },
 };
 
+export const OneOfComponent: Story = {
+  args: {
+    component: {
+      value: 'Hovered',
+      schema: getSchema('bevy_picking::hover::PickingInteraction'),
+    },
+  },
+};
+
+export const OptionalNumberComponent: Story = {
+  args: {
+    component: {
+      value: 123.456,
+      schema: getSchema('core::option::Option<f32>'),
+    },
+  },
+};
+
 export const TransformComponent: Story = {
   args: {
-    entityId: 1004,
     component: {
       value: {
         translation: [1, -2, 1.5],
@@ -177,7 +229,6 @@ export const TransformComponent: Story = {
 
 export const GlobalTransformComponent: Story = {
   args: {
-    entityId: 1005,
     component: {
       value: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4532573223114014, 0],
       schema: getSchema('bevy_transform::components::global_transform::GlobalTransform'),

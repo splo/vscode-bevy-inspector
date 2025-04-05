@@ -1,15 +1,8 @@
-import {
-  Entity,
-  InspectorMessage,
-  ListComponentsRequestData,
-  ListComponentsResponseData,
-} from '@bevy-inspector/inspector-messages';
+import { Component, Entity } from '@bevy-inspector/inspector-data/types';
 import '@vscode-elements/elements/dist/vscode-form-container';
 import '@vscode-elements/elements/dist/vscode-form-group';
-import { useId, useMemo } from 'react';
-import { useRequest } from '../useRequest';
+import { useId } from 'react';
 import { ComponentDetails } from './ComponentDetails';
-import { ErrorCard } from './ErrorCard';
 
 interface EntityProps {
   entity: Entity;
@@ -17,13 +10,6 @@ interface EntityProps {
 
 export function EntityDetails({ entity }: EntityProps) {
   const id = useId().replace(/:/g, ''); // useId() wraps generated string with ":" which is not suitable for HTML IDs.
-  const data: ListComponentsRequestData = useMemo(
-    () => ({
-      entityId: entity.id,
-    }),
-    [entity.id],
-  );
-  const { response, error } = useRequest<ListComponentsResponseData>(InspectorMessage.ListComponents, data);
 
   const name = entity.name ?? entity.id.toString();
   return (
@@ -33,14 +19,20 @@ export function EntityDetails({ entity }: EntityProps) {
         <vscode-label htmlFor={id}>ID</vscode-label>
         <vscode-textfield id={id} type="number" readonly value={entity.id.toString()}></vscode-textfield>
       </vscode-form-group>
-      <ComponentList entityId={entity.id} components={response?.components || []} />
-      {error ? <ErrorCard error={error.toString()} /> : null}
+      <ComponentList entityId={entity.id} components={entity.components || []} />
     </vscode-form-container>
   );
 }
 
-function ComponentList({ entityId, components }: ListComponentsResponseData & { entityId: number }) {
-  return components?.map((component, index) => (
-    <ComponentDetails key={`${entityId}-${index}`} entityId={entityId} component={component} />
-  ));
+function ComponentList({ entityId, components }: { entityId: number; components: Component[] }) {
+  components.sort((a, b) => {
+    if (a.error || b.error) {
+      return a.error ? 1 : -1;
+    }
+    if (a.schema?.typePath && b.schema?.typePath) {
+      return a.schema.typePath.localeCompare(b.schema.typePath);
+    }
+    return 0;
+  });
+  return components?.map((component, index) => <ComponentDetails key={`${entityId}-${index}`} component={component} />);
 }
