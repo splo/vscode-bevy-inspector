@@ -7,9 +7,11 @@ import { SelectionViewProvider } from './selectionViewProvider';
 
 export class SelectionController {
   private selectionViewProvider: SelectionViewProvider;
+  public readonly onValueUpdated: vscode.Event<void>;
 
   constructor(context: vscode.ExtensionContext, inspectorRepository: InspectorRepository) {
     this.selectionViewProvider = new SelectionViewProvider(inspectorRepository, context.extensionUri);
+    this.onValueUpdated = this.selectionViewProvider.valueUpdatedEmitter.event;
 
     context.subscriptions.push(
       vscode.commands.registerCommand(

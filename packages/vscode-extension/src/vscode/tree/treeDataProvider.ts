@@ -16,13 +16,15 @@ export class TreeItem extends vscode.TreeItem {
   }
 }
 
+export type CategoryType = 'Resources' | 'Entities';
+
 export class CategoryItem extends TreeItem {
-  constructor(label: string, expanded = true) {
-    super(
-      'Category',
-      label,
-      expanded ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed,
-    );
+  constructor(type: CategoryType, expanded = true) {
+    const collapsibleState = expanded
+      ? vscode.TreeItemCollapsibleState.Expanded
+      : vscode.TreeItemCollapsibleState.Collapsed;
+    super('Category', type, collapsibleState);
+    this.id = `Category-${type}`;
     this.iconPath = new vscode.ThemeIcon('type-hierarchy', new vscode.ThemeColor('symbolIcon.constantForeground'));
   }
 }
@@ -32,6 +34,7 @@ export class ResourceItem extends TreeItem {
 
   constructor(typePath: TypePath) {
     super('Resource', TypeSchemaService.shortenName(typePath), vscode.TreeItemCollapsibleState.None);
+    this.id = `Resource-${typePath}`;
     this.typePath = typePath;
     this.tooltip = `Type: ${typePath}`;
     this.iconPath = new vscode.ThemeIcon(
@@ -50,6 +53,7 @@ export class EntityItem extends TreeItem {
     const collapsibleState =
       children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
     super('Entity', label, collapsibleState);
+    this.id = `Entity-${entity.id}`;
     this.entityId = entity.id;
     this.children = children;
     this.tooltip = `Entity ID: ${entity.id}`;
@@ -63,8 +67,9 @@ export class EntityItem extends TreeItem {
 type TreeDataChange = TreeItem | undefined | null | void;
 
 export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<TreeDataChange> = new vscode.EventEmitter<TreeDataChange>();
-  public readonly onDidChangeTreeData: vscode.Event<TreeDataChange> = this._onDidChangeTreeData.event;
+  private readonly treeDataChangeEmitter: vscode.EventEmitter<TreeDataChange> =
+    new vscode.EventEmitter<TreeDataChange>();
+  public readonly onDidChangeTreeData: vscode.Event<TreeDataChange> = this.treeDataChangeEmitter.event;
 
   repository: InspectorRepository;
   resourcesCategory: TreeItem = new CategoryItem('Resources', false);
@@ -74,8 +79,9 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
     this.repository = repository;
   }
 
-  public refresh(): void {
-    this._onDidChangeTreeData.fire();
+  public refresh(element?: TreeItem): void {
+    console.debug(`Refreshing "${element?.label || 'root'}" tree item`);
+    this.treeDataChangeEmitter.fire(element);
   }
 
   getTreeItem(element: TreeItem): vscode.TreeItem {
@@ -84,7 +90,7 @@ export class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
   getChildren(element?: TreeItem | undefined): vscode.ProviderResult<TreeItem[]> {
     switch (element?.type) {
-      case undefined:
+      case undefined: // Root.
         return [this.resourcesCategory, this.entitiesCategory];
       case 'Category': {
         switch (element) {

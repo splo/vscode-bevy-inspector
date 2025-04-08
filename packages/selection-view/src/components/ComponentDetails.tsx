@@ -10,7 +10,7 @@ import '@vscode-elements/elements/dist/vscode-icon';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-progress-ring';
 import '@vscode-elements/elements/dist/vscode-textfield';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRequest } from '../useRequest';
 import './ComponentDetails.css';
 import { ComponentValue } from './ComponentValue';
@@ -22,16 +22,9 @@ interface ComponentProps {
 }
 
 export function ComponentDetails({ entityId, component }: ComponentProps) {
-  const [value, setValue] = useState<unknown>(component.value);
   const [requestData, setRequestData] = useState<SetComponentValueRequestData>();
 
-  const { response } = useRequest<SetComponentValueResponseData>(SetComponentValue, requestData);
-
-  useEffect(() => {
-    if (requestData && response && response.success) {
-      setValue(requestData.newValue);
-    }
-  }, [requestData, response]);
+  useRequest<SetComponentValueResponseData>(SetComponentValue, requestData);
 
   if (component.error || !component.schema) {
     const errorMessage = component.error || 'No schema found.';
@@ -49,9 +42,9 @@ export function ComponentDetails({ entityId, component }: ComponentProps) {
 
   return (
     <vscode-collapsible title={component.schema.shortPath} description={component.schema.typePath} open>
-      {typeof value === 'undefined' ? null : (
+      {typeof component.value === 'undefined' ? null : (
         <ComponentValue
-          value={value}
+          value={component.value}
           schema={component.schema}
           saveValue={(newValue) => saveValue(component.schema.typePath!, newValue)}
         />

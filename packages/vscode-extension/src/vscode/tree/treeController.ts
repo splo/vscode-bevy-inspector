@@ -2,17 +2,18 @@ import * as vscode from 'vscode';
 import type { CachedInspectorRepository } from '../../cache/cachedInspectorRepository';
 import { PollingService } from '../polling';
 import type { SelectionChange } from '../selectionChange';
-import type { EntityItem, ResourceItem } from './treeDataProvider';
-import { TreeDataProvider, TreeItem } from './treeDataProvider';
+import { EntityItem, ResourceItem, TreeDataProvider, TreeItem } from './treeDataProvider';
 
 export class TreeController {
   private treeDataProvider: TreeDataProvider;
   private treeView: vscode.TreeView<TreeItem>;
   private pollingService: PollingService = new PollingService();
-  private readonly _onSelectionChanged = new vscode.EventEmitter<SelectionChange>();
-  public readonly onSelectionChanged = this._onSelectionChanged.event;
+  private readonly selectionChangeEmitter = new vscode.EventEmitter<SelectionChange>();
+  public readonly onSelectionChanged = this.selectionChangeEmitter.event;
+  private readonly cachedRepository: CachedInspectorRepository;
 
   constructor(context: vscode.ExtensionContext, cachedRepository: CachedInspectorRepository) {
+    this.cachedRepository = cachedRepository;
     this.treeDataProvider = new TreeDataProvider(cachedRepository);
 
     this.treeView = vscode.window.createTreeView('bevyInspector.tree', {
@@ -25,10 +26,7 @@ export class TreeController {
     context.subscriptions.push(this.treeView);
 
     context.subscriptions.push(
-      vscode.commands.registerCommand('bevyInspector.refresh', () => {
-        cachedRepository.invalidateCache();
-        this.refresh();
-      }),
+      vscode.commands.registerCommand('bevyInspector.refresh', () => this.refresh()),
       vscode.commands.registerCommand('bevyInspector.enablePolling', () => this.pollingService.enablePolling()),
       vscode.commands.registerCommand('bevyInspector.disablePolling', () => this.pollingService.disablePolling()),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', async (entity) => {
@@ -44,12 +42,21 @@ export class TreeController {
   }
 
   public refresh() {
+    this.cachedRepository.invalidateCache();
     this.treeDataProvider.refresh();
+    if (this.treeView.selection.length > 0) {
+      setTimeout(() => {
+        const selectedItem = this.treeView.selection[0];
+        if (selectedItem instanceof EntityItem) {
+          this.selectionChangeEmitter.fire({ type: 'Entity', entityId: selectedItem.entityId });
+        } else if (selectedItem instanceof ResourceItem) {
+          this.selectionChangeEmitter.fire({ type: 'Resource', typePath: selectedItem.typePath });
+        }
+      }, 100);
+    }
   }
 
   private handleSelectionChange(selectionChanged: vscode.TreeViewSelectionChangeEvent<TreeItem>) {
-    console.debug('Selection changed:', selectionChanged);
-
     let selection: SelectionChange = { type: 'NonInspectable' };
 
     if (Array.isArray(selectionChanged.selection) && selectionChanged.selection[0] instanceof TreeItem) {
@@ -64,6 +71,6 @@ export class TreeController {
       }
     }
 
-    this._onSelectionChanged.fire(selection);
+    this.selectionChangeEmitter.fire(selection);
   }
 }
