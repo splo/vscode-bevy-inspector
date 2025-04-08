@@ -126,19 +126,7 @@ export class JsonRpcBevyRemoteService implements brp.BevyRemoteService {
     if (isJsonRpcSuccess<R>(response.data)) {
       return response.data.result;
     } else {
-      throw new JsonRpcBevyError(response.data.error);
+      return Promise.reject(response.data.error);
     }
-  }
-}
-
-class JsonRpcBevyError implements brp.BevyError {
-  public readonly code?: number;
-  public readonly message?: string;
-  public readonly data?: unknown;
-
-  constructor(error?: { code: number; message: string; data?: unknown }) {
-    this.code = error?.code;
-    this.message = error?.message;
-    this.data = error?.data;
   }
 }
