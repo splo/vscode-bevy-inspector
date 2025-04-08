@@ -11,11 +11,13 @@ export function VectorValue({
   values,
   schema,
   readOnly,
+  saveValue,
 }: {
   name?: string;
   values: number[];
   schema?: BevyJsonSchema;
   readOnly?: boolean;
+  saveValue(data: number[]): void;
 }) {
   const labels = ['x', 'y', 'z', 'w'];
   return (
@@ -33,7 +35,12 @@ export function VectorValue({
               min={schema?.minimum}
               max={schema?.maximum}
               disabled={readOnly}
-            ></InteractiveInput>
+              onChange={(e) => {
+                const newValues = [...values];
+                newValues[index] = Number(e.target.value);
+                saveValue(newValues);
+              }}
+            />
           </div>
         ))}
       </div>

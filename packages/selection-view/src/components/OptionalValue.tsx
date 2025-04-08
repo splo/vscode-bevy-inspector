@@ -27,7 +27,9 @@ export function OptionalValue({
     return null;
   }
   const valueElement =
-    valueSchema.type === 'boolean' ? null : <ComponentValue value={value} schema={valueSchema} readOnly={!hasSome} />;
+    valueSchema.type === 'boolean' ? null : (
+      <ComponentValue value={value} schema={valueSchema} readOnly={!hasSome} saveValue={console.debug} />
+    );
 
   function handleOnChange(event: FormEvent<VscodeCheckbox>): void {
     const isChecked = (event.target as HTMLInputElement).checked;

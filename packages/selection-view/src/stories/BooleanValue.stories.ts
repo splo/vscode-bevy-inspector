@@ -13,6 +13,7 @@ export const NamedTrue: Story = {
   args: {
     name: 'visible',
     value: true,
+    saveValue: console.debug,
   },
 };
 
@@ -20,17 +21,20 @@ export const NamedFalse: Story = {
   args: {
     name: 'focused',
     value: false,
+    saveValue: console.debug,
   },
 };
 
 export const UnnamedTrue: Story = {
   args: {
     value: true,
+    saveValue: console.debug,
   },
 };
 
 export const UnnamedFalse: Story = {
   args: {
     value: false,
+    saveValue: console.debug,
   },
 };

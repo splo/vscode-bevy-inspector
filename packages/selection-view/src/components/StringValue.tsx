@@ -9,17 +9,24 @@ export function StringValue({
   name,
   value,
   readOnly,
+  saveValue: saveValue,
 }: {
   name?: string;
   value: string;
   schema?: BevyJsonSchema;
   readOnly?: boolean;
+  saveValue(data: unknown): void;
 }) {
   const id = useId().replace(/:/g, '');
   return (
     <vscode-form-group variant="horizontal">
       {name && <vscode-label htmlFor={id}>{capitalCase(name)}</vscode-label>}
-      <vscode-textfield id={id} value={value} disabled={readOnly}></vscode-textfield>
+      <vscode-textfield
+        id={id}
+        value={value}
+        disabled={readOnly}
+        onInput={(event) => saveValue((event.target as HTMLInputElement).value)}
+      ></vscode-textfield>
     </vscode-form-group>
   );
 }

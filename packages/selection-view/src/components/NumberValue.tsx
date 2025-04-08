@@ -11,11 +11,13 @@ export function NumberValue({
   value,
   schema,
   readOnly,
+  saveValue,
 }: {
   name?: string;
   value: number;
   schema?: BevyJsonSchema;
   readOnly?: boolean;
+  saveValue(data: unknown): void;
 }) {
   const id = useId().replace(/:/g, '');
   return (
@@ -28,7 +30,8 @@ export function NumberValue({
         min={schema?.minimum}
         max={schema?.maximum}
         disabled={readOnly}
-      ></InteractiveInput>
+        onChange={(e) => saveValue(Number(e.target.value))}
+      />
     </vscode-form-group>
   );
 }

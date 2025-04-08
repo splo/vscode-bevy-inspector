@@ -23,8 +23,14 @@ export function GlobalTransformValue({
           z_axis: { x: value[6], y: value[7], z: value[8] },
         }}
         readOnly={readOnly}
+        saveValue={console.debug}
       />
-      <VectorValue name="translation" values={[value[9], value[10], value[11]]} readOnly={readOnly}></VectorValue>
+      <VectorValue
+        name="translation"
+        values={[value[9], value[10], value[11]]}
+        readOnly={readOnly}
+        saveValue={console.debug}
+      />
     </>
   );
 }

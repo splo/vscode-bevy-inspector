@@ -1,4 +1,10 @@
-import type { SelectionChangedEvent } from '@bevy-inspector/inspector-data/messages';
+import type { SetComponentValueResponseData } from '@bevy-inspector/inspector-data/messages';
+import {
+  SetComponentValue,
+  type InspectorRequest,
+  type SelectionChangedEvent,
+} from '@bevy-inspector/inspector-data/messages';
+import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import fs from 'fs';
 import * as vscode from 'vscode';
 import type { InspectorRepository } from '../../../inspectorRepository';
@@ -36,6 +42,27 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
       return `${attr}="${newUri}"`;
     });
     this.webview.html = updatedHtml;
+    this.webview.onDidReceiveMessage(async (request: InspectorRequest) => {
+      switch (request.type) {
+        case SetComponentValue:
+          {
+            await this.repository.setComponentValue(
+              request.data.entityId,
+              request.data.typePath,
+              request.data.newValue,
+            );
+            const response: ResponseMessage<SetComponentValueResponseData> = {
+              requestId: request.id,
+              data: { success: true },
+            };
+            webviewView.webview.postMessage(response);
+          }
+          break;
+        default:
+          console.warn(`Unknown message type: ${request.type}`);
+          break;
+      }
+    });
   }
 
   public async updateSelection(selection: SelectionChange) {

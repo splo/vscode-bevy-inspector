@@ -19,11 +19,13 @@ export function ComponentValue({
   value,
   schema,
   readOnly,
+  saveValue,
 }: {
   name?: string;
   value: unknown;
   schema: BevyJsonSchema;
   readOnly?: boolean;
+  saveValue(data: unknown): void;
 }) {
   switch (schema.typePath) {
     case 'bevy_transform::components::global_transform::GlobalTransform':
@@ -40,13 +42,13 @@ export function ComponentValue({
       return <MatrixValue name={name} values={values} readOnly={readOnly}></MatrixValue>;
     }
     case 'glam::Vec3':
-      return <VectorValue name={name} values={value as number[]} readOnly={readOnly}></VectorValue>;
+      return <VectorValue name={name} values={value as number[]} readOnly={readOnly} saveValue={saveValue} />;
     case 'glam::Vec3A': {
       const vec3a = value as { x: number; y: number; z: number };
-      return <VectorValue name={name} values={[vec3a.x, vec3a.y, vec3a.z]} readOnly={readOnly}></VectorValue>;
+      return <VectorValue name={name} values={[vec3a.x, vec3a.y, vec3a.z]} readOnly={readOnly} saveValue={saveValue} />;
     }
     case 'glam::Quat':
-      return <VectorValue name={name} values={value as number[]} readOnly={readOnly}></VectorValue>;
+      return <VectorValue name={name} values={value as number[]} readOnly={readOnly} saveValue={saveValue} />;
   }
   if (Array.isArray(schema.oneOf)) {
     if (schema?.typePath?.startsWith('core::option::Option')) {
@@ -56,28 +58,39 @@ export function ComponentValue({
   }
   switch (schema.type) {
     case 'string':
-      return <StringValue name={name} value={value as string} schema={schema} readOnly={readOnly}></StringValue>;
+      return (
+        <StringValue name={name} value={value as string} schema={schema} readOnly={readOnly} saveValue={saveValue} />
+      );
     case 'number':
-      return <NumberValue name={name} value={value as number} schema={schema} readOnly={readOnly}></NumberValue>;
+      return (
+        <NumberValue name={name} value={value as number} schema={schema} readOnly={readOnly} saveValue={saveValue} />
+      );
     case 'boolean':
-      return <BooleanValue name={name} value={value as boolean} schema={schema} readOnly={readOnly}></BooleanValue>;
+      return (
+        <BooleanValue name={name} value={value as boolean} schema={schema} readOnly={readOnly} saveValue={saveValue} />
+      );
     case 'array':
       return (
         <>
           {name && <vscode-label>{name}</vscode-label>}
-          {((value as unknown[]) || []).map((element, index) => (
-            <ComponentValue
-              key={index}
-              value={element}
-              schema={schema.items as BevyJsonSchema}
-              readOnly={readOnly}
-            ></ComponentValue>
-          ))}
+          {((value as unknown[]) || []).map((element, index) => {
+            const subSchema = Array.isArray(schema.items) ? schema.items[index] : schema.items;
+            return (
+              <ComponentValue
+                key={index}
+                value={element}
+                schema={subSchema as BevyJsonSchema}
+                readOnly={readOnly}
+                saveValue={saveValue}
+              />
+            );
+          })}
         </>
       );
     case 'object': {
       const subComponents = Object.entries(schema.properties || {}).map(([fieldName, fieldSchema]) => {
-        const fieldValue = (value as { [key: string]: unknown })?.[fieldName];
+        const fieldValues = value as { [key: string]: unknown };
+        const fieldValue = fieldValues?.[fieldName];
         return (
           <ComponentValue
             key={fieldName}
@@ -85,7 +98,8 @@ export function ComponentValue({
             value={fieldValue}
             schema={fieldSchema as BevyJsonSchema}
             readOnly={readOnly}
-          ></ComponentValue>
+            saveValue={(data) => saveValue({ ...fieldValues, [fieldName]: data })}
+          />
         );
       });
       return (

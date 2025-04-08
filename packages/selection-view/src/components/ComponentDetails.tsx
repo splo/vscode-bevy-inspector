@@ -1,19 +1,38 @@
-import { Component } from '@bevy-inspector/inspector-data/types';
+import {
+  SetComponentValue,
+  SetComponentValueRequestData,
+  SetComponentValueResponseData,
+} from '@bevy-inspector/inspector-data/messages';
+import { Component, EntityId, TypePath } from '@bevy-inspector/inspector-data/types';
 import '@vscode-elements/elements/dist/vscode-collapsible';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-icon';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-progress-ring';
 import '@vscode-elements/elements/dist/vscode-textfield';
+import { useState, useEffect } from 'react';
+import { useRequest } from '../useRequest';
 import './ComponentDetails.css';
 import { ComponentValue } from './ComponentValue';
 import { ErrorCard } from './ErrorCard';
 
 interface ComponentProps {
+  entityId: EntityId;
   component: Component;
 }
 
-export function ComponentDetails({ component }: ComponentProps) {
+export function ComponentDetails({ entityId, component }: ComponentProps) {
+  const [value, setValue] = useState<unknown>(component.value);
+  const [requestData, setRequestData] = useState<SetComponentValueRequestData>();
+
+  const { response } = useRequest<SetComponentValueResponseData>(SetComponentValue, requestData);
+
+  useEffect(() => {
+    if (requestData && response && response.success) {
+      setValue(requestData.newValue);
+    }
+  }, [requestData, response]);
+
   if (component.error || !component.schema) {
     const errorMessage = component.error || 'No schema found.';
     return (
@@ -24,10 +43,18 @@ export function ComponentDetails({ component }: ComponentProps) {
     );
   }
 
+  function saveValue(typePath: TypePath, newValue: unknown) {
+    setRequestData({ entityId, typePath, newValue });
+  }
+
   return (
     <vscode-collapsible title={component.schema.shortPath} description={component.schema.typePath} open>
-      {typeof component.value === 'undefined' ? null : (
-        <ComponentValue value={component.value} schema={component.schema} />
+      {typeof value === 'undefined' ? null : (
+        <ComponentValue
+          value={value}
+          schema={component.schema}
+          saveValue={(newValue) => saveValue(component.schema.typePath!, newValue)}
+        />
       )}
     </vscode-collapsible>
   );
