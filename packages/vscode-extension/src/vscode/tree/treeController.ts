@@ -45,14 +45,12 @@ export class TreeController {
     this.cachedRepository.invalidateCache();
     this.treeDataProvider.refresh();
     if (this.treeView.selection.length > 0) {
-      setTimeout(() => {
-        const selectedItem = this.treeView.selection[0];
-        if (selectedItem instanceof EntityItem) {
-          this.selectionChangeEmitter.fire({ type: 'Entity', entityId: selectedItem.entityId });
-        } else if (selectedItem instanceof ResourceItem) {
-          this.selectionChangeEmitter.fire({ type: 'Resource', typePath: selectedItem.typePath });
-        }
-      }, 100);
+      const selectedItem = this.treeView.selection[0];
+      if (selectedItem instanceof EntityItem) {
+        this.selectionChangeEmitter.fire({ type: 'Entity', entityId: selectedItem.entityId });
+      } else if (selectedItem instanceof ResourceItem) {
+        this.selectionChangeEmitter.fire({ type: 'Resource', typePath: selectedItem.typePath });
+      }
     }
   }
 

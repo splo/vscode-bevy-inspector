@@ -1,15 +1,20 @@
-import type { SetComponentValueResponseData } from '@bevy-inspector/inspector-data/messages';
+import type {
+  SelectionChangedData,
+  SetComponentValueRequestData,
+  SetComponentValueResponseData,
+} from '@bevy-inspector/inspector-data/messages';
 import {
   SetComponentValue,
   type InspectorRequest,
   type SelectionChangedEvent,
 } from '@bevy-inspector/inspector-data/messages';
-import type { ResponseMessage } from '@bevy-inspector/messenger/types';
+import type { EntityId, TypePath } from '@bevy-inspector/inspector-data/types';
+import type { RequestMessage, ResponseMessage } from '@bevy-inspector/messenger/types';
 import fs from 'fs';
 import * as vscode from 'vscode';
-import type { InspectorRepository } from '../../inspectorRepository';
 import type { BevyError } from '../../brp/brp';
 import { TypeSchemaService } from '../../brp/typeSchemaService';
+import type { InspectorRepository } from '../../inspectorRepository';
 import type { SelectionChange } from '../selectionChange';
 
 export class SelectionViewProvider implements vscode.WebviewViewProvider {
@@ -28,108 +33,122 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
     this.webview.options = {
       enableScripts: true,
     };
-    const html = fs.readFileSync(
+    const rawHtml = fs.readFileSync(
       webviewView.webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, 'dist', 'selection-view', 'index.html'))
         .fsPath,
       'utf-8',
     );
-    const updatedHtml = html.replace(/(src|href)=["']([^"']*)["']/g, (_match: string, attr: string, path: string) => {
-      if (path.startsWith('data:')) {
-        return `${attr}="${path}"`;
-      }
-      const newUri = webviewView.webview.asWebviewUri(
-        vscode.Uri.joinPath(this.extensionUri, 'dist', 'selection-view', path),
-      );
-      return `${attr}="${newUri}"`;
-    });
+    const updatedHtml = rawHtml.replace(
+      /(src|href)=["']([^"']*)["']/g,
+      (_match: string, attr: string, path: string) => {
+        if (path.startsWith('data:')) {
+          return `${attr}="${path}"`;
+        }
+        const newUri = webviewView.webview.asWebviewUri(
+          vscode.Uri.joinPath(this.extensionUri, 'dist', 'selection-view', path),
+        );
+        return `${attr}="${newUri}"`;
+      },
+    );
     this.webview.html = updatedHtml;
-    this.webview.onDidReceiveMessage(async (request: InspectorRequest) => {
-      switch (request.type) {
-        case SetComponentValue:
-          {
-            await this.repository.setComponentValue(
-              request.data.entityId,
-              request.data.typePath,
-              request.data.newValue,
-            );
-            this.valueUpdatedEmitter.fire();
-            const response: ResponseMessage<SetComponentValueResponseData> = {
-              requestId: request.id,
-              data: { success: true },
-            };
-            webviewView.webview.postMessage(response);
-          }
-          break;
-        default:
-          console.warn(`Unknown message type: ${request.type}`);
-          break;
+    this.webview.onDidReceiveMessage(async (message: unknown) => {
+      if (message && typeof message === 'object' && 'type' in message) {
+        const request: InspectorRequest = message as InspectorRequest;
+        switch (request.type) {
+          case SetComponentValue:
+            this.webview!.postMessage(await this.setComponentValue(request));
+            break;
+          default:
+            console.warn(`Unknown message type: ${request.type}`);
+            break;
+        }
       }
     });
   }
 
   public async updateSelection(selection: SelectionChange) {
     if (this.webview) {
-      switch (selection.type) {
-        case 'NonInspectable':
-          this.webview.postMessage({
-            type: 'SelectionChanged',
-            data: { type: selection.type },
-          } satisfies SelectionChangedEvent);
-          break;
-        case 'Resource':
-          try {
-            const resource = await this.repository.getResource(selection.typePath);
-            this.webview.postMessage({
-              type: 'SelectionChanged',
-              data: { type: selection.type, resource },
-            } satisfies SelectionChangedEvent);
-          } catch (error: unknown) {
-            this.webview.postMessage({
-              type: 'SelectionChanged',
-              data: {
-                type: selection.type,
-                resource: {
-                  value: undefined,
-                  error: (error as BevyError)?.message ?? 'Error getting resource: ${error}',
-                  schema: {
-                    typePath: selection.typePath,
-                    shortPath: TypeSchemaService.shortenName(selection.typePath),
-                  },
-                },
-              },
-            } satisfies SelectionChangedEvent);
-          }
+      this.webview.postMessage(await this.onSelectionChanged(selection));
+    }
+  }
 
-          break;
-        case 'Entity':
-          try {
-            const entity = await this.repository.getEntity(selection.entityId);
-            this.webview.postMessage({
-              type: 'SelectionChanged',
-              data: { type: selection.type, entity },
-            } satisfies SelectionChangedEvent);
-          } catch (error: unknown) {
-            this.webview.postMessage({
-              type: 'SelectionChanged',
-              data: {
-                type: selection.type,
-                entity: {
-                  id: selection.entityId,
-                  components: [
-                    {
-                      value: undefined,
-                      error: (error as BevyError)?.message ?? 'Error getting entity: ${error}',
-                      schema: {},
-                    },
-                  ],
-                },
-              },
-            } satisfies SelectionChangedEvent);
-          }
-          break;
-        default:
-          break;
-      }
+  private async setComponentValue(
+    request: RequestMessage<SetComponentValueRequestData>,
+  ): Promise<ResponseMessage<SetComponentValueResponseData>> {
+    try {
+      await this.repository.setComponentValue(request.data.entityId, request.data.typePath, request.data.newValue);
+      this.valueUpdatedEmitter.fire();
+      return {
+        requestId: request.id,
+        data: {
+          success: true,
+        },
+      };
+    } catch (error: unknown) {
+      return {
+        requestId: request.id,
+        data: {
+          success: false,
+          error: (error as Error).message,
+        },
+      };
+    }
+  }
+
+  private async onSelectionChanged(selection: SelectionChange): Promise<SelectionChangedEvent> {
+    switch (selection.type) {
+      case 'Resource':
+        return {
+          type: 'SelectionChanged',
+          data: await this.getSelectedResource(selection.typePath),
+        };
+      case 'Entity':
+        return {
+          type: 'SelectionChanged',
+          data: await this.getSelectedEntity(selection.entityId),
+        };
+      case 'NonInspectable':
+      default:
+        return {
+          type: 'SelectionChanged',
+          data: { type: selection.type },
+        };
+    }
+  }
+
+  private async getSelectedResource(typePath: TypePath): Promise<SelectionChangedData> {
+    try {
+      const resource = await this.repository.getResource(typePath);
+      return { type: 'Resource', resource };
+    } catch (error: unknown) {
+      const resource = {
+        value: undefined,
+        error: (error as BevyError)?.message ?? `Error getting resource: ${error}`,
+        schema: {
+          typePath: typePath,
+          shortPath: TypeSchemaService.shortenName(typePath),
+        },
+      };
+      return { type: 'Resource', resource };
+    }
+  }
+
+  private async getSelectedEntity(entityId: EntityId): Promise<SelectionChangedData> {
+    try {
+      const entity = await this.repository.getEntity(entityId);
+      return { type: 'Entity', entity };
+    } catch (error: unknown) {
+      const entity = {
+        id: entityId,
+        components: [
+          {
+            value: undefined,
+            error: (error as BevyError)?.message ?? `Error getting entity: ${error}`,
+            schema: {},
+          },
+        ],
+      };
+      return { type: 'Entity', entity };
     }
   }
 }
