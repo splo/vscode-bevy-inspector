@@ -1,7 +1,7 @@
 import levenshtein from 'fast-levenshtein';
 import * as vscode from 'vscode';
 import type { TypePath } from '@bevy-inspector/inspector-data/types';
-import type { InspectorRepository } from '../../../inspectorRepository';
+import type { InspectorRepository } from '../../inspectorRepository';
 import type { SelectionChange } from '../selectionChange';
 import { SelectionViewProvider } from './selectionViewProvider';
 

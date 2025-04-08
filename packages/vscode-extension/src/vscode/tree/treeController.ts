@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { CachedInspectorRepository } from '../../cachedInspectorRepository';
+import type { CachedInspectorRepository } from '../../cache/cachedInspectorRepository';
 import { PollingService } from '../polling';
 import type { SelectionChange } from '../selectionChange';
 import type { EntityItem, ResourceItem } from './treeDataProvider';

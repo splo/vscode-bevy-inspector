@@ -1,5 +1,5 @@
 import type { Entity, EntityId, EntityRef, Resource, TypePath } from '@bevy-inspector/inspector-data/types';
-import type { InspectorRepository } from '../../inspectorRepository';
+import type { InspectorRepository } from '../inspectorRepository';
 import type {
   BevyDestroyParams,
   BevyGetParams,

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import type { EntityId, EntityRef, TypePath } from '@bevy-inspector/inspector-data/types';
-import type { InspectorRepository } from '../../../inspectorRepository';
+import type { InspectorRepository } from '../../inspectorRepository';
 import { TypeSchemaService } from '../../brp/typeSchemaService';
 
 export type TreeItemType = 'Category' | 'Resource' | 'Entity';

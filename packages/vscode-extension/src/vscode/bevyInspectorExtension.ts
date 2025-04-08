@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { JsonRpcBevyRemoteService } from '../brp/http/jsonRpcBrp';
 import { RemoteInspectorRepository } from '../brp/remoteInspectorRepository';
 import { TypeSchemaService } from '../brp/typeSchemaService';
-import { CachedInspectorRepository } from '../cachedInspectorRepository';
+import { CachedInspectorRepository } from '../cache/cachedInspectorRepository';
 import { SelectionController } from './selection/selectionController';
 import { TreeController } from './tree/treeController';
 
