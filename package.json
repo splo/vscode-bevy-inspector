@@ -19,7 +19,7 @@
     "clean:libs": "rimraf dist packages/{messenger,inspector-data}/out",
     "clean:main": "rimraf dist node_modules/.tmp",
     "format": "prettier --write .",
-    "lint": "eslint",
+    "lint": "npm run --workspaces --if-present lint",
     "test": "npm-run-all --parallel test:*",
     "test:extension": "npm run --workspace packages/vscode-extension test",
     "test:webview": "npm run --workspace packages/selection-view test",
