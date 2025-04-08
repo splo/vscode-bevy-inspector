@@ -148,6 +148,7 @@ type Story = StoryObj<typeof meta>;
 
 export const PrimitiveObjectComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: {
         type: 'Soldier',
@@ -161,6 +162,7 @@ export const PrimitiveObjectComponent: Story = {
 
 export const ErrorComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: undefined,
       error: 'Unable to read the value of "bevy_ecs::name::Name".',
@@ -171,6 +173,7 @@ export const ErrorComponent: Story = {
 
 export const StringComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: 'Test',
       schema: getSchema('bevy_ecs::name::Name'),
@@ -180,6 +183,7 @@ export const StringComponent: Story = {
 
 export const NumberComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: 42.07,
       schema: getSchema('custom::Length'),
@@ -189,6 +193,7 @@ export const NumberComponent: Story = {
 
 export const BooleanComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: true,
       schema: getSchema('bevy_render::view::visibility::InheritedVisibility'),
@@ -198,6 +203,7 @@ export const BooleanComponent: Story = {
 
 export const OneOfComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: 'Hovered',
       schema: getSchema('bevy_picking::hover::PickingInteraction'),
@@ -207,6 +213,7 @@ export const OneOfComponent: Story = {
 
 export const OptionalNumberComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: 123.456,
       schema: getSchema('core::option::Option<f32>'),
@@ -216,6 +223,7 @@ export const OptionalNumberComponent: Story = {
 
 export const TransformComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: {
         translation: [1, -2, 1.5],
@@ -229,6 +237,7 @@ export const TransformComponent: Story = {
 
 export const GlobalTransformComponent: Story = {
   args: {
+    entityId: 1,
     component: {
       value: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4532573223114014, 0],
       schema: getSchema('bevy_transform::components::global_transform::GlobalTransform'),

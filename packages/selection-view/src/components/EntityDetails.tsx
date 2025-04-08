@@ -34,5 +34,7 @@ function ComponentList({ entityId, components }: { entityId: number; components:
     }
     return 0;
   });
-  return components?.map((component, index) => <ComponentDetails key={`${entityId}-${index}`} component={component} />);
+  return components?.map((component, index) => (
+    <ComponentDetails key={`${entityId}-${index}`} entityId={entityId} component={component} />
+  ));
 }

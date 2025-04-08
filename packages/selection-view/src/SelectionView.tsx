@@ -11,7 +11,7 @@ export function SelectionView() {
     case 'NonInspectable':
       return <EmptyDetails />;
     case 'Resource':
-      return <ComponentDetails component={selectionChanged.resource} />;
+      return <ComponentDetails entityId={0} component={selectionChanged.resource} />;
     case 'Entity':
       return <EntityDetails entity={selectionChanged.entity} />;
   }

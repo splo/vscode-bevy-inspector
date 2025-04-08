@@ -18,6 +18,7 @@ export const NamedNumber: Story = {
       shortPath: 'f32',
       type: 'number',
     },
+    saveValue: console.debug,
   },
 };
 
@@ -31,5 +32,6 @@ export const UnnamedNumber: Story = {
       multipleOf: 1,
       minimum: 0,
     },
+    saveValue: console.debug,
   },
 };

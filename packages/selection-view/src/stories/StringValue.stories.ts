@@ -13,11 +13,13 @@ export const NamedString: Story = {
   args: {
     name: 'name',
     value: 'Mr. Smith',
+    saveValue: console.debug,
   },
 };
 
 export const UnnamedString: Story = {
   args: {
     value: 'Whatever',
+    saveValue: console.debug,
   },
 };
