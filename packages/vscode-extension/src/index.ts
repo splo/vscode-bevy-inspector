@@ -1,5 +1,5 @@
 import type * as vscode from 'vscode';
-import { BevyInspectorExtension } from './infrastructure/vscode/bevyInspectorExtension';
+import { BevyInspectorExtension } from './vscode/bevyInspectorExtension';
 
 export function activate(context: vscode.ExtensionContext) {
   new BevyInspectorExtension(context);

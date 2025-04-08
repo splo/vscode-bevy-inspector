@@ -7,7 +7,7 @@ import {
 import type { ResponseMessage } from '@bevy-inspector/messenger/types';
 import fs from 'fs';
 import * as vscode from 'vscode';
-import type { InspectorRepository } from '../../../inspectorRepository';
+import type { InspectorRepository } from '../../inspectorRepository';
 import type { BevyError } from '../../brp/brp';
 import { TypeSchemaService } from '../../brp/typeSchemaService';
 import type { SelectionChange } from '../selectionChange';
