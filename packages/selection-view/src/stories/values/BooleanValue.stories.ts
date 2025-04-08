@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BooleanValue } from '../components/BooleanValue';
+import { BooleanValue } from '../../components/values/BooleanValue';
 
 const meta = {
   title: 'BooleanValue',

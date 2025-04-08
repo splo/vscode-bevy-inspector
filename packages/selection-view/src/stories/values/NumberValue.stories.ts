@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { NumberValue } from '../components/NumberValue';
+import { NumberValue } from '../../components/values/NumberValue';
 
 const meta = {
   title: 'NumberValue',
