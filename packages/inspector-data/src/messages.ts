@@ -24,6 +24,7 @@ export interface SetComponentValueRequestData {
 
 export interface SetComponentValueResponseData {
   success: boolean;
+  error?: string;
 }
 
 export type InspectorRequest = RequestMessage<SetComponentValueRequestData> & { type: typeof SetComponentValue };

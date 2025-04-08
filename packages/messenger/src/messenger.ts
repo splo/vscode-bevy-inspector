@@ -11,22 +11,30 @@ export class Messenger extends EventTarget {
   }
 
   public sendRequest<T = unknown>(type: string, data: unknown): Promise<T> {
-    return new Promise((resolve) => {
-      const requestId = crypto.randomUUID();
-      this.requestResolvers.set(requestId, resolve as (value: unknown) => void);
-      const request: RequestMessage<unknown> = { id: requestId, type, data };
-      this.requestSender(request);
+    return new Promise((resolve, reject) => {
+      try {
+        const requestId = crypto.randomUUID();
+        this.requestResolvers.set(requestId, resolve as (value: unknown) => void);
+        const request: RequestMessage<unknown> = { id: requestId, type, data };
+        this.requestSender(request);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   public subscribeToEvent<T = unknown>(type: string): Promise<T> {
-    return new Promise((resolve) => {
-      const handler = (event: Event) => {
-        const customEvent = event as CustomEvent<T>;
-        resolve(customEvent.detail);
-        this.removeEventListener(type, handler);
-      };
-      this.addEventListener(type, handler);
+    return new Promise((resolve, reject) => {
+      try {
+        const handler = (event: Event) => {
+          const customEvent = event as CustomEvent<T>;
+          resolve(customEvent.detail);
+          this.removeEventListener(type, handler);
+        };
+        this.addEventListener(type, handler);
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
