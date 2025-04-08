@@ -13,20 +13,32 @@ export class CachedInspectorRepository implements InspectorRepository {
   }
 
   public invalidateCache() {
+    this.invalidateEntitiesCache();
+    this.invalidateResourcesCache();
+  }
+
+  public invalidateEntitiesCache() {
     this.entityRefsCache = null;
-    this.resourceNamesCache = null;
     this.entitiesCache.clear();
+    console.debug('Entities cache invalidated');
+  }
+
+  public invalidateResourcesCache() {
+    this.resourceNamesCache = null;
     this.resourcesCache.clear();
+    console.debug('Resources cache invalidated');
   }
 
   public invalidateEntityCache(...entityIds: EntityId[]) {
     this.entityRefsCache = null;
     entityIds.forEach((entityId) => this.entitiesCache.delete(entityId));
+    console.debug('Entity cache invalidated for IDs:', entityIds);
   }
 
   public invalidateResourceCache(...typePaths: TypePath[]) {
     this.resourceNamesCache = null;
     typePaths.forEach((typePath) => this.resourcesCache.delete(typePath));
+    console.debug('Resource cache invalidated for type paths:', typePaths);
   }
 
   async listEntityRefs(): Promise<EntityRef[]> {

@@ -18,7 +18,8 @@ export class BevyInspectorExtension {
     const treeController = new TreeController(context, cachedRepository);
     const selectionController = new SelectionController(context, cachedRepository);
 
-    treeController.onSelectionChanged((selection) => selectionController.updateSelection(selection));
+    treeController.onSelectionChanged(async (selection) => await selectionController.updateSelection(selection));
+    selectionController.onValueUpdated(() => treeController.refresh());
 
     vscode.workspace.onDidChangeConfiguration((e) => {
       const config = vscode.workspace.getConfiguration('bevyInspector');

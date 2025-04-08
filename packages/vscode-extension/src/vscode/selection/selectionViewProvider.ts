@@ -16,6 +16,7 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
   webview: vscode.Webview | undefined;
   repository: InspectorRepository;
   extensionUri: vscode.Uri;
+  readonly valueUpdatedEmitter = new vscode.EventEmitter<void>();
 
   constructor(repository: InspectorRepository, extensionUri: vscode.Uri) {
     this.repository = repository;
@@ -51,6 +52,7 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
               request.data.typePath,
               request.data.newValue,
             );
+            this.valueUpdatedEmitter.fire();
             const response: ResponseMessage<SetComponentValueResponseData> = {
               requestId: request.id,
               data: { success: true },
