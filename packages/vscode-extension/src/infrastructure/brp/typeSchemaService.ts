@@ -1,5 +1,4 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
-import type { JSONSchema7 } from 'json-schema';
 import type { BevyJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
 import type { Reference, Schema } from './brp';
 
@@ -124,7 +123,7 @@ function toDefinition(schema: Schema): BevyJsonSchema {
         additionalProperties: schema.valueType?.type,
       };
     case 'Enum': {
-      const oneOf: JSONSchema7[] = (schema.oneOf || []).map((value: string | Schema) => {
+      const oneOf: BevyJsonSchema[] = (schema.oneOf || []).map((value: string | Schema) => {
         if (typeof value === 'string') {
           return {
             type: 'string',
@@ -138,7 +137,7 @@ function toDefinition(schema: Schema): BevyJsonSchema {
             title: value.shortPath,
           };
         } else if (value.kind === 'Tuple') {
-          const properties: Record<string, JSONSchema7> = {};
+          const properties: Record<string, BevyJsonSchema> = {};
           properties[value.shortPath] = (value.prefixItems || []).map((ref) => ref.type)[0];
           return {
             type: 'object',
