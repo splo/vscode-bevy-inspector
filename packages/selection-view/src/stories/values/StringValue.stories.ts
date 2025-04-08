@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { StringValue } from '../components/StringValue';
+import { StringValue } from '../../components/values/StringValue';
 
 const meta = {
   title: 'StringValue',

@@ -13,8 +13,8 @@ import '@vscode-elements/elements/dist/vscode-textfield';
 import { useState } from 'react';
 import { useRequest } from '../useRequest';
 import './ComponentDetails.css';
-import { ComponentValue } from './ComponentValue';
 import { ErrorCard } from './ErrorCard';
+import { ComponentValue } from './values/ComponentValue';
 
 interface ComponentProps {
   entityId: EntityId;
@@ -24,15 +24,23 @@ interface ComponentProps {
 export function ComponentDetails({ entityId, component }: ComponentProps) {
   const [requestData, setRequestData] = useState<SetComponentValueRequestData>();
 
-  useRequest<SetComponentValueResponseData>(SetComponentValue, requestData);
+  const { response, error } = useRequest<SetComponentValueResponseData>(SetComponentValue, requestData);
 
   if (component.error || !component.schema) {
     const errorMessage = component.error || 'No schema found.';
     return (
-      <vscode-collapsible title={component.schema?.shortPath} description={component.schema?.typePath}>
-        <vscode-icon className="error-icon" slot="decorations" name="error"></vscode-icon>
-        <ErrorCard error={errorMessage} />
-      </vscode-collapsible>
+      <ErrorCard message={errorMessage} title={component.schema.shortPath!} description={component.schema.typePath!} />
+    );
+  }
+  if ((response && !response.success) || error) {
+    const errorMessage = response?.error || (error as string) || `Error while saving value: ${requestData?.newValue}`;
+    return (
+      <ErrorCard
+        message={errorMessage}
+        title={component.schema.shortPath!}
+        description={component.schema.typePath!}
+        open
+      />
     );
   }
 

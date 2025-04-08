@@ -1,7 +1,3 @@
 vscode-collapsible::part(body) {
   overflow: visible;
 }
-
-.error-icon {
-  color: var(--vscode-errorForeground);
-}
