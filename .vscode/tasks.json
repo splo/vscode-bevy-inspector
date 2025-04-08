@@ -4,14 +4,26 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "watch-source",
-      "detail": "Watch all source files and rebuild on change",
-      "icon": { "id": "eye-watch", "color": "terminal.ansiBlack" },
-      "dependsOn": ["watch-libs", "watch-extension", "watch-webview"],
+      "label": "build",
+      "detail": "Build all source files",
+      "icon": { "id": "vscode", "color": "terminal.ansiWhite" },
+      "type": "npm",
+      "script": "build",
+      "presentation": {
+        "group": "build",
+        "reveal": "never"
+      },
+      "problemMatcher": ["$tsc-watch", "$esbuild-watch"],
       "group": {
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "watch-source",
+      "detail": "Watch all source files and rebuild on change",
+      "icon": { "id": "eye-watch", "color": "terminal.ansiBlack" },
+      "dependsOn": ["watch-libs", "watch-extension", "watch-webview"]
     },
     {
       "label": "watch-extension",
@@ -22,11 +34,10 @@
       "script": "watch",
       "isBackground": true,
       "presentation": {
-        "group": "build",
+        "group": "watch",
         "reveal": "never"
       },
-      "problemMatcher": "$esbuild-watch",
-      "group": "build"
+      "problemMatcher": "$esbuild-watch"
     },
     {
       "label": "watch-webview",
@@ -37,11 +48,11 @@
       "script": "watch",
       "isBackground": true,
       "presentation": {
-        "group": "build",
+        "group": "watch",
+        "panel": "new",
         "reveal": "never"
       },
-      "problemMatcher": "$tsc-watch",
-      "group": "build"
+      "problemMatcher": "$tsc-watch"
     },
     {
       "label": "watch-libs",
@@ -51,11 +62,10 @@
       "script": "watch:libs",
       "isBackground": true,
       "presentation": {
-        "group": "build",
+        "group": "watch",
         "reveal": "never"
       },
-      "problemMatcher": "$tsc-watch",
-      "group": "build"
+      "problemMatcher": "$tsc-watch"
     },
     {
       "label": "watch-tests",
@@ -86,7 +96,7 @@
       "group": "test"
     },
     {
-      "label": "start-server-0.15-example",
+      "label": "run-server-0.15-example",
       "detail": "Start the 0.15 server example",
       "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
       "type": "process",
@@ -99,7 +109,7 @@
       "problemMatcher": ["$rustc"]
     },
     {
-      "label": "start-server-dev-example",
+      "label": "run-server-dev-example",
       "detail": "Start the development server example",
       "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
       "type": "process",
