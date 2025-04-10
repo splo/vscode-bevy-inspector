@@ -2,9 +2,12 @@ import type {
   SelectionChangedData,
   SetComponentValueRequestData,
   SetComponentValueResponseData,
+  SetResourceValueRequestData,
+  SetResourceValueResponseData,
 } from '@bevy-inspector/inspector-data/messages';
 import {
   SetComponentValue,
+  SetResourceValue,
   type InspectorRequest,
   type SelectionChangedEvent,
 } from '@bevy-inspector/inspector-data/messages';
@@ -58,8 +61,11 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
           case SetComponentValue:
             this.webview!.postMessage(await this.setComponentValue(request));
             break;
+          case SetResourceValue:
+            this.webview!.postMessage(await this.setResourceValue(request));
+            break;
           default:
-            console.warn(`Unknown message type: ${request.type}`);
+            console.warn(`Unknown message type: ${JSON.stringify(message)}`);
             break;
         }
       }
@@ -77,6 +83,29 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
   ): Promise<ResponseMessage<SetComponentValueResponseData>> {
     try {
       await this.repository.setComponentValue(request.data.entityId, request.data.typePath, request.data.newValue);
+      this.valueUpdatedEmitter.fire();
+      return {
+        requestId: request.id,
+        data: {
+          success: true,
+        },
+      };
+    } catch (error: unknown) {
+      return {
+        requestId: request.id,
+        data: {
+          success: false,
+          error: (error as Error).message,
+        },
+      };
+    }
+  }
+
+  private async setResourceValue(
+    request: RequestMessage<SetResourceValueRequestData>,
+  ): Promise<ResponseMessage<SetResourceValueResponseData>> {
+    try {
+      await this.repository.setResourceValue(request.data.typePath, request.data.newValue);
       this.valueUpdatedEmitter.fire();
       return {
         requestId: request.id,
