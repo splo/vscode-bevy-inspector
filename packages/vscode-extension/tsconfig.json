@@ -1,27 +1,24 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
+  "include": ["src"],
+  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
   "compilerOptions": {
+    // Modules
     "moduleResolution": "node16",
-    // "types": ["node", "vscode", "mocha", "fast-levenshtein"],
-    "outDir": "out",
-    "rootDir": "src",
     "paths": {
       "@bevy-inspector/messenger/*": ["../messenger/out/*"],
       "@bevy-inspector/inspector-data/*": ["../inspector-data/out/*"]
     },
+    "rootDir": "src",
+    "outDir": "out",
+
+    // Emit
     "noEmit": true,
     "sourceMap": true,
     "declarationMap": true,
+
+    // Projects
     "composite": true,
     "tsBuildInfoFile": "../../node_modules/.tmp/vscode-extension.tsbuildinfo"
-  },
-  "include": ["src"],
-  "references": [
-    {
-      "path": "../messenger"
-    },
-    {
-      "path": "../inspector-data"
-    }
-  ]
+  }
 }

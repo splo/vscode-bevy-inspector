@@ -6,13 +6,9 @@
     {
       "label": "build",
       "detail": "Build all source files",
-      "icon": { "id": "vscode", "color": "terminal.ansiWhite" },
+      "icon": { "id": "tools", "color": "terminal.ansiWhite" },
       "type": "npm",
       "script": "build",
-      "presentation": {
-        "group": "build",
-        "reveal": "never"
-      },
       "problemMatcher": ["$tsc-watch", "$esbuild-watch"],
       "group": {
         "kind": "build",
@@ -20,66 +16,13 @@
       }
     },
     {
-      "label": "watch-source",
+      "label": "watch",
       "detail": "Watch all source files and rebuild on change",
-      "icon": { "id": "eye-watch", "color": "terminal.ansiBlack" },
-      "dependsOn": ["watch-libs", "watch-extension", "watch-webview"]
-    },
-    {
-      "label": "watch-extension",
-      "detail": "Watch extension source files and rebuild on change",
-      "icon": { "id": "vscode", "color": "terminal.ansiBlue" },
+      "icon": { "id": "eye-watch", "color": "terminal.ansiCyan" },
       "type": "npm",
-      "path": "packages/vscode-extension",
       "script": "watch",
       "isBackground": true,
-      "presentation": {
-        "group": "watch",
-        "reveal": "never"
-      },
-      "problemMatcher": "$esbuild-watch"
-    },
-    {
-      "label": "watch-webview",
-      "detail": "Watch webview source files and rebuild on change",
-      "icon": { "id": "preview", "color": "terminal.ansiCyan" },
-      "type": "npm",
-      "path": "packages/selection-view",
-      "script": "watch",
-      "isBackground": true,
-      "presentation": {
-        "group": "watch",
-        "panel": "new",
-        "reveal": "never"
-      },
-      "problemMatcher": "$tsc-watch"
-    },
-    {
-      "label": "watch-libs",
-      "detail": "Watch TypeScript files and rebuild on change",
-      "icon": { "id": "preview", "color": "terminal.ansiYellow" },
-      "type": "npm",
-      "script": "watch:libs",
-      "isBackground": true,
-      "presentation": {
-        "group": "watch",
-        "reveal": "never"
-      },
-      "problemMatcher": "$tsc-watch"
-    },
-    {
-      "label": "watch-tests",
-      "detail": "Watch test files and run tests on change",
-      "icon": { "id": "beaker", "color": "terminal.ansiBlue" },
-      "type": "npm",
-      "script": "watch-tests",
-      "problemMatcher": "$esbuild-watch",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "never",
-        "group": "test"
-      },
-      "group": "test"
+      "problemMatcher": ["$tsc-watch", "$esbuild-watch"]
     },
     {
       "label": "run-storybook",
@@ -89,11 +32,7 @@
       "path": "packages/selection-view",
       "script": "storybook",
       "isBackground": true,
-      "presentation": {
-        "group": "test",
-        "reveal": "never"
-      },
-      "group": "test"
+      "problemMatcher": []
     },
     {
       "label": "run-server-0.15-example",

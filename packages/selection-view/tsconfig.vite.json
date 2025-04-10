@@ -1,25 +1,34 @@
 {
+  "include": ["vite.config.ts"],
   "compilerOptions": {
-    "tsBuildInfoFile": "../../node_modules/.tmp/selection-view-vite.tsbuildinfo",
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-
-    /* Linting */
+    // Type Checking
     "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
+
+    // Modules
+    "allowImportingTsExtensions": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "noUncheckedSideEffectImports": true,
-    "composite": true
-  },
-  "include": ["vite.config.ts"]
+
+    // Emit
+    "noEmit": true,
+
+    // Language and Environment
+    "lib": ["ES2023"],
+    "target": "ES2022",
+    "moduleDetection": "force",
+
+    // Interop Constraints
+    "isolatedModules": true,
+
+    // Projects
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/selection-view-vite.tsbuildinfo",
+
+    // Completeness
+    "skipLibCheck": true
+  }
 }
