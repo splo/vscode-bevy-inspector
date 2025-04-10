@@ -4,16 +4,16 @@
   "type": "module",
   "scripts": {
     "prebuild": "npm run update-public",
-    "build": "tsc --build && vite build --sourcemap",
-    "dev": "vite",
+    "build": "npm-run-all --parallel build:*",
+    "build:ts": "tsc --build",
+    "build:vite": "vite build --sourcemap",
     "lint": "eslint .",
-    "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "update-public": "copyfiles -f -E -V `node_modules @vscode/codicons`/@vscode/codicons/dist/codicon.{css,ttf} public",
     "prewatch": "npm run update-public",
-    "watch": "npm-run-all -p watch:*",
+    "watch": "npm-run-all --parallel watch:*",
     "watch:build": "vite build --watch",
-    "watch:types": "tsc --build --watch",
+    "watch:types": "tsc --build --preserveWatchOutput --watch",
     "postinstall": "npm --prefix `node_modules @designbyadrian/react-interactive-input`/@designbyadrian/react-interactive-input/ run build"
   },
   "dependencies": {

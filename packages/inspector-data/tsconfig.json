@@ -1,4 +1,5 @@
 {
+  "references": [{ "path": "../messenger" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -28,6 +29,5 @@
     // Project
     "composite": true,
     "tsBuildInfoFile": "../../node_modules/.tmp/inspector-data.tsbuildinfo"
-  },
-  "references": [{ "path": "../messenger" }]
+  }
 }
