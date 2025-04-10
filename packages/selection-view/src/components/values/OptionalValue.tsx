@@ -12,13 +12,16 @@ export function OptionalValue({
   value,
   schema,
   readOnly,
+  saveValue,
 }: {
   name?: string;
   value: unknown;
   schema: BevyJsonSchema;
   readOnly?: boolean;
+  saveValue(data: unknown): void;
 }) {
-  const [hasSome, setHasSome] = useState(value !== null);
+  const [currentValue, setCurrentValue] = useState(value);
+  const [hasSome, setHasSome] = useState(currentValue !== null);
   if (!schema.oneOf || schema.oneOf.length !== 2) {
     return null;
   }
@@ -26,14 +29,38 @@ export function OptionalValue({
   if (valueSchema === undefined) {
     return null;
   }
-  const valueElement =
-    valueSchema.type === 'boolean' ? null : (
-      <ComponentValue value={value} schema={valueSchema} readOnly={!hasSome} saveValue={console.debug} />
-    );
+  const valueElement = (
+    <ComponentValue
+      value={currentValue}
+      schema={valueSchema}
+      readOnly={readOnly || !hasSome}
+      saveValue={(data) => {
+        setCurrentValue(data);
+        saveValue(data);
+      }}
+    />
+  );
+
+  function getDefault() {
+    switch (valueSchema?.type) {
+      case 'boolean':
+        return false;
+      case 'number':
+        return 0;
+      case 'string':
+        return '';
+      case 'array':
+        return [];
+      case 'object':
+        return {};
+    }
+    return null;
+  }
 
   function handleOnChange(event: FormEvent<VscodeCheckbox>): void {
     const isChecked = (event.target as HTMLInputElement).checked;
     setHasSome(isChecked);
+    saveValue(isChecked ? (currentValue === null ? getDefault() : currentValue) : null);
   }
 
   return (

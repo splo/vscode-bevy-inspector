@@ -5,7 +5,7 @@ export function EmptyDetails() {
   return (
     <p className="warning">
       <vscode-icon name="warning"></vscode-icon>
-      Nothing selected in the tree.
+      Nothing selected in the tree!
     </p>
   );
 }

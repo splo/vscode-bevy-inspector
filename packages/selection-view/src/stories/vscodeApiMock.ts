@@ -28,3 +28,5 @@ export class VsCodeApiMock implements WebviewApi<unknown> {
     return newState;
   }
 }
+
+export const saveValue = (data: unknown) => window.vscodeApiMock.postMessage({ saveValue: data });

@@ -52,7 +52,7 @@ export function ComponentValue({
   }
   if (Array.isArray(schema.oneOf)) {
     if (schema?.typePath?.startsWith('core::option::Option')) {
-      return <OptionalValue name={name} value={value} schema={schema} readOnly={readOnly} />;
+      return <OptionalValue name={name} value={value} schema={schema} readOnly={readOnly} saveValue={saveValue} />;
     }
     return <EnumValue name={name} value={value} schema={schema} readOnly={readOnly} />;
   }

@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { NumberValue } from '../../components/values/NumberValue';
+import { saveValue } from '../vscodeApiMock';
 
 const meta = {
-  title: 'NumberValue',
+  title: 'Primitives/NumberValue',
   component: NumberValue,
 } satisfies Meta<typeof NumberValue>;
 
@@ -18,7 +19,7 @@ export const NamedNumber: Story = {
       shortPath: 'f32',
       type: 'number',
     },
-    saveValue: console.debug,
+    saveValue,
   },
 };
 
@@ -32,6 +33,6 @@ export const UnnamedNumber: Story = {
       multipleOf: 1,
       minimum: 0,
     },
-    saveValue: console.debug,
+    saveValue,
   },
 };
