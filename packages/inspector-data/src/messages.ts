@@ -15,6 +15,7 @@ export type SelectionChangedEvent = EventMessage<SelectionChangedData> & {
 export type InspectorEvent = SelectionChangedEvent;
 
 export const SetComponentValue = 'SetComponentValue';
+export const SetResourceValue = 'SetResourceValue';
 
 export interface SetComponentValueRequestData {
   entityId: number;
@@ -27,4 +28,16 @@ export interface SetComponentValueResponseData {
   error?: string;
 }
 
-export type InspectorRequest = RequestMessage<SetComponentValueRequestData> & { type: typeof SetComponentValue };
+export interface SetResourceValueRequestData {
+  typePath: string;
+  newValue: unknown;
+}
+
+export interface SetResourceValueResponseData {
+  success: boolean;
+  error?: string;
+}
+
+export type InspectorRequest =
+  | (RequestMessage<SetComponentValueRequestData> & { type: typeof SetComponentValue })
+  | (RequestMessage<SetResourceValueRequestData> & { type: typeof SetResourceValue });
