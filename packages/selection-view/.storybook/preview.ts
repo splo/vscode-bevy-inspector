@@ -12,7 +12,12 @@ const preview: Preview = {
 export default preview;
 
 window.vscodeApiMock = new VsCodeApiMock();
-
-window.acquireVsCodeApi = () => {
-  return window.vscodeApiMock;
+window.vscodeApiMock.handler = (message) => {
+  const messageOutputElement = document.getElementById('message-output');
+  if (messageOutputElement) {
+    messageOutputElement.textContent = JSON.stringify(message, null, 2);
+  }
 };
+
+// @ts-expect-error This is fine.
+window.acquireVsCodeApi = () => window.vscodeApiMock;

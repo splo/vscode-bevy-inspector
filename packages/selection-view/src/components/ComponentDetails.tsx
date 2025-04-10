@@ -48,15 +48,26 @@ export function ComponentDetails({ entityId, component }: ComponentProps) {
     setRequestData({ entityId, typePath, newValue });
   }
 
-  return (
-    <vscode-collapsible title={component.schema.shortPath} description={component.schema.typePath} open>
-      {typeof component.value === 'undefined' ? null : (
+  if (typeof component.value === 'undefined') {
+    return null;
+  }
+
+  try {
+    return (
+      <vscode-collapsible title={component.schema.shortPath} description={component.schema.typePath} open>
         <ComponentValue
           value={component.value}
           schema={component.schema}
           saveValue={(newValue) => saveValue(component.schema.typePath!, newValue)}
         />
-      )}
-    </vscode-collapsible>
-  );
+      </vscode-collapsible>
+    );
+  } catch (error) {
+    <ErrorCard
+      message={`Error while rendering component: ${error}. Value: ${JSON.stringify(component.value, null, 2)}`}
+      title={component.schema.shortPath!}
+      description={component.schema.typePath!}
+      open
+    />;
+  }
 }
