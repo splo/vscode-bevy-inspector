@@ -11,7 +11,7 @@ export class TypeSchemaService {
   }
 
   public async getTypeSchema(
-    typePath: string,
+    typePath: TypePath,
     registryFetcher: () => Promise<Record<TypePath, Schema>>,
   ): Promise<BevyJsonSchema> {
     if (this.cachedSchema === null) {
@@ -19,7 +19,8 @@ export class TypeSchemaService {
       const registry = await registryFetcher();
       const schema = toJsonSchema(registry);
       const fixedSchema = fixDocument(schema);
-      this.cachedSchema = await $RefParser.dereference(fixedSchema);
+      const derefSchema = await dereferenceSchema(fixedSchema);
+      this.cachedSchema = derefSchema;
     } else {
       console.debug('Cache hit for schema');
     }
@@ -29,7 +30,7 @@ export class TypeSchemaService {
 
   public invalidateCache() {
     this.cachedSchema = null;
-    console.debug('Cache invalidated');
+    console.debug('Schema cache invalidated');
   }
 }
 
@@ -158,26 +159,7 @@ function toDefinition(schema: Schema): BevyJsonSchema {
           };
         }
       });
-      const enumSchema: BevyJsonSchema = {
-        oneOf,
-      };
-      // const types = [
-      //   ...new Set(
-      //     oneOf
-      //       .map((element) => element.type as JSONSchema7TypeName)
-      //       .filter((type) => type !== undefined && typeof type !== 'boolean'),
-      //   ),
-      // ];
-      // switch (types.length) {
-      //   case 0:
-      //     break;
-      //   case 1:
-      //     enumSchema.type = types[0];
-      //     break;
-      //   default:
-      //     enumSchema.type = types;
-      // }
-      return enumSchema;
+      return { oneOf };
     }
   }
 }
@@ -249,6 +231,8 @@ function fixDocument(document: BevyJsonSchema): BevyJsonSchema {
   if (!document.$defs['core::any::TypeId']) {
     document.$defs['core::any::TypeId'] = {
       $ref: '#/$defs/u128',
+      typePath: 'core::any::TypeId',
+      shortPath: 'TypeId',
     };
   }
   // Fix some definitions.
@@ -286,7 +270,6 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
         return { $ref: ref, title };
       }
     });
-    // def.type = [...new Set(def.oneOf?.map((element) => (element as JSONSchema7).type as JSONSchema7TypeName))];
     return [name, definition];
   } else {
     switch (name) {
@@ -376,4 +359,19 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
     }
   }
   return [name, definition];
+}
+
+async function dereferenceSchema(schema: BevyJsonSchema): Promise<BevyJsonSchema> {
+  const derefSchema = await $RefParser.dereference<BevyJsonSchema>(schema);
+  // Restore 'typePath' and 'shortPath' overwritten by dereference.
+  derefSchema.$defs = Object.fromEntries(
+    Object.entries(derefSchema.$defs || {}).map(([name, definition]: [TypePath, BevyJsonSchema]) => {
+      if (definition.typePath !== name) {
+        definition.typePath = name;
+        definition.shortPath = TypeSchemaService.shortenName(name);
+      }
+      return [name, definition];
+    }),
+  );
+  return derefSchema;
 }
