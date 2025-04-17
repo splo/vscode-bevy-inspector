@@ -13,3 +13,8 @@ export interface ValueProps<T> {
   readOnly?: boolean;
   onValueChange: (event: ValueUpdated, treeValue: unknown) => void;
 }
+
+export interface DynamicValueError {
+  path: string;
+  message: string;
+}
