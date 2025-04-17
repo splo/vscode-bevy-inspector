@@ -20,6 +20,7 @@ export const SetResourceValue = 'SetResourceValue';
 export interface SetComponentValueRequestData {
   entityId: number;
   typePath: string;
+  path: string;
   newValue: unknown;
 }
 
@@ -30,6 +31,7 @@ export interface SetComponentValueResponseData {
 
 export interface SetResourceValueRequestData {
   typePath: string;
+  path: string;
   newValue: unknown;
 }
 

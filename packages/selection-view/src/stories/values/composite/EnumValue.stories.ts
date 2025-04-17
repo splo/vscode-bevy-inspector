@@ -1,18 +1,51 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { EnumValue } from '../../components/values/EnumValue';
-import { saveValue } from '../vscodeApiMock';
+import { EnumValue } from '../../../components/values/composite/EnumValue';
+import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
 
 const meta = {
-  title: 'EnumValue/Object',
+  title: 'Composite/EnumValue',
   component: EnumValue,
+  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof EnumValue>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Object0: Story = {
+export const Strings: Story = {
+  args: {
+    name: 'PickingInteraction',
+    path: 'PickingInteraction',
+    value: 'Hovered',
+    schema: {
+      oneOf: [
+        {
+          type: 'string',
+          const: 'Pressed',
+          title: 'Pressed',
+        },
+        {
+          type: 'string',
+          const: 'Hovered',
+          title: 'Hovered',
+        },
+        {
+          type: 'string',
+          const: 'None',
+          title: 'None',
+        },
+      ],
+      shortPath: 'PickingInteraction',
+      typePath: 'bevy_picking::hover::PickingInteraction',
+    },
+    readOnly: false,
+    onValueChange,
+  },
+};
+
+export const DefaultDiverseObject: Story = {
   args: {
     name: 'pointer',
+    path: 'pointer',
     value: 'Mouse', // Should pre-select the first option.
     schema: {
       oneOf: [
@@ -53,13 +86,14 @@ export const Object0: Story = {
       typePath: 'bevy_picking::pointer::PointerId',
     },
     readOnly: false,
-    saveValue,
+    onValueChange,
   },
 };
 
-export const Object1: Story = {
+export const PreselectedDiverseObject: Story = {
   args: {
     name: 'pointer',
+    path: 'pointer',
     value: { Touch: 1001 }, // Should pre-select the second option.
     schema: {
       oneOf: [
@@ -100,6 +134,6 @@ export const Object1: Story = {
       typePath: 'bevy_picking::pointer::PointerId',
     },
     readOnly: false,
-    saveValue,
+    onValueChange,
   },
 };

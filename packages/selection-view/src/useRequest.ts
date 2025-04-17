@@ -6,8 +6,12 @@ export function useRequest<T>(type: string, data: unknown | undefined) {
   const [error, setError] = useState<unknown>();
 
   useEffect(() => {
-    if (data !== undefined) {
-      messenger.sendRequest<T>(type, data).then(setResponse).catch(setError);
+    try {
+      if (data !== undefined) {
+        messenger.sendRequest<T>(type, data).then(setResponse).catch(setError);
+      }
+    } catch (error) {
+      setError(error);
     }
   }, [type, data]);
 

@@ -1,9 +1,14 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
-import type { BevyJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
+import type {
+  BevyJsonSchema,
+  BevyJsonSchemaDefinition,
+  BevyRootJsonSchema,
+  TypePath,
+} from '@bevy-inspector/inspector-data/types';
 import type { Reference, Schema } from './brp';
 
 export class TypeSchemaService {
-  private cachedSchema: BevyJsonSchema | null = null;
+  private cachedSchema: BevyRootJsonSchema | null = null;
 
   // https://github.com/bevyengine/disqualified/blob/cc4940da85aa64070a34da590ff5aab12e7c951d/src/short_name.rs#L50
   public static shortenName(name: string): string {
@@ -13,7 +18,7 @@ export class TypeSchemaService {
   public async getTypeSchema(
     typePath: TypePath,
     registryFetcher: () => Promise<Record<TypePath, Schema>>,
-  ): Promise<BevyJsonSchema> {
+  ): Promise<BevyJsonSchemaDefinition> {
     if (this.cachedSchema === null) {
       console.debug('Cache miss for schema');
       const registry = await registryFetcher();
@@ -24,8 +29,8 @@ export class TypeSchemaService {
     } else {
       console.debug('Cache hit for schema');
     }
-    const definitions = this.cachedSchema?.$defs as Record<TypePath, BevyJsonSchema> | undefined;
-    return definitions?.[typePath] || { typePath, shortPath: TypeSchemaService.shortenName(typePath) };
+    // If missing type schema, return a default one, used for error details.
+    return this.cachedSchema.$defs[typePath] || { typePath, shortPath: TypeSchemaService.shortenName(typePath) };
   }
 
   public invalidateCache() {
@@ -34,15 +39,14 @@ export class TypeSchemaService {
   }
 }
 
-function toJsonSchema(registry: Record<TypePath, Schema>): BevyJsonSchema {
+function toJsonSchema(registry: Record<TypePath, Schema>): BevyRootJsonSchema {
   return {
-    $schema: 'http://json-schema.org/draft-07/schema#',
     $defs: Object.fromEntries(
-      Object.entries(registry).map(([key, value]) => {
+      Object.entries(registry).map(([key, value]: [TypePath, Schema]) => {
         const definition = toDefinition(value);
         definition.shortPath = value.shortPath;
         definition.typePath = value.typePath;
-        return [key, definition];
+        return [key, definition as BevyJsonSchemaDefinition];
       }),
     ),
   };
@@ -164,7 +168,7 @@ function toDefinition(schema: Schema): BevyJsonSchema {
   }
 }
 
-function intMin(typePath: string): number {
+function intMin(typePath: TypePath): number {
   switch (typePath) {
     case 'i8':
       return -128;
@@ -183,7 +187,7 @@ function intMin(typePath: string): number {
   }
 }
 
-function intMax(typePath: string): number {
+function intMax(typePath: TypePath): number {
   switch (typePath) {
     case 'i8':
       return 128;
@@ -203,7 +207,7 @@ function intMax(typePath: string): number {
   }
 }
 
-function uintMax(typePath: string): number {
+function uintMax(typePath: TypePath): number {
   switch (typePath) {
     case 'u8':
       return 255;
@@ -222,11 +226,7 @@ function uintMax(typePath: string): number {
   }
 }
 
-function fixDocument(document: BevyJsonSchema): BevyJsonSchema {
-  // Let TypeScript stop complaining about possibly undefined $defs.
-  if (!document.$defs) {
-    document.$defs = {};
-  }
+function fixDocument(document: BevyRootJsonSchema): BevyRootJsonSchema {
   // Add missing TypeId type.
   if (!document.$defs['core::any::TypeId']) {
     document.$defs['core::any::TypeId'] = {
@@ -241,7 +241,7 @@ function fixDocument(document: BevyJsonSchema): BevyJsonSchema {
       const [newName, newDefinition] = fixDefinition([name, definition]);
       newDefinition.typePath = definition.typePath;
       newDefinition.shortPath = definition.shortPath;
-      return [newName, newDefinition];
+      return [newName, newDefinition as BevyJsonSchemaDefinition];
     }),
   );
   return document;
@@ -266,7 +266,7 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
       } else {
         // @ts-expect-error #ref is defined in Some.
         const ref: string = oneOfDef.properties!.Some.$ref;
-        const title = TypeSchemaService.shortenName(ref.substring(8));
+        const title = TypeSchemaService.shortenName(ref.substring(8)); // Strip the "#/$defs/" prefix.
         return { $ref: ref, title };
       }
     });
@@ -361,11 +361,11 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
   return [name, definition];
 }
 
-async function dereferenceSchema(schema: BevyJsonSchema): Promise<BevyJsonSchema> {
-  const derefSchema = await $RefParser.dereference<BevyJsonSchema>(schema);
+async function dereferenceSchema(schema: BevyRootJsonSchema): Promise<BevyRootJsonSchema> {
+  const derefSchema = await $RefParser.dereference<BevyRootJsonSchema>(schema);
   // Restore 'typePath' and 'shortPath' overwritten by dereference.
   derefSchema.$defs = Object.fromEntries(
-    Object.entries(derefSchema.$defs || {}).map(([name, definition]: [TypePath, BevyJsonSchema]) => {
+    Object.entries(derefSchema.$defs || {}).map(([name, definition]: [TypePath, BevyJsonSchemaDefinition]) => {
       if (definition.typePath !== name) {
         definition.typePath = name;
         definition.shortPath = TypeSchemaService.shortenName(name);

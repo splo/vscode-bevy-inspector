@@ -1,0 +1,8 @@
+.array-value {
+  display: flex;
+  align-items: center;
+}
+
+.array-value div {
+  flex-grow: 1;
+}

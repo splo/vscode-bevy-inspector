@@ -7,16 +7,19 @@ export function ErrorCard({
   title,
   description,
   open = false,
+  children,
 }: {
   message: string;
   title: string;
   description: string;
   open?: boolean;
+  children?: React.ReactNode;
 }) {
   return (
     <vscode-collapsible className="error-card" title={title} description={description} open={open}>
       <vscode-icon className="error-icon" slot="decorations" name="error"></vscode-icon>
       <p>{message}</p>
+      {children}
     </vscode-collapsible>
   );
 }

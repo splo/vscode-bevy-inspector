@@ -1,6 +1,6 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
-  "include": ["src"],
+  "include": ["src/**/*", "src/**/*.json"],
   "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
   "compilerOptions": {
     // Modules

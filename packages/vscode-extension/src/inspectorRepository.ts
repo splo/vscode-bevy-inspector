@@ -10,9 +10,9 @@ export interface InspectorRepository {
   destroyEntity(entityId: EntityId): Promise<void>;
   reparentEntity(entityId: EntityId, parentId?: EntityId): Promise<void>;
   insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void>;
-  setComponentValue(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void>;
+  setComponentValue(entityId: EntityId, typePath: TypePath, path: string, value: unknown): Promise<void>;
   removeComponent(entityId: EntityId, typePath: TypePath): Promise<void>;
   insertResource(typePath: TypePath, value: unknown): Promise<void>;
-  setResourceValue(typePath: TypePath, value: unknown): Promise<void>;
+  setResourceValue(typePath: TypePath, path: string, value: unknown): Promise<void>;
   removeResource(typePath: TypePath): Promise<void>;
 }
