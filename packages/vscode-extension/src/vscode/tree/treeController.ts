@@ -42,7 +42,6 @@ export class TreeController {
   }
 
   public refresh() {
-    this.cachedRepository.invalidateCache();
     this.treeDataProvider.refresh();
     if (this.treeView.selection.length > 0) {
       const selectedItem = this.treeView.selection[0];
