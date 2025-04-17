@@ -13,19 +13,19 @@
     "watch": "node esbuild.mjs --watch"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "^11.9.3",
+    "@apidevtools/json-schema-ref-parser": "^12.0.1",
     "axios": "^1.8.4",
     "fast-levenshtein": "^3.0.0",
     "json-rpc-types": "^0.1.2"
   },
   "devDependencies": {
+    "@tsconfig/node20": "^20.1.5",
     "@types/fast-levenshtein": "^0.0.4",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^20.17.25",
-    "@tsconfig/node20": "^20.1.4",
-    "@types/vscode": "^1.99.0",
+    "@types/node": "^20.17.30",
+    "@types/vscode": "^1.99.1",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
+    "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.24.2"
   }
 }
