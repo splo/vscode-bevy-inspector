@@ -56,10 +56,15 @@ export function EnumValue({ name, path, value, schema, readOnly, onValueChange }
     </vscode-form-group>
   );
 
-  function onChildValueChange(event: ValueUpdated, treeValue: unknown, index: number) {
+  function onChildValueChange(_event: ValueUpdated, treeValue: unknown, index: number) {
     const newValues = currentValues.map((value, i) => (i === index ? treeValue : value));
     setCurrentValues(newValues);
-    onValueChange(event, treeValue);
+    // BRP doesn't seem to support updating sub-paths of enums.
+    const newEvent: ValueUpdated = {
+      path: path,
+      value: treeValue,
+    };
+    onValueChange(newEvent, treeValue);
   }
 }
 
