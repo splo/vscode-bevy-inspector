@@ -6,12 +6,22 @@ import { VectorValue } from './VectorValue';
 export function GlobalTransformValue({ path, value, schema, readOnly, onValueChange }: ValueProps<number[]>) {
   const { matrix, translation } = fromFlatValues(value);
 
-  const onMatrixUpdate = (event: ValueUpdated, updatedMatrix: unknown): void => {
-    onValueChange(event, toFlatValues(updatedMatrix as Mat3, translation));
+  const onMatrixUpdate = (_event: ValueUpdated, updatedMatrix: unknown): void => {
+    const flatValues = toFlatValues(updatedMatrix as Mat3, translation);
+    const newEvent = {
+      path,
+      value: flatValues,
+    };
+    onValueChange(newEvent, flatValues);
   };
 
-  const onTranslationUpdate = (event: ValueUpdated, updatedTranslation: unknown): void => {
-    onValueChange(event, toFlatValues(matrix, updatedTranslation as number[]));
+  const onTranslationUpdate = (_event: ValueUpdated, updatedTranslation: unknown): void => {
+    const flatValues = toFlatValues(matrix, updatedTranslation as number[]);
+    const newEvent = {
+      path,
+      value: flatValues,
+    };
+    onValueChange(newEvent, flatValues);
   };
 
   return (
