@@ -103,9 +103,9 @@ export class CachedInspectorRepository implements InspectorRepository {
     return await this.liveRepository.insertComponent(entityId, typePath, value);
   }
 
-  async setComponentValue(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
+  async setComponentValue(entityId: EntityId, typePath: TypePath, path: string, value: unknown): Promise<void> {
     this.invalidateEntityCache(entityId);
-    return await this.liveRepository.setComponentValue(entityId, typePath, value);
+    return await this.liveRepository.setComponentValue(entityId, typePath, path, value);
   }
 
   async removeComponent(entityId: EntityId, typePath: TypePath): Promise<void> {
@@ -118,9 +118,9 @@ export class CachedInspectorRepository implements InspectorRepository {
     return await this.liveRepository.insertResource(typePath, value);
   }
 
-  async setResourceValue(typePath: TypePath, value: unknown): Promise<void> {
+  async setResourceValue(typePath: TypePath, path: string, value: unknown): Promise<void> {
     this.invalidateResourceCache(typePath);
-    return await this.liveRepository.setResourceValue(typePath, value);
+    return await this.liveRepository.setResourceValue(typePath, path, value);
   }
 
   async removeResource(typePath: TypePath): Promise<void> {

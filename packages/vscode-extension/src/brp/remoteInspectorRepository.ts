@@ -20,7 +20,7 @@ import type {
 import type { TypeSchemaService } from './typeSchemaService';
 
 type NameComponent = string | undefined;
-type ChildOfComponent = { parent: EntityId } | undefined;
+type ChildOfComponent = EntityId | undefined;
 
 export class RemoteInspectorRepository implements InspectorRepository {
   private brp: BevyRemoteService;
@@ -42,7 +42,7 @@ export class RemoteInspectorRepository implements InspectorRepository {
         const entityRef: EntityRef = {
           id: row.entity,
           name: extractName(row.components, componentNames),
-          parentId: (row.components['bevy_ecs::hierarchy::ChildOf'] as ChildOfComponent)?.parent,
+          parentId: row.components['bevy_ecs::hierarchy::ChildOf'] as ChildOfComponent,
           componentNames,
         };
         return entityRef;
@@ -125,11 +125,11 @@ export class RemoteInspectorRepository implements InspectorRepository {
     await this.brp.insert(params);
   }
 
-  async setComponentValue(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
+  async setComponentValue(entityId: EntityId, typePath: TypePath, path: string, value: unknown): Promise<void> {
     const params: BevyMutateComponentParams = {
       entity: entityId,
       component: typePath,
-      path: '',
+      path,
       value,
     };
     await this.brp.mutateComponent(params);
@@ -151,10 +151,10 @@ export class RemoteInspectorRepository implements InspectorRepository {
     await this.brp.insertResource(params);
   }
 
-  async setResourceValue(typePath: TypePath, value: unknown): Promise<void> {
+  async setResourceValue(typePath: TypePath, path: string, value: unknown): Promise<void> {
     const params: BevyMutateResourceParams = {
       resource: typePath,
-      path: '',
+      path,
       value,
     };
     await this.brp.mutateResource(params);

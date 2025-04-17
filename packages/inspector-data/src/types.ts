@@ -25,19 +25,29 @@ export interface Entity {
 export interface Component {
   value: unknown;
   error?: string;
-  schema: BevyJsonSchema;
+  schema: BevyJsonSchemaDefinition;
 }
 /** A resource with its value. */
 
 export interface Resource {
   value: unknown;
   error?: string;
-  schema: BevyJsonSchema;
+  schema: BevyJsonSchemaDefinition;
 }
+
 interface BevyJsonSchemaExtension {
-  typePath?: string;
+  typePath?: TypePath;
   shortPath?: string;
 }
+
+export interface BevyRootJsonSchema {
+  $defs: Record<TypePath, BevyJsonSchemaDefinition>;
+}
+
+export type BevyJsonSchemaDefinition = BevyJsonSchema & {
+  typePath: TypePath;
+  shortPath: string;
+};
 
 /** Recursive type to extend JSONSchema7 with @type {BevyJsonSchemaExtension}. */
 export type BevyJsonSchema = Omit<
@@ -45,7 +55,6 @@ export type BevyJsonSchema = Omit<
   '$defs' | 'oneOf' | 'items' | 'additionalItems' | 'properties' | 'patternProperties' | 'additionalProperties'
 > &
   BevyJsonSchemaExtension & {
-    $defs?: Record<string, BevyJsonSchema>;
     oneOf?: BevyJsonSchema[];
     items?: BevyJsonSchema | BevyJsonSchema[];
     additionalItems?: BevyJsonSchema;

@@ -82,7 +82,12 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
     request: RequestMessage<SetComponentValueRequestData>,
   ): Promise<ResponseMessage<SetComponentValueResponseData>> {
     try {
-      await this.repository.setComponentValue(request.data.entityId, request.data.typePath, request.data.newValue);
+      await this.repository.setComponentValue(
+        request.data.entityId,
+        request.data.typePath,
+        request.data.path,
+        request.data.newValue,
+      );
       this.valueUpdatedEmitter.fire();
       return {
         requestId: request.id,
@@ -105,7 +110,7 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
     request: RequestMessage<SetResourceValueRequestData>,
   ): Promise<ResponseMessage<SetResourceValueResponseData>> {
     try {
-      await this.repository.setResourceValue(request.data.typePath, request.data.newValue);
+      await this.repository.setResourceValue(request.data.typePath, request.data.path, request.data.newValue);
       this.valueUpdatedEmitter.fire();
       return {
         requestId: request.id,
