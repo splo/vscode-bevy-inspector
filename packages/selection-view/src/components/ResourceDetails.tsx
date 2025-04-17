@@ -6,11 +6,11 @@ import {
 import { Resource } from '@bevy-inspector/inspector-data/types';
 import '@vscode-elements/elements/dist/vscode-collapsible';
 import '@vscode-elements/elements/dist/vscode-form-container';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { useRequest } from '../useRequest';
 import { ErrorCard } from './ErrorCard';
 import { DynamicValue } from './values/DynamicValue';
-import { ValueUpdated } from './values/valueProps';
+import { DynamicValueError, ValueUpdated } from './values/valueProps';
 
 interface ResourceProps {
   resource: Resource;
@@ -20,6 +20,20 @@ export function ResourceDetails({ resource }: ResourceProps) {
   const [requestData, setRequestData] = useState<SetResourceValueRequestData>();
   const [resourceValue, setResourceValue] = useState(resource.value);
   const { response, error } = useRequest<SetResourceValueResponseData>(SetResourceValue, requestData);
+
+  let dynamicValueError: DynamicValueError | undefined;
+  let errorCard: JSX.Element | undefined;
+  if ((response && !response.success) || error) {
+    const errorMessage = response?.error || (error as string) || `Error while saving value: ${requestData?.newValue}`;
+    if (requestData?.typePath) {
+      dynamicValueError = {
+        path: requestData?.path ?? '',
+        message: errorMessage,
+      };
+    } else {
+      errorCard = <ErrorCard message={errorMessage} title="Error" description="" open />;
+    }
+  }
 
   if (resource.error || !resource.schema) {
     const errorMessage = resource.error || 'No schema found.';
@@ -46,7 +60,13 @@ export function ResourceDetails({ resource }: ResourceProps) {
 
   return (
     <vscode-form-container>
+      {errorCard}
       <vscode-collapsible title={resource.schema.shortPath} description={resource.schema.typePath} open>
+        {dynamicValueError !== undefined && (
+          <div className="error-card" style={{ color: 'var(--vscode-errorForeground)' }}>
+            <p>{dynamicValueError.message}</p>
+          </div>
+        )}
         <DynamicValue path="" value={resourceValue} schema={resource.schema} onValueChange={onValueChange} />
       </vscode-collapsible>
     </vscode-form-container>

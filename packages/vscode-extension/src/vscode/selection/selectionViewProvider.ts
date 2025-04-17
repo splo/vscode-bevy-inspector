@@ -11,7 +11,7 @@ import {
   type InspectorRequest,
   type SelectionChangedEvent,
 } from '@bevy-inspector/inspector-data/messages';
-import type { EntityId, TypePath } from '@bevy-inspector/inspector-data/types';
+import type { Entity, EntityId, TypePath } from '@bevy-inspector/inspector-data/types';
 import type { RequestMessage, ResponseMessage } from '@bevy-inspector/messenger/types';
 import fs from 'fs';
 import * as vscode from 'vscode';
@@ -96,11 +96,13 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
         },
       };
     } catch (error: unknown) {
+      const message = (error as Error).message;
+      vscode.window.showErrorMessage(`Error setting component value: ${message}`);
       return {
         requestId: request.id,
         data: {
           success: false,
-          error: (error as Error).message,
+          error: message,
         },
       };
     }
@@ -119,11 +121,13 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
         },
       };
     } catch (error: unknown) {
+      const message = (error as Error).message;
+      vscode.window.showErrorMessage(`Error setting resource value: ${message}`);
       return {
         requestId: request.id,
         data: {
           success: false,
-          error: (error as Error).message,
+          error: message,
         },
       };
     }
@@ -172,13 +176,13 @@ export class SelectionViewProvider implements vscode.WebviewViewProvider {
       const entity = await this.repository.getEntity(entityId);
       return { type: 'Entity', entity };
     } catch (error: unknown) {
-      const entity = {
+      const entity: Entity = {
         id: entityId,
         components: [
           {
             value: undefined,
             error: (error as BevyError)?.message ?? `Error getting entity: ${error}`,
-            schema: {},
+            schema: { shortPath: 'Unknown', typePath: 'Unknown' },
           },
         ],
       };
