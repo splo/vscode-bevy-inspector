@@ -26,7 +26,10 @@ export class TreeController {
     context.subscriptions.push(this.treeView);
 
     context.subscriptions.push(
-      vscode.commands.registerCommand('bevyInspector.refresh', () => this.refresh()),
+      vscode.commands.registerCommand('bevyInspector.refresh', () => {
+        this.cachedRepository.invalidateCache();
+        this.refresh();
+      }),
       vscode.commands.registerCommand('bevyInspector.enablePolling', () => this.pollingService.enablePolling()),
       vscode.commands.registerCommand('bevyInspector.disablePolling', () => this.pollingService.disablePolling()),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', async (entity) => {
