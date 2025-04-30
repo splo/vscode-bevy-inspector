@@ -48,6 +48,19 @@
       "problemMatcher": ["$rustc"]
     },
     {
+      "label": "run-server-0.16-example",
+      "detail": "Start the 0.16 server example",
+      "icon": { "id": "server-process", "color": "terminal.ansiCyan" },
+      "type": "process",
+      "command": "cargo",
+      "args": ["run"],
+      "options": {
+        "cwd": "${workspaceFolder}/examples/server-0.16"
+      },
+      "isBackground": true,
+      "problemMatcher": ["$rustc"]
+    },
+    {
       "label": "run-server-dev-example",
       "detail": "Start the development server example",
       "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
