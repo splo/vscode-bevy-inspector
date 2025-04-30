@@ -4,4 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "=0.16.0-rc.5", features = ["bevy_remote"] }
+bevy = { git = "https://github.com/bevyengine/bevy.git", branch = "main", features = [
+    "bevy_remote",
+] }
