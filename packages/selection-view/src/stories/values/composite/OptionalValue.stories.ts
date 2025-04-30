@@ -2,12 +2,11 @@ import { BevyRootJsonSchema } from '@bevy-inspector/inspector-data/types';
 import type { Meta, StoryObj } from '@storybook/react';
 import { OptionalValue } from '../../../components/values/composite/OptionalValue';
 import * as schema from '../../schema.json';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Composite/OptionalValue',
   component: OptionalValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof OptionalValue>;
 
 export default meta;

@@ -1,4 +1,3 @@
-import type { FunctionComponent } from 'react';
 import type { WebviewApi } from 'vscode-webview';
 import { ValueUpdated } from '../components/values/valueProps';
 
@@ -32,8 +31,5 @@ export class VsCodeApiMock implements WebviewApi<unknown> {
 }
 
 export const onValueChange = (event: ValueUpdated, rootValue: unknown) => {
-  console.debug('onValueChange(updatedPath, updatedValue, rootValue)', event, rootValue);
   window.vscodeApiMock.postMessage({ function: 'onValueChange', event, rootValue });
 };
-
-export const vscodeApiMockDecorator = (Story: FunctionComponent) => <Story />;

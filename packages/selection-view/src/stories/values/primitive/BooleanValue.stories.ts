@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BooleanValue } from '../../../components/values/primitive/BooleanValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Primitive/BooleanValue',
   component: BooleanValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof BooleanValue>;
 
 export default meta;
