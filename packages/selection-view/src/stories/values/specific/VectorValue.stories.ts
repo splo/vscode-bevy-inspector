@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { VectorValue } from '../../../components/values/specific/VectorValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Specific/Vector',
   component: VectorValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof VectorValue>;
 
 export default meta;

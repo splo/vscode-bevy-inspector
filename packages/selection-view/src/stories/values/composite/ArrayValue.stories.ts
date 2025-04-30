@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ArrayValue } from '../../../components/values/composite/ArrayValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Composite/ArrayValue',
   component: ArrayValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof ArrayValue>;
 
 export default meta;

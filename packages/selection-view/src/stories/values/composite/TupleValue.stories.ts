@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { TupleValue } from '../../../components/values/composite/TupleValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Composite/TupleValue',
   component: TupleValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof TupleValue>;
 
 export default meta;

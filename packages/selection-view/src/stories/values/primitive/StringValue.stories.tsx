@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { StringValue } from '../../../components/values/primitive/StringValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Primitive/StringValue',
   component: StringValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof StringValue>;
 
 export default meta;

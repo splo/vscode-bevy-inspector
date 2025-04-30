@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { EnumValue } from '../../../components/values/composite/EnumValue';
-import { onValueChange, vscodeApiMockDecorator } from '../../vscodeApiMock';
+import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {
   title: 'Composite/EnumValue',
   component: EnumValue,
-  decorators: [vscodeApiMockDecorator],
 } satisfies Meta<typeof EnumValue>;
 
 export default meta;
