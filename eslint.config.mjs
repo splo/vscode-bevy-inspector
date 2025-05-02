@@ -1,6 +1,8 @@
-import eslint from '@eslint/js';
+import { default as eslint, default as js } from '@eslint/js';
 import prettier from 'eslint-plugin-prettier/recommended';
 import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -18,7 +20,7 @@ export default tseslint.config(
   },
   {
     name: '@bevy-inspector/general',
-    ignores: ['dist'],
+    ignores: ['dist', 'out'],
     rules: {
       curly: 'warn',
       eqeqeq: 'warn',
@@ -31,8 +33,8 @@ export default tseslint.config(
   },
   {
     name: '@bevy-inspector/vscode-extension',
-    files: ['packages/vscode-extension/**/*.ts'],
-    ignores: ['packages/vscode-extension/{out,.vscode-test}/**/*'],
+    files: ['src/extension/**/*.ts'],
+    ignores: ['src/extension/{out,.vscode-test}/**/*'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -43,8 +45,8 @@ export default tseslint.config(
   },
   {
     name: '@bevy-inspector/selection-view',
-    files: ['packages/selection-view/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
-    ignores: ['packages/selection-view/out/**/*'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['src/selection-view/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
     ...react.configs.flat.recommended,
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,
@@ -53,6 +55,14 @@ export default tseslint.config(
         ...globals.es2020,
       },
       ecmaVersion: 2020,
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
 );

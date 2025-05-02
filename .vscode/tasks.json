@@ -9,7 +9,7 @@
       "icon": { "id": "tools", "color": "terminal.ansiWhite" },
       "type": "npm",
       "script": "build",
-      "problemMatcher": ["$tsc-watch", "$esbuild-watch"],
+      "problemMatcher": ["$tsc", "$esbuild-watch"],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -29,7 +29,6 @@
       "detail": "Run Storybook",
       "icon": { "id": "book", "color": "terminal.ansiMagenta" },
       "type": "npm",
-      "path": "packages/selection-view",
       "script": "storybook",
       "isBackground": true,
       "problemMatcher": []

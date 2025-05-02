@@ -1,0 +1,29 @@
+{
+  "references": [{ "path": "../messenger" }],
+  "compilerOptions": {
+    // Type Checking
+    "strict": true,
+    "skipLibCheck": true,
+
+    // Modules
+    "module": "ESNext",
+    "moduleResolution": "node10",
+
+    // Emit
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "outDir": "../../out/inspector-data",
+    "sourceMap": true,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+
+    // Language and Environment
+    "target": "ESNext",
+
+    // Project
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/inspector-data.tsbuildinfo"
+  }
+}

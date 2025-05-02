@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
+  "compilerOptions": {
+    // Modules
+    "moduleResolution": "node16",
+    "outDir": "../../out/extension",
+
+    // Emit
+    "sourceMap": true,
+    "declarationMap": true,
+
+    // Projects
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/vscode-extension.tsbuildinfo"
+  }
+}
