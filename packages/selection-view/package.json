@@ -17,7 +17,7 @@
     "postinstall": "npm --prefix `node_modules @designbyadrian/react-interactive-input`/@designbyadrian/react-interactive-input/ run build"
   },
   "dependencies": {
-    "@designbyadrian/react-interactive-input": "https://github.com/splo/react-interactive-input/tarball/main",
+    "@designbyadrian/react-interactive-input": "https://github.com/designbyadrian/react-interactive-input/tarball/main",
     "@vscode-elements/elements": "^1.15.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
