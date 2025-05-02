@@ -1,0 +1,25 @@
+{
+  "extends": "@tsconfig/vite-react/tsconfig.json",
+  "include": ["**/*", "**/*.json"],
+  "references": [
+    { "path": "../src/messenger/tsconfig.json" },
+    { "path": "../src/inspector-data/tsconfig.json" },
+    { "path": "../src/selection-view/tsconfig.json" }
+  ],
+  "compilerOptions": {
+    // Modules
+    "allowImportingTsExtensions": false,
+    "paths": {
+      "@bevy-inspector/*": ["../src/*"]
+    },
+    "outDir": "../out/stories",
+
+    // Emit
+    "sourceMap": true,
+    "declarationMap": true,
+
+    // Projects
+    "composite": true,
+    "tsBuildInfoFile": "../node_modules/.tmp/stories.tsbuildinfo"
+  }
+}
