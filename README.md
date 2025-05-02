@@ -13,6 +13,10 @@ Display live data from your [Bevy](https://bevyengine.org/) application using th
 
 Resources, assets and states aren't yet supported since the Bevy Remote Protocol doesn't yet support them.
 
+The extension is available at:
+- The [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=splo.vscode-bevy-inspector).
+- The [Open VSX Registry](https://open-vsx.org/extension/splo/vscode-bevy-inspector).
+
 ## Requirements
 
 There is an example server at [`examples/server`](./examples/server).
