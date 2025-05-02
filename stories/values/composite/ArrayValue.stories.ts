@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ArrayValue } from '@bevy-inspector/selection-view/components/values/composite/ArrayValue';
+import { ArrayValue } from '@bevy-inspector/schema-components/composite/ArrayValue';
 import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {

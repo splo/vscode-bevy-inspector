@@ -1,16 +1,16 @@
+import '@vscode-elements/elements/dist/vscode-collapsible';
+import '@vscode-elements/elements/dist/vscode-form-container';
+import { JSX, useState } from 'react';
 import {
   SetResourceValue,
   SetResourceValueRequestData,
   SetResourceValueResponseData,
 } from '../../inspector-data/messages';
 import { Resource } from '../../inspector-data/types';
-import '@vscode-elements/elements/dist/vscode-collapsible';
-import '@vscode-elements/elements/dist/vscode-form-container';
-import { JSX, useState } from 'react';
+import { DynamicValue } from '../../schema-components/DynamicValue';
+import { DynamicValueError, ValueUpdated } from '../../schema-components/valueProps';
 import { useRequest } from '../useRequest';
 import { ErrorCard } from './ErrorCard';
-import { DynamicValue } from './values/DynamicValue';
-import { DynamicValueError, ValueUpdated } from './values/valueProps';
 
 interface ResourceProps {
   resource: Resource;

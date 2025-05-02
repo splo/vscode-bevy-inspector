@@ -4,7 +4,7 @@ import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
 import { ChangeEvent, useState } from 'react';
 import { capitalCase } from 'text-capital-case';
-import { BevyJsonSchema } from '../../../../inspector-data/types';
+import { BevyJsonSchema } from '../../inspector-data/types';
 import { buildPath } from '../schema';
 import { ValueProps } from '../valueProps';
 import './VectorValue.css';

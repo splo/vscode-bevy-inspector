@@ -1,17 +1,17 @@
+import '@vscode-elements/elements/dist/vscode-collapsible';
+import '@vscode-elements/elements/dist/vscode-form-container';
+import '@vscode-elements/elements/dist/vscode-form-group';
+import { JSX, useEffect, useId, useState } from 'react';
 import {
   SetComponentValue,
   SetComponentValueRequestData,
   SetComponentValueResponseData,
 } from '../../inspector-data/messages';
 import { Component, Entity, TypePath } from '../../inspector-data/types';
-import '@vscode-elements/elements/dist/vscode-collapsible';
-import '@vscode-elements/elements/dist/vscode-form-container';
-import '@vscode-elements/elements/dist/vscode-form-group';
-import { JSX, useEffect, useId, useState } from 'react';
+import { DynamicValue } from '../../schema-components/DynamicValue';
+import { DynamicValueError, ValueUpdated } from '../../schema-components/valueProps';
 import { useRequest } from '../useRequest';
 import { ErrorCard } from './ErrorCard';
-import { DynamicValue } from './values/DynamicValue';
-import { DynamicValueError, ValueUpdated } from './values/valueProps';
 
 interface EntityProps {
   entity: Entity;

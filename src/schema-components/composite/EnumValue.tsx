@@ -4,7 +4,7 @@ import '@vscode-elements/elements/dist/vscode-single-select';
 import { VscodeSingleSelect } from '@vscode-elements/elements/dist/vscode-single-select';
 import { ReactElement, useEffect, useRef, useState } from 'react';
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../../../inspector-data/types';
+import { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { adheresToSchema, generateDefault } from '../schema';
 import { ValueProps, ValueUpdated } from '../valueProps';

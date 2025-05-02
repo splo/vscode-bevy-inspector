@@ -1,10 +1,10 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
-  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }, { "path": "../schema-components" }],
+  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
   "compilerOptions": {
     // Modules
     "allowImportingTsExtensions": false,
-    "outDir": "../../out/selection-view",
+    "outDir": "../../out/value-components",
 
     // Emit
     "declarationMap": true,
@@ -13,6 +13,6 @@
 
     // Projects
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/selection-view.tsbuildinfo"
+    "tsBuildInfoFile": "../../node_modules/.tmp/value-components.tsbuildinfo"
   }
 }

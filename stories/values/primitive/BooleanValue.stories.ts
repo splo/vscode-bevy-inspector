@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BooleanValue } from '@bevy-inspector/selection-view/components/values/primitive/BooleanValue';
+import { BooleanValue } from '@bevy-inspector/schema-components/primitive/BooleanValue';
 import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {

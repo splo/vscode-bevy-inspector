@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TupleValue } from '@bevy-inspector/selection-view/components/values/composite/TupleValue';
+import { TupleValue } from '@bevy-inspector/schema-components/composite/TupleValue';
 import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {

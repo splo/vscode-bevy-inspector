@@ -1,4 +1,4 @@
-import { BevyJsonSchema } from '../../../inspector-data/types';
+import type { BevyJsonSchema } from '../inspector-data/types';
 
 export interface Vec3 {
   x: number;
