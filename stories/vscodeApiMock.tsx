@@ -1,5 +1,5 @@
 import type { WebviewApi } from 'vscode-webview';
-import { ValueUpdated } from '@bevy-inspector/selection-view/components/values/valueProps';
+import { ValueUpdated } from '@bevy-inspector/schema-components/valueProps';
 
 declare global {
   interface Window {

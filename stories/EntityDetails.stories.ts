@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '../src/inspector-data/types';
 import { EntityDetails } from '../src/selection-view/components/EntityDetails';
-import { Mat3 } from '@bevy-inspector/selection-view/components/values/schema';
+import { Mat3 } from '@bevy-inspector/schema-components/schema';
 import * as schema from './schema.json';
 
 const meta = {

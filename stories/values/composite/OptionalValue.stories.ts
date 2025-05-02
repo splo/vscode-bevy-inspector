@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BevyRootJsonSchema } from '@bevy-inspector/inspector-data/types';
-import { OptionalValue } from '@bevy-inspector/selection-view/components/values/composite/OptionalValue';
+import { OptionalValue } from '@bevy-inspector/schema-components/composite/OptionalValue';
 import * as schema from '../../schema.json';
 import { onValueChange } from '../../vscodeApiMock';
 

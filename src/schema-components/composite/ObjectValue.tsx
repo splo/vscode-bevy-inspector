@@ -1,5 +1,5 @@
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../../../inspector-data/types';
+import { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { buildPath } from '../schema';
 import { ValueProps, ValueUpdated } from '../valueProps';

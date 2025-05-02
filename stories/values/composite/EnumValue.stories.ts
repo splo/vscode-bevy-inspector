@@ -1,4 +1,4 @@
-import { EnumValue } from '@bevy-inspector/selection-view/components/values/composite/EnumValue';
+import { EnumValue } from '@bevy-inspector/schema-components/composite/EnumValue';
 import type { Meta, StoryObj } from '@storybook/react';
 import { onValueChange } from '../../vscodeApiMock';
 

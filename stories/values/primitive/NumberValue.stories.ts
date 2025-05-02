@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { NumberValue } from '@bevy-inspector/selection-view/components/values/primitive/NumberValue';
+import { NumberValue } from '@bevy-inspector/schema-components/primitive/NumberValue';
 import { onValueChange } from '../../vscodeApiMock';
 
 const meta = {

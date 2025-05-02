@@ -2,7 +2,7 @@ import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import { useState } from 'react';
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../../../inspector-data/types';
+import { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { ValueProps, ValueUpdated } from '../valueProps';
 

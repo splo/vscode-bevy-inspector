@@ -7,11 +7,11 @@ import './DynamicValue.css';
 import { BooleanValue } from './primitive/BooleanValue';
 import { NumberValue } from './primitive/NumberValue';
 import { StringValue } from './primitive/StringValue';
-import { Mat3, Vec3 } from './schema';
+import type { Mat3, Vec3 } from './schema';
 import { GlobalTransformValue } from './specific/GlobalTransformValue';
 import { MatrixValue } from './specific/MatrixValue';
 import { VectorValue } from './specific/VectorValue';
-import { ValueProps } from './valueProps';
+import type { ValueProps } from './valueProps';
 
 export function DynamicValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<unknown>) {
   switch (schema.typePath) {
