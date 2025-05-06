@@ -7,7 +7,6 @@
     // Modules
     "module": "ESNext",
     "moduleResolution": "node10",
-    // "rootDir": "src",
 
     // Emit
     "declaration": true,

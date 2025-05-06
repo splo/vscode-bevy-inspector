@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { EmptyDetails } from '../src/selection-view/components/EmptyDetails';
+import { EmptyDetails } from '../src/resources-view/components/EmptyDetails';
 
 const meta = {
   title: 'EmptyDetails',

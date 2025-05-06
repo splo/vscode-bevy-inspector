@@ -1,4 +1,8 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const cwd = dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -11,6 +15,14 @@ const config: StorybookConfig = {
   framework: {
     name: '@storybook/react-vite',
     options: {},
+  },
+  viteFinal: (config) => {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@bevy-inspector': path.resolve(cwd, '../src'),
+    };
+    return config;
   },
   previewHead: (head) => `${head}<link rel="stylesheet" href="codicon.css" id="vscode-codicon-stylesheet" />`,
   previewBody: (body) => /* html */ `

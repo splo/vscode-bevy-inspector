@@ -44,9 +44,9 @@ export default tseslint.config(
     },
   },
   {
-    name: '@bevy-inspector/selection-view',
+    name: '@bevy-inspector/webviews',
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['src/selection-view/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
+    files: ['src/resources-view/**/*.{js,jsx,mjs,cjs,ts,tsx}', 'src/components-view/**/*.{js,jsx,mjs,cjs,ts,tsx}'],
     ...react.configs.flat.recommended,
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,

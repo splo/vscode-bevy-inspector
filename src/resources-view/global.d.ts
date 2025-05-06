@@ -1,5 +1,10 @@
+declare module '*.css' {
+  const content: Record<string, string>;
+  export default content;
+}
+
 // From <https://github.com/vscode-elements/examples/blob/react-vite/react-vite/src/global.d.ts>.
-import {
+import type {
   VscodeBadge,
   VscodeButton,
   VscodeCheckbox,

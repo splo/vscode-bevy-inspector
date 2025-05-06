@@ -1,18 +1,26 @@
 import type { EventMessage, RequestMessage } from '../messenger/types';
 import type { Entity, Resource } from './types';
 
-export const SelectionChanged = 'SelectionChanged';
+export const EntitySelected = 'EntitySelected';
+export const ResourcesUpdated = 'ResourcesUpdated';
 
-export type SelectionChangedData =
-  | { type: 'NonInspectable' }
-  | { type: 'Resource'; resource: Resource }
-  | { type: 'Entity'; entity: Entity };
+export interface EntitySelectedData {
+  entity: Entity;
+}
 
-export type SelectionChangedEvent = EventMessage<SelectionChangedData> & {
-  type: typeof SelectionChanged;
+export interface ResourcesUpdatedData {
+  resources: Resource[];
+}
+
+export type EntitySelectedEvent = EventMessage<EntitySelectedData> & {
+  type: typeof EntitySelected;
 };
 
-export type InspectorEvent = SelectionChangedEvent;
+export type ResourcesUpdatedEvent = EventMessage<ResourcesUpdatedData> & {
+  type: typeof ResourcesUpdated;
+};
+
+export type InspectorEvent = EntitySelectedEvent | ResourcesUpdatedEvent;
 
 export const SetComponentValue = 'SetComponentValue';
 export const SetResourceValue = 'SetResourceValue';
