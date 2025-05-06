@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ErrorCard } from '../src/resources-view/components/ErrorCard';
+import { ErrorCard } from '@bevy-inspector/resources-view/components/ErrorCard';
 
 const meta = {
   title: 'ErrorCard',

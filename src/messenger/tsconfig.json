@@ -1,4 +1,5 @@
 {
+  "references": [{ "path": "../messages" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -19,8 +20,8 @@
     "esModuleInterop": true,
 
     // Language and Environment
-    "lib": ["DOM"],
-    "target": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "target": "ES2022",
 
     // Project
     "composite": true,
