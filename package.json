@@ -11,26 +11,21 @@
   "main": "./dist/extension/index.js",
   "scripts": {
     "prebuild": "npm run check-types",
-    "build": "npm-run-all --parallel build:*",
-    "build:extension": "node esbuild.mjs --production",
-    "prebuild:webview": "npm run update-public",
-    "build:webview": "vite build --sourcemap",
+    "build": "node esbuild.mjs --production",
     "check-types": "tsc --build",
     "clean": "rimraf dist out node_modules/.tmp .vscode-test",
     "format": "prettier --write src",
     "postinstall": "npm --prefix node_modules/@designbyadrian/react-interactive-input/ run build",
     "lint": "eslint src",
     "storybook": "storybook dev -p 6006",
-    "update-public": "copyfiles -f -E -V node_modules/@vscode/codicons/dist/codicon.{css,ttf} public",
     "vscode:prepublish": "npm run build",
     "watch": "npm-run-all --parallel watch:*",
     "watch:extension": "node esbuild.mjs --watch",
-    "watch:ts": "tsc --build --watch --preserveWatchOutput",
-    "watch:webview": "vite build --watch"
+    "watch:ts": "tsc --build --watch --preserveWatchOutput"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^12.0.1",
-    "@designbyadrian/react-interactive-input": "https://github.com/designbyadrian/react-interactive-input/tarball/main",
+    "@designbyadrian/react-interactive-input": "https://github.com/designbyadrian/react-interactive-input/tarball/c9b8b3d616016026edf1acab6f9c8cfb315edbd9",
     "@vscode-elements/elements": "^1.15.0",
     "axios": "^1.8.4",
     "fast-levenshtein": "^3.0.0",
@@ -56,10 +51,10 @@
     "@types/vscode-webview": "^1.57.5",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
-    "@vitejs/plugin-react": "^4.4.0",
     "@vscode-elements/webview-playground": "^1.6.0",
     "@vscode/codicons": "^0.0.36",
     "copyfiles": "^2.4.1",
+    "esbuild-plugin-copy": "^2.1.1",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
@@ -73,15 +68,15 @@
     "rimraf": "^6.0.1",
     "storybook": "^8.6.12",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.30.1",
-    "vite": "^6.3.1"
+    "typescript-eslint": "^8.30.1"
   },
   "engines": {
     "vscode": "^1.95.0"
   },
   "activationEvents": [],
   "categories": [
-    "Visualization"
+    "Visualization",
+    "Debuggers"
   ],
   "contributes": {
     "commands": [
@@ -90,7 +85,7 @@
         "title": "Go to Definition",
         "icon": "$(go-to-file)",
         "category": "Bevy Inspector",
-        "enablement": "view == bevyInspector.selection && viewItem == definition"
+        "enablement": "view == bevyInspector.components && viewItem == definition"
       },
       {
         "command": "bevyInspector.refresh",
@@ -115,7 +110,7 @@
         "title": "Destroy Entity",
         "icon": "$(trash)",
         "category": "Bevy Inspector",
-        "enablement": "view == bevyInspector.tree && viewItem == entity"
+        "enablement": "view == bevyInspector.entities && viewItem == entity"
       }
     ],
     "configuration": {
@@ -156,29 +151,29 @@
       "view/title": [
         {
           "command": "bevyInspector.refresh",
-          "when": "view == bevyInspector.tree",
+          "when": "view == bevyInspector.entities",
           "group": "navigation"
         },
         {
           "command": "bevyInspector.enablePolling",
-          "when": "view == bevyInspector.tree && !bevyInspector.pollingEnabled",
+          "when": "view == bevyInspector.entities && !bevyInspector.pollingEnabled",
           "group": "navigation"
         },
         {
           "command": "bevyInspector.disablePolling",
-          "when": "view == bevyInspector.tree && bevyInspector.pollingEnabled",
+          "when": "view == bevyInspector.entities && bevyInspector.pollingEnabled",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector.tree && viewItem == entity",
+          "when": "view == bevyInspector.entities && viewItem == entity",
           "group": "inline"
         },
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector.tree && viewItem == entity"
+          "when": "view == bevyInspector.entities && viewItem == entity"
         }
       ],
       "commandPalette": [
@@ -198,14 +193,20 @@
     "views": {
       "bevyInspectorContainer": [
         {
-          "id": "bevyInspector.tree",
-          "name": "Tree",
+          "id": "bevyInspector.entities",
+          "name": "Entities",
           "icon": "resources/bevy-inspector.png",
           "type": "tree"
         },
         {
-          "id": "bevyInspector.selection",
-          "name": "Selection",
+          "id": "bevyInspector.components",
+          "name": "Components",
+          "icon": "resources/bevy-inspector.png",
+          "type": "webview"
+        },
+        {
+          "id": "bevyInspector.resources",
+          "name": "Resources",
           "icon": "resources/bevy-inspector.png",
           "type": "webview"
         }
@@ -222,7 +223,7 @@
     },
     "viewsWelcome": [
       {
-        "view": "bevyInspector.tree",
+        "view": "bevyInspector.entities",
         "contents": "Connecting to the server running the Bevy Remote Plugin...\n[Refresh](command:bevyInspector.refresh)"
       }
     ]

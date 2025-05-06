@@ -3,8 +3,9 @@ import { JsonRpcBevyRemoteService } from '../brp/http/jsonRpcBrp';
 import { RemoteInspectorRepository } from '../brp/remoteInspectorRepository';
 import { TypeSchemaService } from '../brp/typeSchemaService';
 import { CachedInspectorRepository } from '../cache/cachedInspectorRepository';
-import { SelectionController } from './selection/selectionController';
-import { TreeController } from './tree/treeController';
+import { ComponentsController } from './components/componentsController';
+import { TreeController } from './entities/entitiesController';
+import { ResourcesController } from './resources/resourcesController';
 
 export class BevyInspectorExtension {
   constructor(context: vscode.ExtensionContext) {
@@ -16,10 +17,11 @@ export class BevyInspectorExtension {
       new RemoteInspectorRepository(remoteService, new TypeSchemaService()),
     );
     const treeController = new TreeController(context, cachedRepository);
-    const selectionController = new SelectionController(context, cachedRepository);
+    const componentsController = new ComponentsController(context, cachedRepository);
+    new ResourcesController(context, cachedRepository);
 
-    treeController.onSelectionChanged(async (selection) => await selectionController.updateSelection(selection));
-    selectionController.onValueUpdated(() => treeController.refresh());
+    treeController.onSelectionChanged(async (selection) => await componentsController.updateSelection(selection));
+    componentsController.onValueUpdated(() => treeController.refresh());
 
     vscode.workspace.onDidChangeConfiguration((e) => {
       const config = vscode.workspace.getConfiguration('bevyInspector');

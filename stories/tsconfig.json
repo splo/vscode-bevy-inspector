@@ -1,10 +1,13 @@
 {
   "extends": "@tsconfig/vite-react/tsconfig.json",
   "include": ["**/*", "**/*.json"],
+  "exclude": ["tsconfig.json"],
   "references": [
+    { "path": "../src/schema-components/tsconfig.json" },
     { "path": "../src/messenger/tsconfig.json" },
     { "path": "../src/inspector-data/tsconfig.json" },
-    { "path": "../src/selection-view/tsconfig.json" }
+    { "path": "../src/components-view/tsconfig.json" },
+    { "path": "../src/resources-view/tsconfig.json" }
   ],
   "compilerOptions": {
     // Modules

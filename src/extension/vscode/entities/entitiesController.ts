@@ -1,22 +1,22 @@
 import * as vscode from 'vscode';
 import type { CachedInspectorRepository } from '../../cache/cachedInspectorRepository';
+import type { EntitySelection } from '../EntitySelection';
 import { PollingService } from '../polling';
-import type { SelectionChange } from '../selectionChange';
-import { EntityItem, ResourceItem, TreeDataProvider, TreeItem } from './treeDataProvider';
+import { EntityItem, TreeDataProvider } from './entitiesDataProvider';
 
 export class TreeController {
   private treeDataProvider: TreeDataProvider;
-  private treeView: vscode.TreeView<TreeItem>;
+  private treeView: vscode.TreeView<EntityItem>;
   private pollingService: PollingService = new PollingService();
-  private readonly selectionChangeEmitter = new vscode.EventEmitter<SelectionChange>();
-  public readonly onSelectionChanged = this.selectionChangeEmitter.event;
+  private readonly entitySelectionEmitter = new vscode.EventEmitter<EntitySelection>();
+  public readonly onSelectionChanged = this.entitySelectionEmitter.event;
   private readonly cachedRepository: CachedInspectorRepository;
 
   constructor(context: vscode.ExtensionContext, cachedRepository: CachedInspectorRepository) {
     this.cachedRepository = cachedRepository;
     this.treeDataProvider = new TreeDataProvider(cachedRepository);
 
-    this.treeView = vscode.window.createTreeView('bevyInspector.tree', {
+    this.treeView = vscode.window.createTreeView('bevyInspector.entities', {
       treeDataProvider: this.treeDataProvider,
       showCollapseAll: true,
       canSelectMany: false,
@@ -47,30 +47,16 @@ export class TreeController {
   public refresh() {
     this.treeDataProvider.refresh();
     if (this.treeView.selection.length > 0) {
-      const selectedItem = this.treeView.selection[0];
-      if (selectedItem instanceof EntityItem) {
-        this.selectionChangeEmitter.fire({ type: 'Entity', entityId: selectedItem.entityId });
-      } else if (selectedItem instanceof ResourceItem) {
-        this.selectionChangeEmitter.fire({ type: 'Resource', typePath: selectedItem.typePath });
-      }
+      const selectedItem = this.treeView.selection[0] as EntityItem;
+      this.entitySelectionEmitter.fire({ entityId: selectedItem.entityId });
     }
   }
 
-  private handleSelectionChange(selectionChanged: vscode.TreeViewSelectionChangeEvent<TreeItem>) {
-    let selection: SelectionChange = { type: 'NonInspectable' };
-
-    if (Array.isArray(selectionChanged.selection) && selectionChanged.selection[0] instanceof TreeItem) {
+  private handleSelectionChange(selectionChanged: vscode.TreeViewSelectionChangeEvent<EntityItem>) {
+    if (Array.isArray(selectionChanged.selection) && selectionChanged.selection[0] instanceof EntityItem) {
       const treeItem = selectionChanged.selection[0];
-
-      if (treeItem.type === 'Resource') {
-        const resourceItem = treeItem as ResourceItem;
-        selection = { type: 'Resource', typePath: resourceItem.typePath };
-      } else if (treeItem.type === 'Entity') {
-        const entityItem = treeItem as EntityItem;
-        selection = { type: 'Entity', entityId: entityItem.entityId };
-      }
+      const entityItem = treeItem as EntityItem;
+      this.entitySelectionEmitter.fire({ entityId: entityItem.entityId });
     }
-
-    this.selectionChangeEmitter.fire(selection);
   }
 }

@@ -5,7 +5,8 @@
     { "path": "./src/schema-components/tsconfig.json" },
     { "path": "./src/inspector-data/tsconfig.json" },
     { "path": "./src/extension/tsconfig.json" },
-    { "path": "./src/selection-view/tsconfig.json" },
-    { "path": "./stories/tsconfig-stories.json" }
+    { "path": "./src/components-view/tsconfig.json" },
+    { "path": "./src/resources-view/tsconfig.json" },
+    { "path": "./stories/tsconfig.json" }
   ]
 }

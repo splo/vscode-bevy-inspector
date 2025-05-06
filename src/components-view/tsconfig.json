@@ -1,5 +1,6 @@
 {
-  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
+  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }, { "path": "../schema-components" }],
+  "include": ["**/*.ts", "**/*.d.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.css"],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -9,7 +10,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
-    "outDir": "../../out/schema-components",
+    "outDir": "../../out/components-view",
 
     // Emit
     "declarationMap": true,
@@ -27,7 +28,7 @@
 
     // Projects
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/schema-components.tsbuildinfo",
+    "tsBuildInfoFile": "../../node_modules/.tmp/components-view.tsbuildinfo",
 
     // Completeness
     "skipLibCheck": true
