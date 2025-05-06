@@ -1,25 +1,39 @@
 {
-  "extends": "@tsconfig/vite-react/tsconfig.json",
-  "include": ["**/*", "**/*.json"],
+  "include": ["global.d.ts", "**/*", "**/*.json"],
   "exclude": ["tsconfig.json"],
   "references": [
     { "path": "../src/schema-components/tsconfig.json" },
-    { "path": "../src/messenger/tsconfig.json" },
     { "path": "../src/inspector-data/tsconfig.json" },
     { "path": "../src/components-view/tsconfig.json" },
     { "path": "../src/resources-view/tsconfig.json" }
   ],
   "compilerOptions": {
+    // Type Checking
+    "strict": true,
+
     // Modules
     "allowImportingTsExtensions": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "paths": {
       "@bevy-inspector/*": ["../src/*"]
     },
     "outDir": "../out/stories",
 
     // Emit
-    "sourceMap": true,
     "declarationMap": true,
+    "noEmit": false,
+    "sourceMap": true,
+
+    // Interop Constraints
+    "isolatedModules": true,
+
+    // Language and Environment
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
 
     // Projects
     "composite": true,

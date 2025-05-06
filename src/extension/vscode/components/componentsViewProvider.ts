@@ -7,7 +7,7 @@ import type {
 } from '../../../inspector-data/messages';
 import { SetComponentValue, type InspectorRequest } from '../../../inspector-data/messages';
 import type { Entity, EntityId } from '../../../inspector-data/types';
-import type { RequestMessage, ResponseMessage } from '../../../messenger/types';
+import type { RequestMessage, ResponseMessage } from '../../../messages/types';
 import type { BevyError } from '../../brp/brp';
 import type { InspectorRepository } from '../../inspectorRepository';
 import type { EntitySelection } from '../EntitySelection';

@@ -6,7 +6,7 @@ import type {
   SetResourceValueResponseData,
 } from '../../../inspector-data/messages';
 import { SetResourceValue, type InspectorRequest } from '../../../inspector-data/messages';
-import type { RequestMessage, ResponseMessage } from '../../../messenger/types';
+import type { RequestMessage, ResponseMessage } from '../../../messages/types';
 import type { BevyError } from '../../brp/brp';
 import { TypeSchemaService } from '../../brp/typeSchemaService';
 import type { InspectorRepository } from '../../inspectorRepository';

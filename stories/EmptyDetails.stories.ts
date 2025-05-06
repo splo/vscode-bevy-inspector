@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { EmptyDetails } from '../src/resources-view/components/EmptyDetails';
+import { EmptyDetails } from '@bevy-inspector/resources-view/components/EmptyDetails';
 
 const meta = {
   title: 'EmptyDetails',

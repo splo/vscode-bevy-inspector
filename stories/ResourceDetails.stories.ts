@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '../src/inspector-data/types';
-import { ResourceDetails } from '../src/resources-view/components/ResourceDetails';
+import { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
+import { ResourceDetails } from '@bevy-inspector/resources-view/components/ResourceDetails';
 import * as schema from './schema.json';
 
 const meta = {

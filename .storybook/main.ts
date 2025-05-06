@@ -1,8 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
 
-const cwd = dirname(fileURLToPath(import.meta.url));
+const rootDir = new URL('..', import.meta.url).pathname;
 
 const config: StorybookConfig = {
   stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -20,7 +18,7 @@ const config: StorybookConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
-      '@bevy-inspector': path.resolve(cwd, '../src'),
+      '@bevy-inspector': `${rootDir}/src`,
     };
     return config;
   },

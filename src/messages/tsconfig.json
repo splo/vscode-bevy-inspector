@@ -1,5 +1,4 @@
 {
-  "references": [{ "path": "../messages" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -13,18 +12,18 @@
     "declaration": true,
     "declarationMap": true,
     "noEmit": false,
-    "outDir": "../../out/inspector-data",
+    "outDir": "../../out/messages",
     "sourceMap": true,
 
     // Interop Constraints
     "esModuleInterop": true,
 
     // Language and Environment
-    "target": "ES2022",
     "lib": ["ES2022"],
+    "target": "ES2022",
 
     // Project
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/inspector-data.tsbuildinfo"
+    "tsBuildInfoFile": "../../node_modules/.tmp/messages.tsbuildinfo"
   }
 }

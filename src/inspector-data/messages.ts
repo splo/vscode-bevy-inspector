@@ -1,4 +1,4 @@
-import type { EventMessage, RequestMessage } from '../messenger/types';
+import type { EventMessage, RequestMessage } from '../messages/types';
 import type { Entity, Resource } from './types';
 
 export const EntitySelected = 'EntitySelected';
