@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import type { TypePath } from '../../../brp/types';
 import type { EntityNode, EntityTreeRepository } from './entityTree';
 
-export class EntityItem extends vscode.TreeItem {
+class EntityItem extends vscode.TreeItem {
   constructor(entity: EntityNode) {
     const label = String(entity.id);
     const collapsibleState =
@@ -20,7 +20,7 @@ export class EntityItem extends vscode.TreeItem {
 
 type TreeDataChange = EntityNode | undefined | null | void;
 
-export class TreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
+export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
   private readonly treeDataChangeEmitter: vscode.EventEmitter<TreeDataChange> =
     new vscode.EventEmitter<TreeDataChange>();
   public readonly onDidChangeTreeData: vscode.Event<TreeDataChange> = this.treeDataChangeEmitter.event;

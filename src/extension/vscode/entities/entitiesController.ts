@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 import type { EntitySelection } from '../EntitySelection';
 import { PollingService } from '../polling';
-import { TreeDataProvider } from './entitiesDataProvider';
+import { EntityTreeDataProvider } from './entitiesDataProvider';
 import type { EntityNode, EntityTreeRepository } from './entityTree';
 
 export class TreeController {
-  private treeDataProvider: TreeDataProvider;
+  private treeDataProvider: EntityTreeDataProvider;
   private treeView: vscode.TreeView<EntityNode>;
   private pollingService: PollingService = new PollingService();
   private readonly entitySelectionEmitter = new vscode.EventEmitter<EntitySelection>();
@@ -14,7 +14,7 @@ export class TreeController {
 
   constructor(context: vscode.ExtensionContext, repository: EntityTreeRepository) {
     this.repository = repository;
-    this.treeDataProvider = new TreeDataProvider(repository);
+    this.treeDataProvider = new EntityTreeDataProvider(repository);
 
     this.treeView = vscode.window.createTreeView('bevyInspector.entities', {
       treeDataProvider: this.treeDataProvider,
