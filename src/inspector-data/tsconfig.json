@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../messages" }],
+  "references": [{ "path": "../messages" }, { "path": "../brp" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,

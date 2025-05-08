@@ -1,0 +1,46 @@
+import type { BevyRemoteService, DestroyParams, QueryParams, ReparentParams, SpawnParams } from '../../../brp/brp-0.16';
+import type { EntityNode, EntityTreeRepository } from './entityTree';
+import { getEntitiesTree } from './entityTreeRepositories';
+
+export class V0_16EntityTreeRepository implements EntityTreeRepository {
+  brp: BevyRemoteService;
+
+  constructor(brp: BevyRemoteService) {
+    this.brp = brp;
+  }
+
+  async tree(): Promise<EntityNode[]> {
+    return getEntitiesTree<BevyRemoteService, QueryParams>(
+      this.brp,
+      'bevy_ecs::name::Name',
+      'bevy_ecs::hierarchy::ChildOf',
+    );
+  }
+
+  async spawn(): Promise<EntityNode> {
+    const params: SpawnParams = {
+      components: {},
+    };
+    const result = await this.brp.spawn(params);
+    return {
+      id: result.entity,
+      componentNames: [],
+      children: [],
+    };
+  }
+
+  async destroy(entity: EntityNode): Promise<void> {
+    const params: DestroyParams = {
+      entity: entity.id,
+    };
+    await this.brp.destroy(params);
+  }
+
+  async reparent(entity: EntityNode, parent: EntityNode | undefined): Promise<void> {
+    const params: ReparentParams = {
+      entities: [entity.id],
+      parent: parent?.id,
+    };
+    await this.brp.reparent(params);
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "references": [],
+  "compilerOptions": {
+    // Modules
+    "outDir": "../../out/brp",
+
+    "module": "nodenext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+
+    // Emit
+    "sourceMap": true,
+    "declarationMap": true,
+
+    // Projects
+    "composite": true,
+    "tsBuildInfoFile": "../../node_modules/.tmp/brp.tsbuildinfo"
+  }
+}

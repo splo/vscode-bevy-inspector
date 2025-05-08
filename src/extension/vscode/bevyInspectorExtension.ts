@@ -6,6 +6,7 @@ import { CachedInspectorRepository } from '../cache/cachedInspectorRepository';
 import { ComponentsController } from './components/componentsController';
 import { TreeController } from './entities/entitiesController';
 import { ResourcesController } from './resources/resourcesController';
+import { V0_16EntityTreeRepository } from './entities/V0_16EntityTreeRepository';
 
 export class BevyInspectorExtension {
   constructor(context: vscode.ExtensionContext) {
@@ -16,7 +17,8 @@ export class BevyInspectorExtension {
     const cachedRepository = new CachedInspectorRepository(
       new RemoteInspectorRepository(remoteService, new TypeSchemaService()),
     );
-    const treeController = new TreeController(context, cachedRepository);
+    const entityTreeRepository = new V0_16EntityTreeRepository(remoteService);
+    const treeController = new TreeController(context, entityTreeRepository);
     const componentsController = new ComponentsController(context, cachedRepository);
     new ResourcesController(context, cachedRepository);
 

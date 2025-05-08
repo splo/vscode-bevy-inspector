@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "./src/brp/tsconfig.json" },
     { "path": "./src/messages/tsconfig.json" },
     { "path": "./src/messenger/tsconfig.json" },
     { "path": "./src/schema-components/tsconfig.json" },
