@@ -1,51 +1,46 @@
 import * as vscode from 'vscode';
-import type { EntityId, EntityRef, TypePath } from '../../../inspector-data/types';
-import type { InspectorRepository } from '../../inspectorRepository';
+import type { TypePath } from '../../../brp/types';
+import type { EntityNode, EntityTreeRepository } from './entityTree';
 
 export class EntityItem extends vscode.TreeItem {
-  entityId: EntityId;
-  children: EntityItem[];
-
-  constructor(entity: EntityRef, children: EntityItem[] = []) {
-    const label = entity.name || String(entity.id);
+  constructor(entity: EntityNode) {
+    const label = String(entity.id);
     const collapsibleState =
-      children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
+      entity.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
     super(label, collapsibleState);
-    this.id = `Entity-${entity.id}`;
-    this.entityId = entity.id;
-    this.children = children;
-    this.tooltip = `Entity ID: ${entity.id}`;
+    this.id = String(entity.id);
+    this.description = entity.name || findNameFromComponents(entity.componentNames);
     this.iconPath = new vscode.ThemeIcon(
-      getTypeIcon(entity.componentNames) || 'symbol-class',
+      findIconFromComponents(entity.componentNames) || 'symbol-class',
       new vscode.ThemeColor('symbolIcon.classForeground'),
     );
     this.contextValue = 'entity';
   }
 }
 
-type TreeDataChange = EntityItem | undefined | null | void;
+type TreeDataChange = EntityNode | undefined | null | void;
 
-export class TreeDataProvider implements vscode.TreeDataProvider<EntityItem> {
+export class TreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
   private readonly treeDataChangeEmitter: vscode.EventEmitter<TreeDataChange> =
     new vscode.EventEmitter<TreeDataChange>();
   public readonly onDidChangeTreeData: vscode.Event<TreeDataChange> = this.treeDataChangeEmitter.event;
 
-  repository: InspectorRepository;
+  repository: EntityTreeRepository;
 
-  constructor(repository: InspectorRepository) {
+  constructor(repository: EntityTreeRepository) {
     this.repository = repository;
   }
 
-  public refresh(element?: EntityItem): void {
-    console.debug(`Refreshing "${element?.label || 'root'}" tree item`);
+  public refresh(element?: EntityNode): void {
+    console.debug(`Refreshing "${element?.id || 'root'}" node`);
     this.treeDataChangeEmitter.fire(element);
   }
 
-  getTreeItem(element: EntityItem): vscode.TreeItem {
-    return element;
+  getTreeItem(element: EntityNode): vscode.TreeItem {
+    return new EntityItem(element);
   }
 
-  getChildren(element?: EntityItem | undefined): vscode.ProviderResult<EntityItem[]> {
+  getChildren(element?: EntityNode | undefined): vscode.ProviderResult<EntityNode[]> {
     if (element === undefined) {
       return this.listEntities();
     } else {
@@ -53,45 +48,39 @@ export class TreeDataProvider implements vscode.TreeDataProvider<EntityItem> {
     }
   }
 
-  resolveTreeItem(_item: vscode.TreeItem, element: EntityItem): vscode.ProviderResult<vscode.TreeItem> {
-    return element;
-  }
-
-  private async listEntities(): Promise<EntityItem[]> {
-    const entityRefs = await this.repository.listEntityRefs();
-
-    // Group entities by parent.
-    const entitiesMap = new Map<EntityId | null, EntityRef[]>();
-
-    for (const entity of entityRefs) {
-      if (!entitiesMap.has(entity.parentId ?? null)) {
-        entitiesMap.set(entity.parentId ?? null, []);
-      }
-      entitiesMap.get(entity.parentId ?? null)!.push(entity);
-    }
-
-    // Build entity tree recursively.
-    const buildEntityTree = (parentId: EntityId | null): EntityItem[] => {
-      const children = entitiesMap.get(parentId) || [];
-      return children.map((entity) => {
-        const childEntities = buildEntityTree(entity.id);
-        return new EntityItem(entity, childEntities);
-      });
-    };
-
-    // Return top-level entities (those with null parent).
-    const topLevelEntities = buildEntityTree(null);
-    return topLevelEntities;
+  private async listEntities(): Promise<EntityNode[]> {
+    return (await this.repository.tree()).sort((a, b) => a.id - b.id);
   }
 }
 
-function getTypeIcon(typePaths: TypePath[]): string | undefined {
+function findNameFromComponents(typePaths: TypePath[]): string | undefined {
+  return typePaths.map((name) => COMPONENT_TYPE_MAPPING[name]).find((name) => name !== undefined);
+}
+
+function findIconFromComponents(typePaths: TypePath[]): string | undefined {
   return Object.keys(ICON_MAPPING)
     .flatMap((pattern) => typePaths.map((path) => ({ pattern, path })))
     .filter(({ pattern, path }) => path.toLowerCase().includes(pattern.toLowerCase()))
     .map(({ pattern }) => ICON_MAPPING[pattern])
     .find((icon) => icon !== undefined);
 }
+
+const COMPONENT_TYPE_MAPPING: Record<TypePath, string> = {
+  'bevy_window::window::PrimaryWindow': 'PrimaryWindow',
+  'bevy_core_pipeline::core_3d::camera_3d::Camera3d': 'Camera3D',
+  'bevy_core_pipeline::core_2d::camera_2d::Camera2d': 'Camera2D',
+  'bevy_pbr::light::point_light::PointLight': 'PointLight',
+  'bevy_pbr::light::directional_light::DirectionalLight': 'DirectionalLight',
+  'bevy_ui::widget::text::Text': 'Text',
+  'bevy_ui::ui_node::Node': 'Node',
+  'bevy_pbr::mesh_material::MeshMaterial3d<bevy_pbr::mesh_material::StandardMaterial>': 'PbrMesh',
+  'bevy_window::window::Window': 'Window',
+  'bevy_ecs::observer::runner::ObserverState': 'Observer',
+  'bevy_window::monitor::Monitor': 'Monitor',
+  'bevy_picking::pointer::PointerId': 'Pointer',
+  'bevy_input::gamepad::Gamepad': 'Gamepad',
+  'bevy_ecs::system::system_registry::SystemIdMarker': 'System',
+};
 
 const ICON_MAPPING: Record<string, string> = {
   '::camera': 'device-camera-video',
