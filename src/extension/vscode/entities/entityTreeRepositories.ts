@@ -12,7 +12,13 @@ import type { EntityNode } from './entityTree';
 export async function getEntitiesTree<
   RemoteService extends V0_15BevyRemoteService | V0_16BevyRemoteService,
   QueryParams extends V0_15QueryParams | V0_16QueryParams,
->(brp: RemoteService, nameTypePath: TypePath, parentTypePath: TypePath): Promise<EntityNode[]> {
+>(
+  brp: RemoteService,
+  nameTypePath: TypePath,
+  parentTypePath: TypePath,
+  getName: (value: unknown) => string | undefined,
+  getParentId: (value: unknown) => EntityId | undefined,
+): Promise<EntityNode[]> {
   const queryParams = {
     data: { option: [nameTypePath, parentTypePath] },
   } as QueryParams;
@@ -24,8 +30,8 @@ export async function getEntitiesTree<
   await Promise.all(
     queryResult.map(async (row) => {
       const componentNames = await brp.list({ entity: row.entity });
-      const name = row.components[nameTypePath] as string;
-      const parentId = row.components[parentTypePath] as EntityId | undefined;
+      const name = getName(row.components[nameTypePath]);
+      const parentId = getParentId(row.components[parentTypePath]);
       entityById.set(row.entity, {
         id: row.entity,
         name,
