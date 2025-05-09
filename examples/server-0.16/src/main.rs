@@ -1,7 +1,10 @@
 // Example adapted from https://raw.githubusercontent.com/bevyengine/bevy/refs/heads/main/examples/remote/server.rs
 //! A Bevy app that you can connect to with the BRP and edit.
 
+use std::env;
+
 use bevy::prelude::*;
+use bevy::remote::http::DEFAULT_PORT;
 use bevy::{
     color::palettes::tailwind,
     math::ops::cos,
@@ -9,10 +12,14 @@ use bevy::{
 };
 
 fn main() {
+    let port: u16 = env::args()
+        .nth(1)
+        .and_then(|arg| arg.parse().ok())
+        .unwrap_or(DEFAULT_PORT);
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(RemotePlugin::default())
-        .add_plugins(RemoteHttpPlugin::default())
+        .add_plugins(RemoteHttpPlugin::default().with_port(port))
         .add_systems(Startup, setup)
         .add_systems(Update, move_cube)
         .register_type::<Cube>()
