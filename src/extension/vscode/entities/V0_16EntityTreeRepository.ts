@@ -1,6 +1,10 @@
 import type { BevyRemoteService, DestroyParams, QueryParams, ReparentParams, SpawnParams } from '../../../brp/brp-0.16';
+import type { EntityId } from '../../../brp/types';
 import type { EntityNode, EntityTreeRepository } from './entityTree';
 import { getEntitiesTree } from './entityTreeRepositories';
+
+type NameComponent = string;
+type ChildOfComponent = EntityId;
 
 export class V0_16EntityTreeRepository implements EntityTreeRepository {
   brp: BevyRemoteService;
@@ -14,6 +18,8 @@ export class V0_16EntityTreeRepository implements EntityTreeRepository {
       this.brp,
       'bevy_ecs::name::Name',
       'bevy_ecs::hierarchy::ChildOf',
+      (value) => value as NameComponent | undefined,
+      (value) => value as ChildOfComponent | undefined,
     );
   }
 
