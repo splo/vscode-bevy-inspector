@@ -2,17 +2,23 @@
 //! A Bevy app that you can connect to with the BRP and edit.
 
 use bevy::prelude::*;
+use bevy::remote::http::DEFAULT_PORT;
 use bevy::{
     color::palettes::tailwind,
     math::ops::cos,
     remote::{RemotePlugin, http::RemoteHttpPlugin},
 };
+use std::env;
 
 fn main() {
+    let port: u16 = env::args()
+        .nth(1)
+        .and_then(|arg| arg.parse().ok())
+        .unwrap_or(DEFAULT_PORT);
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(RemotePlugin::default())
-        .add_plugins(RemoteHttpPlugin::default())
+        .add_plugins(RemoteHttpPlugin::default().with_port(port))
         .add_systems(Startup, setup)
         .add_systems(Update, move_cube)
         .register_type::<Cube>()

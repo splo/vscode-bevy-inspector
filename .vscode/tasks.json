@@ -39,12 +39,12 @@
       "icon": { "id": "server-process", "color": "terminal.ansiGreen" },
       "type": "process",
       "command": "cargo",
-      "args": ["run"],
+      "args": ["run", "--", "15715"],
       "options": {
         "cwd": "${workspaceFolder}/examples/server-0.15"
       },
       "isBackground": true,
-      "problemMatcher": ["$rustc"]
+      "problemMatcher": ["$rustc-watch"]
     },
     {
       "label": "run-server-0.16-example",
@@ -57,7 +57,7 @@
         "cwd": "${workspaceFolder}/examples/server-0.16"
       },
       "isBackground": true,
-      "problemMatcher": ["$rustc"]
+      "problemMatcher": ["$rustc-watch"]
     },
     {
       "label": "run-server-dev-example",
@@ -65,12 +65,12 @@
       "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
       "type": "process",
       "command": "cargo",
-      "args": ["run"],
+      "args": ["run", "--", "15717"],
       "options": {
         "cwd": "${workspaceFolder}/examples/server-dev"
       },
       "isBackground": true,
-      "problemMatcher": ["$rustc"]
+      "problemMatcher": ["$rustc-watch"]
     }
   ]
 }
