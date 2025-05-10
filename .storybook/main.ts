@@ -22,7 +22,8 @@ const config: StorybookConfig = {
     };
     return config;
   },
-  previewHead: (head) => `${head}<link rel="stylesheet" href="codicon.css" id="vscode-codicon-stylesheet" />`,
+  previewHead: (head) =>
+    `${head}<link rel="stylesheet" href="node_modules/@vscode/codicons/dist/codicon.css" id="vscode-codicon-stylesheet" />`,
   previewBody: (body) => /* html */ `
   <vscode-dev-toolbar></vscode-dev-toolbar>
   <div style="font-size: smaller;
