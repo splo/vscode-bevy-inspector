@@ -2,9 +2,10 @@ import { InteractiveInput } from '@designbyadrian/react-interactive-input';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
-import { ChangeEvent, useId } from 'react';
+import type { ChangeEvent } from 'react';
+import { useId } from 'react';
 import { capitalCase } from 'text-capital-case';
-import { ValueProps } from '../valueProps';
+import type { ValueProps } from '../valueProps';
 
 export function NumberValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<number>) {
   const id = useId().replace(/:/g, '');

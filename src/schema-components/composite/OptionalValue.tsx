@@ -1,22 +1,15 @@
-import { VscodeCheckbox } from '@vscode-elements/elements/dist/vscode-checkbox';
+import type { VscodeCheckbox } from '@vscode-elements/elements/dist/vscode-checkbox';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-option';
 import '@vscode-elements/elements/dist/vscode-single-select';
-import { FormEvent, useState } from 'react';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
 import { capitalCase } from 'text-case';
 import { DynamicValue } from '../DynamicValue';
 import { generateDefault } from '../schema';
-import { ValueProps } from '../valueProps';
+import type { ValueProps } from '../valueProps';
 
-export function OptionalValue({
-  name,
-  path,
-  value: initialValue,
-  schema,
-  readOnly,
-  onValueChange,
-}: ValueProps<unknown>) {
-  const [value, setValue] = useState(initialValue);
+export function OptionalValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<unknown>) {
   const [hasSome, setHasSome] = useState(value !== null);
   const valueSchema = (schema.oneOf || []).find((option) => option.const !== null);
 
@@ -38,10 +31,7 @@ export function OptionalValue({
         value={value}
         schema={valueSchema}
         readOnly={readOnly || !hasSome}
-        onValueChange={(event, treeValue) => {
-          setValue(treeValue);
-          onValueChange(event, treeValue);
-        }}
+        onValueChange={onValueChange}
       />
     </vscode-form-group>
   );

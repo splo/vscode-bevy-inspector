@@ -2,23 +2,22 @@ import { InteractiveInput } from '@designbyadrian/react-interactive-input';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
-import { ChangeEvent, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { capitalCase } from 'text-capital-case';
-import { BevyJsonSchema } from '../../inspector-data/types';
+import type { BevyJsonSchema } from '../../inspector-data/types';
 import { buildPath } from '../schema';
-import { ValueProps } from '../valueProps';
+import type { ValueProps } from '../valueProps';
 import './VectorValue.css';
 
 const LABELS = ['x', 'y', 'z', 'w'];
 
-export function VectorValue({ name, path, value: initial, schema, readOnly, onValueChange }: ValueProps<number[]>) {
-  const [values, setValues] = useState(initial || Array(schema?.minItems || 0).fill(0));
+export function VectorValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<number[]>) {
+  const values = value || Array(schema?.minItems || 0).fill(0);
 
   function onInputChange(event: ChangeEvent<HTMLInputElement>, index: number) {
     const newValue = Number(event.target.value);
     const newValues = [...values];
     newValues[index] = newValue;
-    setValues(newValues);
     const updatedPath = buildPath(path, LABELS[index]);
     onValueChange({ path: updatedPath, value: newValue }, newValues);
   }

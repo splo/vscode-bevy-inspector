@@ -1,13 +1,14 @@
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-option';
 import '@vscode-elements/elements/dist/vscode-single-select';
-import { VscodeSingleSelect } from '@vscode-elements/elements/dist/vscode-single-select';
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import type { VscodeSingleSelect } from '@vscode-elements/elements/dist/vscode-single-select';
+import type { ReactElement } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../inspector-data/types';
+import type { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { adheresToSchema, generateDefault } from '../schema';
-import { ValueProps, ValueUpdated } from '../valueProps';
+import type { ValueProps, ValueUpdated } from '../valueProps';
 
 export function EnumValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<unknown>) {
   const [selectedIndex, setSelectedIndex] = useState(findSelectedIndex(value, schema.oneOf!));

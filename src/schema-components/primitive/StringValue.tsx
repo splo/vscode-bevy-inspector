@@ -1,10 +1,11 @@
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
-import { VscodeTextfield } from '@vscode-elements/elements/dist/vscode-textfield';
-import { FormEvent, useId } from 'react';
+import type { VscodeTextfield } from '@vscode-elements/elements/dist/vscode-textfield';
+import type { FormEvent } from 'react';
+import { useId } from 'react';
 import { capitalCase } from 'text-capital-case';
-import { ValueProps } from '../valueProps';
+import type { ValueProps } from '../valueProps';
 
 export function StringValue({ name, path, value, readOnly, onValueChange }: ValueProps<string>) {
   const id = useId().replace(/:/g, '');

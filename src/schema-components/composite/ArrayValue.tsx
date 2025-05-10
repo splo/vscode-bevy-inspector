@@ -1,23 +1,21 @@
 import '@vscode-elements/elements/dist/vscode-button';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
-import { useState } from 'react';
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../inspector-data/types';
+import type { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { generateDefault } from '../schema';
-import { ValueProps, ValueUpdated } from '../valueProps';
+import type { ValueProps, ValueUpdated } from '../valueProps';
 import './ArrayValue.css';
 
 export function ArrayValue({ name, path, value: initial, schema, readOnly, onValueChange }: ValueProps<unknown[]>) {
-  const [values, setValues] = useState(initial || []);
+  const values = initial || [];
   if (!schema.items || Array.isArray(schema.items)) {
     return null;
   }
   const onChildValueChange = (event: ValueUpdated, treeValue: unknown, index: number) => {
     const newValues = [...values];
     newValues[index] = treeValue;
-    setValues(newValues);
     onValueChange(event, newValues);
   };
   return (
@@ -50,14 +48,12 @@ export function ArrayValue({ name, path, value: initial, schema, readOnly, onVal
   function addNewElement() {
     const newElement = generateDefault(schema.items as BevyJsonSchema);
     const newValues = [...values, newElement];
-    setValues(newValues);
     onValueChange({ path, value: newValues }, newValues);
   }
 
   function removeElement(index: number) {
     const newValues = [...values];
     newValues.splice(index, 1);
-    setValues(newValues);
     onValueChange({ path, value: newValues }, newValues);
   }
 }

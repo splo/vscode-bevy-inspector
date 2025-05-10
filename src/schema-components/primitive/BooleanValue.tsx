@@ -1,10 +1,10 @@
 import '@vscode-elements/elements/dist/vscode-checkbox';
-import { VscodeCheckbox } from '@vscode-elements/elements/dist/vscode-checkbox';
+import type { VscodeCheckbox } from '@vscode-elements/elements/dist/vscode-checkbox';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import { useId } from 'react';
 import { capitalCase } from 'text-capital-case';
-import { ValueProps } from '../valueProps';
+import type { ValueProps } from '../valueProps';
 
 export function BooleanValue({ name, path, value, readOnly, onValueChange }: ValueProps<boolean>) {
   const id = useId().replace(/:/g, '');

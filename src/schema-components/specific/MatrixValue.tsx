@@ -1,9 +1,10 @@
 import { InteractiveInput } from '@designbyadrian/react-interactive-input';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import { capitalCase } from 'text-case';
+import type { Mat3 } from '../schema';
+import { buildPath } from '../schema';
+import type { ValueProps } from '../valueProps';
 import './MatrixValue.css';
-import { buildPath, Mat3 } from '../schema';
-import { ValueProps } from '../valueProps';
 
 export function MatrixValue({ name, path, value, readOnly, onValueChange }: ValueProps<Mat3>) {
   const onChange = (
