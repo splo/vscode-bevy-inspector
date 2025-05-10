@@ -6,7 +6,7 @@ import { buildPath } from '../schema';
 import type { ValueProps } from '../valueProps';
 import './MatrixValue.css';
 
-export function MatrixValue({ name, path, value, readOnly, onValueChange }: ValueProps<Mat3>) {
+export function MatrixValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<Mat3>) {
   const onChange = (
     axis: 'x_axis' | 'y_axis' | 'z_axis',
     property: 'x' | 'y' | 'z',
@@ -36,19 +36,19 @@ export function MatrixValue({ name, path, value, readOnly, onValueChange }: Valu
         <InteractiveInput
           className="matrix-value"
           value={value.x_axis.x}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('x_axis', 'x', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.x_axis.y}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('x_axis', 'y', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.x_axis.z}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('x_axis', 'z', e)}
         />
 
@@ -56,19 +56,19 @@ export function MatrixValue({ name, path, value, readOnly, onValueChange }: Valu
         <InteractiveInput
           className="matrix-value"
           value={value.y_axis.x}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('y_axis', 'x', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.y_axis.y}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('y_axis', 'y', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.y_axis.z}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('y_axis', 'z', e)}
         />
 
@@ -76,19 +76,19 @@ export function MatrixValue({ name, path, value, readOnly, onValueChange }: Valu
         <InteractiveInput
           className="matrix-value"
           value={value.z_axis.x}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('z_axis', 'x', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.z_axis.y}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('z_axis', 'y', e)}
         />
         <InteractiveInput
           className="matrix-value"
           value={value.z_axis.z}
-          disabled={readOnly}
+          disabled={schema.readOnly || readOnly}
           onChange={(e) => onChange('z_axis', 'z', e)}
         />
       </div>

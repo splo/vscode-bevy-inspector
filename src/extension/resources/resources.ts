@@ -1,4 +1,4 @@
-import type { TypedValue } from '../../../inspector-data/types';
+import type { TypedValue } from '../../inspector-data/types';
 
 export interface ResourceRepository {
   listResources(): Promise<TypedValue[]>;

@@ -1,17 +1,16 @@
-import type { BevyRemoteService, GetParams, MutateComponentParams } from '../../../brp/brp-0.16';
-import type { EntityId, TypePath } from '../../../brp/types';
-import type { TypedValue } from '../../../inspector-data/types';
-import type { TypeSchemaService } from '../../brp/typeSchemaService';
+import type { BevyRemoteService, GetParams, MutateComponentParams } from '../../brp/brp-0.16';
+import type { EntityId, TypedValue, TypePath } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
+import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
 import type { ComponentRepository } from './components';
 
 export class V0_16ComponentRepository implements ComponentRepository {
   brp: BevyRemoteService;
-  typeSchemaService: TypeSchemaService;
+  schemaService: RemoteSchemaService;
 
-  constructor(brp: BevyRemoteService, typeSchemaService: TypeSchemaService) {
+  constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
     this.brp = brp;
-    this.typeSchemaService = typeSchemaService;
+    this.schemaService = schemaService;
   }
 
   async listEntityComponents(entity: EntityNode): Promise<TypedValue[]> {
@@ -24,7 +23,7 @@ export class V0_16ComponentRepository implements ComponentRepository {
       Object.entries(result.components).map(async ([typePath, value]) => {
         return {
           value,
-          schema: await this.typeSchemaService.getTypeSchema(typePath, async () => await this.brp.registrySchema()),
+          schema: await this.schemaService.getTypeSchema(typePath),
         };
       }),
     );
@@ -33,7 +32,7 @@ export class V0_16ComponentRepository implements ComponentRepository {
         return {
           value: undefined,
           error: error.message,
-          schema: await this.typeSchemaService.getTypeSchema(typePath, async () => await this.brp.registrySchema()),
+          schema: await this.schemaService.getTypeSchema(typePath),
         };
       }),
     );

@@ -1,12 +1,10 @@
 import type {
+  EntityId,
+  TypePath,
   BevyRemoteService as V0_15BevyRemoteService,
   QueryParams as V0_15QueryParams,
-} from '../../../brp/brp-0.15';
-import type {
-  BevyRemoteService as V0_16BevyRemoteService,
-  QueryParams as V0_16QueryParams,
-} from '../../../brp/brp-0.16';
-import type { EntityId, TypePath } from '../../../brp/types';
+} from '../../brp/brp-0.15';
+import type { BevyRemoteService as V0_16BevyRemoteService, QueryParams as V0_16QueryParams } from '../../brp/brp-0.16';
 import type { EntityNode } from './entityTree';
 
 export async function getEntitiesTree<

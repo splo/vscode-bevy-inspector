@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../../inspector-data/messages';
-import { UpdateRequested, ValuesUpdated, ViewReady } from '../../../inspector-data/messages';
-import { isEventMessage } from '../../../messages/types';
+import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
+import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import { isEventMessage } from '../../messages/types';
 import type { EntityNode } from '../entities/entityTree';
+import { PollingService } from '../vscode/polling';
 import type { ComponentRepository, EntityUpdated } from './components';
 import { ComponentsViewProvider } from './componentsViewProvider';
 
@@ -10,6 +11,7 @@ export class ComponentsController {
   private repository: ComponentRepository;
   private componentsViewProvider: ComponentsViewProvider;
   private selectedEntity: EntityNode | undefined;
+  private pollingService: PollingService = new PollingService();
   private readonly valueUpdatedEmitter = new vscode.EventEmitter<EntityUpdated>();
   public readonly onValueUpdated: vscode.Event<EntityUpdated> = this.valueUpdatedEmitter.event;
 
@@ -20,11 +22,25 @@ export class ComponentsController {
       vscode.window.registerWebviewViewProvider('bevyInspector.components', this.componentsViewProvider),
     );
     this.componentsViewProvider.onMessageReceived(this.handleMessage.bind(this));
+    context.subscriptions.push(
+      vscode.commands.registerCommand('bevyInspector.refreshComponents', () => this.refresh()),
+      vscode.commands.registerCommand('bevyInspector.enableComponentsPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', true);
+        this.pollingService.enablePolling();
+      }),
+      vscode.commands.registerCommand('bevyInspector.disableComponentsPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', false);
+        this.pollingService.disablePolling();
+      }),
+    );
+    this.pollingService.onRefresh(async () => this.refresh());
+    // Enable polling by default.
+    vscode.commands.executeCommand('bevyInspector.enableComponentsPolling');
   }
 
   public async updateSelection(selectedEntity: EntityNode | undefined): Promise<void> {
     this.selectedEntity = selectedEntity;
-    await this.refreshView();
+    await this.refresh();
   }
 
   private async handleMessage(message: unknown): Promise<void> {
@@ -37,7 +53,7 @@ export class ComponentsController {
         case UpdateRequested: {
           const updated = await this.setComponentValue(event);
           if (updated) {
-            this.refreshView();
+            this.refresh();
           }
           break;
         }
@@ -46,7 +62,7 @@ export class ComponentsController {
     }
   }
 
-  private async refreshView() {
+  private async refresh() {
     if (this.selectedEntity === undefined) {
       this.componentsViewProvider.updateWithNoSelection();
     } else {

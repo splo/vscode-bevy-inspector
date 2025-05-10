@@ -1,15 +1,15 @@
-import type { BevyRemoteService, BrpError, GetResourceParams, MutateResourceParams } from '../../../brp/brp-0.16';
-import type { TypedValue } from '../../../inspector-data/types';
-import type { TypeSchemaService } from '../../brp/typeSchemaService';
+import type { BevyRemoteService, BrpError, GetResourceParams, MutateResourceParams } from '../../brp/brp-0.16';
+import type { TypedValue } from '../../inspector-data/types';
+import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
 import type { ResourceRepository } from './resources';
 
 export class V0_16ResourceRepository implements ResourceRepository {
   brp: BevyRemoteService;
-  typeSchemaService: TypeSchemaService;
+  schemaService: RemoteSchemaService;
 
-  constructor(brp: BevyRemoteService, typeSchemaService: TypeSchemaService) {
+  constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
     this.brp = brp;
-    this.typeSchemaService = typeSchemaService;
+    this.schemaService = schemaService;
   }
 
   async listResources(): Promise<TypedValue[]> {
@@ -21,13 +21,13 @@ export class V0_16ResourceRepository implements ResourceRepository {
           const result = await this.brp.getResource(params);
           return {
             value: result.value,
-            schema: await this.typeSchemaService.getTypeSchema(typePath, async () => await this.brp.registrySchema()),
+            schema: await this.schemaService.getTypeSchema(typePath),
           };
         } catch (error) {
           return {
             value: undefined,
             error: (error as BrpError)?.message ?? `Error getting resource: ${error}`,
-            schema: await this.typeSchemaService.getTypeSchema(typePath, async () => await this.brp.registrySchema()),
+            schema: await this.schemaService.getTypeSchema(typePath),
           };
         }
       }),

@@ -32,12 +32,12 @@ export function ArrayValue({ name, path, value: initial, schema, readOnly, onVal
               onValueChange={(event, treeValue) => onChildValueChange(event, treeValue, index)}
             />
           </div>
-          {!readOnly && (
+          {!(schema.readOnly || readOnly) && (
             <vscode-button icon="trash" onClick={() => removeElement(index)} title="Remove Element"></vscode-button>
           )}
         </div>
       ))}
-      {!readOnly && (
+      {!(schema.readOnly || readOnly) && (
         <vscode-button icon="add" onClick={addNewElement}>
           Add Element
         </vscode-button>

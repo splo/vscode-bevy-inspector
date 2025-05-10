@@ -7,13 +7,18 @@ import { useId } from 'react';
 import { capitalCase } from 'text-capital-case';
 import type { ValueProps } from '../valueProps';
 
-export function StringValue({ name, path, value, readOnly, onValueChange }: ValueProps<string>) {
+export function StringValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<string>) {
   const id = useId().replace(/:/g, '');
 
   return (
     <vscode-form-group variant="horizontal">
       {name && <vscode-label htmlFor={id}>{capitalCase(name)}</vscode-label>}
-      <vscode-textfield id={id} value={value} disabled={readOnly} onInput={onTextFieldInput}></vscode-textfield>
+      <vscode-textfield
+        id={id}
+        value={value}
+        disabled={schema.readOnly || readOnly}
+        onInput={onTextFieldInput}
+      ></vscode-textfield>
     </vscode-form-group>
   );
 

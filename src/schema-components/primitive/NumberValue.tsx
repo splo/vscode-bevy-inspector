@@ -19,7 +19,7 @@ export function NumberValue({ name, path, value, schema, readOnly, onValueChange
         step={schema?.multipleOf || 0.05}
         min={schema?.minimum}
         max={schema?.maximum}
-        disabled={readOnly}
+        disabled={schema.readOnly || readOnly}
         onChange={onNumberInputChange}
       />
     </vscode-form-group>

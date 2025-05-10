@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { EntityId, TypePath } from '../../../brp/types';
+import type { EntityId, TypePath } from '../../inspector-data/types';
 import type { EntityNode } from './entityTree';
 
 class EntityItem extends vscode.TreeItem {

@@ -1,5 +1,4 @@
-import type { EntityId, TypePath } from '../../../brp/types';
-import type { TypedValue } from '../../../inspector-data/types';
+import type { EntityId, TypedValue, TypePath } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 
 export interface EntityUpdated {

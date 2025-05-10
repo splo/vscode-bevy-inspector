@@ -59,6 +59,51 @@ export const ComponentWithSinglePrimitiveObject: Story = {
   },
 };
 
+export const ComponentWithReadOnlySchema: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
+        {
+          value: {
+            name: 'Soldier',
+            enabled: true,
+            hit_points: 25,
+          },
+          schema: {
+            type: 'object',
+            typePath: 'custom::Unit',
+            shortPath: 'Unit',
+            readOnly: true,
+            properties: {
+              name: {
+                type: 'string',
+                typePath: 'bevy_ecs::name::Name',
+                shortPath: 'Name',
+                readOnly: true,
+              },
+              enabled: {
+                type: 'boolean',
+                typePath: 'custom::Enabled',
+                shortPath: 'Enabled',
+                readOnly: true,
+              },
+              hit_points: {
+                type: 'number',
+                typePath: 'custom::HitPoints',
+                shortPath: 'HitPoints',
+                minimum: 0,
+                multipleOf: 1,
+                readOnly: true,
+              },
+            },
+          },
+        },
+      ],
+    });
+  },
+};
+
 export const ComponentWithError: Story = {
   play: () => {
     messenger.handleIncomingMessage({
