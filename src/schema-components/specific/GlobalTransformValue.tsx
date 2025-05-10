@@ -1,6 +1,7 @@
 import { DynamicValue } from '../DynamicValue';
-import { buildPath, Mat3 } from '../schema';
-import { ValueProps, ValueUpdated } from '../valueProps';
+import type { Mat3 } from '../schema';
+import { buildPath } from '../schema';
+import type { ValueProps, ValueUpdated } from '../valueProps';
 import { VectorValue } from './VectorValue';
 
 export function GlobalTransformValue({ path, value, schema, readOnly, onValueChange }: ValueProps<number[]>) {

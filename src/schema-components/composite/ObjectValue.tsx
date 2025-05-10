@@ -1,8 +1,8 @@
 import { capitalCase } from 'text-case';
-import { BevyJsonSchema } from '../../inspector-data/types';
+import type { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
 import { buildPath } from '../schema';
-import { ValueProps, ValueUpdated } from '../valueProps';
+import type { ValueProps, ValueUpdated } from '../valueProps';
 
 export function ObjectValue({
   name,
