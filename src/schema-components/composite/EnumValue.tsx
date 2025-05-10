@@ -42,7 +42,12 @@ export function EnumValue({ name, path, value, schema, readOnly, onValueChange }
       );
     }
     return (
-      <vscode-option key={String(index)} selected={selected} disabled={readOnly} value={String(option.const)}>
+      <vscode-option
+        key={String(index)}
+        selected={selected}
+        disabled={schema.readOnly || readOnly}
+        value={String(option.const)}
+      >
         {option.title}
       </vscode-option>
     );
@@ -50,7 +55,7 @@ export function EnumValue({ name, path, value, schema, readOnly, onValueChange }
   return (
     <vscode-form-group variant="horizontal">
       {name && <vscode-label>{capitalCase(name)}</vscode-label>}
-      <vscode-single-select ref={selectRef} disabled={readOnly}>
+      <vscode-single-select ref={selectRef} disabled={schema.readOnly || readOnly}>
         {enumOptions}
       </vscode-single-select>
       {selectedComponent}

@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
-import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../../inspector-data/messages';
-import { UpdateRequested, ValuesUpdated, ViewReady } from '../../../inspector-data/messages';
-import { isEventMessage } from '../../../messages/types';
+import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
+import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import { isEventMessage } from '../../messages/types';
+import { PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
 import { ResourcesViewProvider } from './resourcesViewProvider';
 
 export class ResourcesController {
   private repository: ResourceRepository;
   private resourcesViewProvider: ResourcesViewProvider;
+  private pollingService: PollingService = new PollingService();
 
   constructor(context: vscode.ExtensionContext, repository: ResourceRepository) {
     this.repository = repository;
@@ -16,6 +18,18 @@ export class ResourcesController {
       vscode.window.registerWebviewViewProvider('bevyInspector.resources', this.resourcesViewProvider),
     );
     this.resourcesViewProvider.onMessageReceived(this.handleMessage.bind(this));
+    context.subscriptions.push(
+      vscode.commands.registerCommand('bevyInspector.refreshResources', () => this.refresh()),
+      vscode.commands.registerCommand('bevyInspector.enableResourcesPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', true);
+        this.pollingService.enablePolling();
+      }),
+      vscode.commands.registerCommand('bevyInspector.disableResourcesPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', false);
+        this.pollingService.disablePolling();
+      }),
+    );
+    this.pollingService.onRefresh(async () => this.refresh());
   }
 
   private async handleMessage(message: unknown): Promise<void> {
@@ -23,13 +37,13 @@ export class ResourcesController {
       const event = message as ViewEvent;
       switch (event.type) {
         case ViewReady: {
-          await this.refreshView();
+          await this.refresh();
           break;
         }
         case UpdateRequested: {
           const updated = await this.setResourceValue(event);
           if (updated) {
-            this.refreshView();
+            this.refresh();
           }
           break;
         }
@@ -38,7 +52,7 @@ export class ResourcesController {
     }
   }
 
-  private async refreshView() {
+  private async refresh() {
     const resources = await this.repository.listResources();
     this.resourcesViewProvider.postMessage({
       type: ValuesUpdated,

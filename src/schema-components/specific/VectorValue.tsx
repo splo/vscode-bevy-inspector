@@ -66,7 +66,7 @@ function VectorItem({
         step={schema?.multipleOf || 0.05}
         min={schema?.minimum}
         max={schema?.maximum}
-        disabled={readOnly}
+        disabled={schema.readOnly || readOnly}
         onChange={(e) => onInputChange(e, index)}
       />
     </div>

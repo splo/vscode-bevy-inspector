@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import type { EntityUpdated } from '../components/components';
-import { PollingService } from '../polling';
+import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import { EntityTreeDataProvider } from './entitiesDataProvider';
 import type { EntityNode, EntityTreeRepository } from './entityTree';
 
@@ -20,12 +20,22 @@ export class TreeController {
       showCollapseAll: true,
       canSelectMany: false,
     });
+    context.subscriptions.push(this.treeView);
     this.repository.tree().then(this.treeDataProvider.setEntities.bind(this.treeDataProvider));
     this.treeView.onDidChangeSelection(this.handleSelectionChange.bind(this));
     context.subscriptions.push(
-      vscode.commands.registerCommand('bevyInspector.refresh', () => this.refresh()),
-      vscode.commands.registerCommand('bevyInspector.enablePolling', () => this.pollingService.enablePolling()),
-      vscode.commands.registerCommand('bevyInspector.disablePolling', () => this.pollingService.disablePolling()),
+      vscode.commands.registerCommand('bevyInspector.refreshEntities', () => this.refresh()),
+      vscode.commands.registerCommand('bevyInspector.enableEntitiesPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.entitiesPollingEnabled', true);
+        this.pollingService.enablePolling();
+      }),
+      vscode.commands.registerCommand('bevyInspector.disableEntitiesPolling', () => {
+        vscode.commands.executeCommand('setContext', 'bevyInspector.entitiesPollingEnabled', false);
+        this.pollingService.disablePolling();
+      }),
+    );
+    this.pollingService.onRefresh(async () => this.refresh());
+    context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.destroyEntity', async (entity) => {
         if (entity !== undefined && this.repository !== null) {
           await this.repository.destroy(entity);
@@ -35,7 +45,8 @@ export class TreeController {
     );
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
-        this.pollingService.restart();
+        const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
+        this.pollingService.setDelay(delay);
       }
     });
   }

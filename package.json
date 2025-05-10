@@ -29,6 +29,7 @@
     "@vscode-elements/elements": "^1.15.0",
     "axios": "^1.9.0",
     "fast-levenshtein": "^3.0.0",
+    "genson-js": "^0.0.8",
     "json-rpc-types": "^0.1.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -108,29 +109,66 @@
         "enablement": "view == bevyInspector.servers"
       },
       {
-        "command": "bevyInspector.goToDefinition",
-        "title": "Go to Definition",
-        "icon": "$(go-to-file)",
+        "command": "bevyInspector.refreshEntities",
+        "title": "Refresh Entities",
+        "icon": "$(refresh)",
         "category": "Bevy Inspector",
-        "enablement": "view == bevyInspector.components && viewItem == definition"
+        "enablement": "view == bevyInspector.entities"
       },
       {
-        "command": "bevyInspector.refresh",
-        "title": "Refresh",
+        "command": "bevyInspector.enableEntitiesPolling",
+        "title": "Enable Polling Entities",
+        "icon": "$(sync-ignored)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.entities"
+      },
+      {
+        "command": "bevyInspector.disableEntitiesPolling",
+        "title": "Disable Polling Entities",
+        "icon": "$(sync~spin)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.entities"
+      },
+      {
+        "command": "bevyInspector.refreshComponents",
+        "title": "Refresh Components",
         "icon": "$(refresh)",
         "category": "Bevy Inspector"
       },
       {
-        "command": "bevyInspector.enablePolling",
-        "title": "Enable Polling",
+        "command": "bevyInspector.enableComponentsPolling",
+        "title": "Enable Polling Components",
         "icon": "$(sync-ignored)",
-        "category": "Bevy Inspector"
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.components"
       },
       {
-        "command": "bevyInspector.disablePolling",
-        "title": "Disable Polling",
+        "command": "bevyInspector.disableComponentsPolling",
+        "title": "Disable Polling Components",
         "icon": "$(sync~spin)",
-        "category": "Bevy Inspector"
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.components"
+      },
+      {
+        "command": "bevyInspector.refreshResources",
+        "title": "Refresh Resources",
+        "icon": "$(refresh)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.resources"
+      },
+      {
+        "command": "bevyInspector.enableResourcesPolling",
+        "title": "Enable Polling Resources",
+        "icon": "$(sync-ignored)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.resources"
+      },
+      {
+        "command": "bevyInspector.disableResourcesPolling",
+        "title": "Disable Polling Resources",
+        "icon": "$(sync~spin)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.resources"
       },
       {
         "command": "bevyInspector.destroyEntity",
@@ -143,28 +181,6 @@
     "configuration": {
       "title": "Bevy Inspector",
       "properties": {
-        "bevyInspector.url": {
-          "type": "string",
-          "order": 0,
-          "title": "Remote URL",
-          "description": "URL to the network interface where the application is running with the Bevy Remote HTTP plugin enabled.",
-          "format": "uri",
-          "default": "http://127.0.0.1:15702"
-        },
-        "bevyInspector.bevyVersion": {
-          "type": "string",
-          "title": "Bevy Version",
-          "description": "Version of Bevy that defines the Bevy Remote Protocol version.",
-          "default": "0.15",
-          "enum": [
-            "0.15",
-            "0.16"
-          ],
-          "enumItemLabels": [
-            "Version 0.15 or earlier",
-            "Version 0.16 or later"
-          ]
-        },
         "bevyInspector.pollingDelay": {
           "type": "number",
           "title": "Polling delay",
@@ -182,18 +198,48 @@
           "group": "navigation"
         },
         {
-          "command": "bevyInspector.refresh",
+          "command": "bevyInspector.refreshEntities",
           "when": "view == bevyInspector.entities",
           "group": "navigation"
         },
         {
-          "command": "bevyInspector.enablePolling",
-          "when": "view == bevyInspector.entities && !bevyInspector.pollingEnabled",
+          "command": "bevyInspector.enableEntitiesPolling",
+          "when": "view == bevyInspector.entities && !bevyInspector.entitiesPollingEnabled",
           "group": "navigation"
         },
         {
-          "command": "bevyInspector.disablePolling",
-          "when": "view == bevyInspector.entities && bevyInspector.pollingEnabled",
+          "command": "bevyInspector.disableEntitiesPolling",
+          "when": "view == bevyInspector.entities && bevyInspector.entitiesPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.refreshComponents",
+          "when": "view == bevyInspector.components",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.enableComponentsPolling",
+          "when": "view == bevyInspector.components && !bevyInspector.componentsPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.disableComponentsPolling",
+          "when": "view == bevyInspector.components && bevyInspector.componentsPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.refreshResources",
+          "when": "view == bevyInspector.resources",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.enableResourcesPolling",
+          "when": "view == bevyInspector.resources && !bevyInspector.resourcesPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.disableResourcesPolling",
+          "when": "view == bevyInspector.resources && bevyInspector.resourcesPollingEnabled",
           "group": "navigation"
         }
       ],
@@ -225,15 +271,37 @@
       ],
       "commandPalette": [
         {
-          "command": "bevyInspector.refresh"
+          "command": "bevyInspector.refreshEntities"
         },
         {
-          "command": "bevyInspector.enablePolling",
-          "when": "!bevyInspector.pollingEnabled"
+          "command": "bevyInspector.enableEntitiesPolling",
+          "when": "!bevyInspector.entitiesPollingEnabled"
         },
         {
-          "command": "bevyInspector.disablePolling",
-          "when": "bevyInspector.pollingEnabled"
+          "command": "bevyInspector.disableEntitiesPolling",
+          "when": "bevyInspector.entitiesPollingEnabled"
+        },
+        {
+          "command": "bevyInspector.refreshComponents"
+        },
+        {
+          "command": "bevyInspector.enableComponentsPolling",
+          "when": "!bevyInspector.componentsPollingEnabled"
+        },
+        {
+          "command": "bevyInspector.disableComponentsPolling",
+          "when": "bevyInspector.componentsPollingEnabled"
+        },
+        {
+          "command": "bevyInspector.refreshResources"
+        },
+        {
+          "command": "bevyInspector.enableResourcesPolling",
+          "when": "!bevyInspector.resourcesPollingEnabled"
+        },
+        {
+          "command": "bevyInspector.disableResourcesPolling",
+          "when": "bevyInspector.resourcesPollingEnabled"
         }
       ]
     },

@@ -24,7 +24,7 @@ export function OptionalValue({ name, path, value, schema, readOnly, onValueChan
         style={{ alignSelf: 'center' }}
         checked={hasSome}
         onChange={onCheckboxChange}
-        disabled={readOnly}
+        disabled={schema.readOnly || readOnly}
       ></vscode-checkbox>
       <DynamicValue
         path={path}

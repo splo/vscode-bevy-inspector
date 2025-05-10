@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
-import { loadHtml } from '../htmlLoader';
+import type { TypedValue } from '../../inspector-data/types';
+import type { EntityNode } from '../entities/entityTree';
+import { loadHtml } from '../vscode/htmlLoader';
 
-export class ResourcesViewProvider implements vscode.WebviewViewProvider {
+export class ComponentsViewProvider implements vscode.WebviewViewProvider {
   private readonly messageReceivedEmitter = new vscode.EventEmitter<unknown>();
   public readonly onMessageReceived = this.messageReceivedEmitter.event;
-  private view: vscode.WebviewView | undefined;
   private extensionUri: vscode.Uri;
+  private view: vscode.WebviewView | undefined;
 
   constructor(extensionUri: vscode.Uri) {
     this.extensionUri = extensionUri;
@@ -19,7 +21,7 @@ export class ResourcesViewProvider implements vscode.WebviewViewProvider {
     this.view.webview.html = loadHtml({
       webview: this.view.webview,
       contentBaseUri: this.extensionUri,
-      htmlPath: '/dist/resources-view/index.html',
+      htmlPath: '/dist/components-view/index.html',
     });
     this.view.webview.onDidReceiveMessage(this.messageReceivedEmitter.fire.bind(this.messageReceivedEmitter));
   }
@@ -27,6 +29,24 @@ export class ResourcesViewProvider implements vscode.WebviewViewProvider {
   public postMessage(message: unknown): void {
     if (this.view) {
       this.view.webview.postMessage(message);
+    }
+  }
+
+  public updateWithNoSelection() {
+    if (this.view) {
+      this.view.title = 'Components';
+    }
+  }
+
+  public updateWithSelectedEntity(entity: EntityNode, components: TypedValue[]) {
+    if (this.view) {
+      this.view.title = `Components of ${entity.name ?? entity.id}`;
+      const tooltip = entity.componentNames.join('\n');
+      this.view.badge = {
+        value: components.length,
+        tooltip,
+      };
+      this.view.show(true);
     }
   }
 }

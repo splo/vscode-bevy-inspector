@@ -1,4 +1,4 @@
-import type { EntityId, TypePath } from '../../../brp/types';
+import type { EntityId, TypePath } from '../../inspector-data/types';
 
 /** Represents a node in the entity tree structure. */
 export interface EntityNode {

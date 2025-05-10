@@ -38,7 +38,6 @@ export class Messenger extends EventTarget {
   }
 
   public handleIncomingMessage(message: unknown) {
-    console.debug('View received message:', message);
     if (typeof message === 'object' && message !== null) {
       const messengerMessage = message as ResponseMessage<unknown> | EventMessage<unknown>;
       if ('requestId' in messengerMessage) {

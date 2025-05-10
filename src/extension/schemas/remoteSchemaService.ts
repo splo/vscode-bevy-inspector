@@ -1,27 +1,26 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import type { BrpSchema, Reference } from '../../brp/brp-0.16';
+import type { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
 import type {
   BevyJsonSchema,
   BevyJsonSchemaDefinition,
   BevyRootJsonSchema,
   TypePath,
 } from '../../inspector-data/types';
+import { shortenTypePath } from './schemas';
 
-export class TypeSchemaService {
+export class RemoteSchemaService {
+  private brp: V0_16BevyRemoteService;
   private cachedSchema: BevyRootJsonSchema | null = null;
 
-  // https://github.com/bevyengine/disqualified/blob/cc4940da85aa64070a34da590ff5aab12e7c951d/src/short_name.rs#L50
-  public static shortenName(name: string): string {
-    return name.replaceAll(/\w*::/g, '');
+  constructor(brp: V0_16BevyRemoteService) {
+    this.brp = brp;
   }
 
-  public async getTypeSchema(
-    typePath: TypePath,
-    registryFetcher: () => Promise<Record<TypePath, BrpSchema>>,
-  ): Promise<BevyJsonSchemaDefinition> {
+  public async getTypeSchema(typePath: TypePath): Promise<BevyJsonSchemaDefinition> {
     if (this.cachedSchema === null) {
       console.debug('Cache miss for schema');
-      const registry = await registryFetcher();
+      const registry = await this.brp.registrySchema();
       const schema = toJsonSchema(registry);
       const fixedSchema = fixDocument(schema);
       const derefSchema = await dereferenceSchema(fixedSchema);
@@ -30,7 +29,7 @@ export class TypeSchemaService {
       console.debug('Cache hit for schema');
     }
     // If missing type schema, return a default one, used for error details.
-    return this.cachedSchema.$defs[typePath] || { typePath, shortPath: TypeSchemaService.shortenName(typePath) };
+    return this.cachedSchema.$defs[typePath] || { typePath, shortPath: shortenTypePath(typePath) };
   }
 
   public invalidateCache() {
@@ -266,7 +265,7 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
       } else {
         // @ts-expect-error #ref is defined in Some.
         const ref: string = oneOfDef.properties!.Some.$ref;
-        const title = TypeSchemaService.shortenName(ref.substring(8)); // Strip the "#/$defs/" prefix.
+        const title = shortenTypePath(ref.substring(8)); // Strip the "#/$defs/" prefix.
         return { $ref: ref, title };
       }
     });
@@ -368,7 +367,7 @@ async function dereferenceSchema(schema: BevyRootJsonSchema): Promise<BevyRootJs
     Object.entries(derefSchema.$defs || {}).map(([name, definition]: [TypePath, BevyJsonSchemaDefinition]) => {
       if (definition.typePath !== name) {
         definition.typePath = name;
-        definition.shortPath = TypeSchemaService.shortenName(name);
+        definition.shortPath = shortenTypePath(name);
       }
       return [name, definition];
     }),

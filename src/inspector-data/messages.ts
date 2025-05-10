@@ -1,6 +1,7 @@
 import type { EventMessage } from '../messages/types';
 import type { TypedValue, TypePath } from './types';
 
+// Events passing from the views to the extension.
 export const ViewReady = 'ViewReady';
 export const UpdateRequested = 'UpdateRequested';
 export type ViewReadyData = null;
@@ -17,6 +18,7 @@ export type UpdateRequestedEvent = EventMessage<UpdateRequestedData> & {
 };
 export type ViewEvent = ViewReadyEvent | UpdateRequestedEvent;
 
+// Events passing from the extension to the views.
 export const ValuesUpdated = 'ValuesUpdated';
 export type ValuesUpdatedData = TypedValue[];
 export type ValuesUpdatedEvent = EventMessage<ValuesUpdatedData> & {

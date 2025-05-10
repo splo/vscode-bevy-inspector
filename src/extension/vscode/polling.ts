@@ -1,32 +1,33 @@
 import * as vscode from 'vscode';
 
-const DEFAULT_POLLING_DELAY = 1000;
+export const DEFAULT_POLLING_DELAY = 1000;
 
 export class PollingService {
-  polling: NodeJS.Timeout | undefined;
+  private timeout: NodeJS.Timeout | undefined;
+  private delay: number = DEFAULT_POLLING_DELAY;
+  private readonly refreshEmitter = new vscode.EventEmitter<void>();
+  public readonly onRefresh = this.refreshEmitter.event;
 
-  enabled(): boolean {
-    return this.polling !== undefined;
+  public enabled(): boolean {
+    return this.timeout !== undefined;
   }
 
-  disablePolling() {
-    vscode.commands.executeCommand('setContext', 'bevyInspector.pollingEnabled', false);
-    clearInterval(this.polling);
-    this.polling = undefined;
-    console.debug('Polling disabled');
-  }
-
-  enablePolling() {
-    vscode.commands.executeCommand('setContext', 'bevyInspector.pollingEnabled', true);
-    const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
-    this.polling = setInterval(() => vscode.commands.executeCommand('bevyInspector.refresh'), delay);
-    console.debug('Polling enabled');
-  }
-
-  restart() {
+  public setDelay(delay: number) {
+    this.delay = delay;
     if (this.enabled()) {
       this.disablePolling();
       this.enablePolling();
     }
+  }
+
+  public disablePolling() {
+    clearInterval(this.timeout);
+    this.timeout = undefined;
+    console.debug('Polling disabled');
+  }
+
+  public enablePolling() {
+    this.timeout = setInterval(() => this.refreshEmitter.fire(), this.delay);
+    console.debug('Polling enabled');
   }
 }

@@ -1,12 +1,21 @@
-import type { BevyRemoteService, DestroyParams, QueryParams, ReparentParams, SpawnParams } from '../../../brp/brp-0.16';
-import type { EntityId } from '../../../brp/types';
+import type {
+  BevyRemoteService,
+  DestroyParams,
+  EntityId,
+  QueryParams,
+  ReparentParams,
+  SpawnParams,
+} from '../../brp/brp-0.15';
 import type { EntityNode, EntityTreeRepository } from './entityTree';
 import { getEntitiesTree } from './entityTreeRepositories';
 
-type NameComponent = string;
-type ChildOfComponent = EntityId;
+interface NameComponent {
+  hash: number;
+  name: string;
+}
+type ParentComponent = EntityId;
 
-export class V0_16EntityTreeRepository implements EntityTreeRepository {
+export class V0_15EntityTreeRepository implements EntityTreeRepository {
   brp: BevyRemoteService;
 
   constructor(brp: BevyRemoteService) {
@@ -16,10 +25,10 @@ export class V0_16EntityTreeRepository implements EntityTreeRepository {
   async tree(): Promise<EntityNode[]> {
     return getEntitiesTree<BevyRemoteService, QueryParams>(
       this.brp,
-      'bevy_ecs::name::Name',
-      'bevy_ecs::hierarchy::ChildOf',
-      (value) => value as NameComponent | undefined,
-      (value) => value as ChildOfComponent | undefined,
+      'bevy_core::name::Name',
+      'bevy_hierarchy::components::parent::Parent',
+      (value) => (value as NameComponent | undefined)?.name,
+      (value) => value as ParentComponent | undefined,
     );
   }
 
@@ -51,6 +60,6 @@ export class V0_16EntityTreeRepository implements EntityTreeRepository {
   }
 
   isNameType(typePath: string): boolean {
-    return typePath === 'bevy_ecs::name::Name';
+    return typePath === 'bevy_core::name::Name';
   }
 }
