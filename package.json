@@ -80,6 +80,34 @@
   "contributes": {
     "commands": [
       {
+        "command": "bevyInspector.addServer",
+        "title": "Add Server",
+        "icon": "$(add)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.servers"
+      },
+      {
+        "command": "bevyInspector.removeServer",
+        "title": "Remove Server",
+        "icon": "$(remove)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.servers"
+      },
+      {
+        "command": "bevyInspector.connect",
+        "title": "Connect",
+        "icon": "$(plug)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.servers"
+      },
+      {
+        "command": "bevyInspector.disconnect",
+        "title": "Disconnect",
+        "icon": "$(debug-disconnect)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.servers"
+      },
+      {
         "command": "bevyInspector.goToDefinition",
         "title": "Go to Definition",
         "icon": "$(go-to-file)",
@@ -149,6 +177,11 @@
     "menus": {
       "view/title": [
         {
+          "command": "bevyInspector.addServer",
+          "when": "view == bevyInspector.servers",
+          "group": "navigation"
+        },
+        {
           "command": "bevyInspector.refresh",
           "when": "view == bevyInspector.entities",
           "group": "navigation"
@@ -165,6 +198,21 @@
         }
       ],
       "view/item/context": [
+        {
+          "command": "bevyInspector.removeServer",
+          "group": "inline",
+          "when": "view == bevyInspector.servers && viewItem != connectedServer"
+        },
+        {
+          "command": "bevyInspector.connect",
+          "group": "inline",
+          "when": "view == bevyInspector.servers && viewItem != connectedServer"
+        },
+        {
+          "command": "bevyInspector.disconnect",
+          "group": "inline",
+          "when": "view == bevyInspector.servers && viewItem == connectedServer"
+        },
         {
           "command": "bevyInspector.destroyEntity",
           "when": "view == bevyInspector.entities && viewItem == entity",
@@ -192,22 +240,35 @@
     "views": {
       "bevyInspectorContainer": [
         {
+          "id": "bevyInspector.servers",
+          "name": "Servers",
+          "icon": "resources/bevy-inspector.png",
+          "type": "tree",
+          "initialSize": 1
+        },
+        {
           "id": "bevyInspector.entities",
           "name": "Entities",
           "icon": "resources/bevy-inspector.png",
-          "type": "tree"
+          "type": "tree",
+          "when": "bevyInspector.connected",
+          "initialSize": 8
         },
         {
           "id": "bevyInspector.components",
           "name": "Components",
           "icon": "resources/bevy-inspector.png",
-          "type": "webview"
+          "type": "webview",
+          "when": "bevyInspector.connected",
+          "initialSize": 8
         },
         {
           "id": "bevyInspector.resources",
           "name": "Resources",
           "icon": "resources/bevy-inspector.png",
-          "type": "webview"
+          "type": "webview",
+          "when": "!bevyInspector.resourcesUnsupported && bevyInspector.connected",
+          "initialSize": 8
         }
       ]
     },
@@ -222,8 +283,8 @@
     },
     "viewsWelcome": [
       {
-        "view": "bevyInspector.entities",
-        "contents": "Connecting to the server running the Bevy Remote Plugin...\n[Refresh](command:bevyInspector.refresh)"
+        "view": "bevyInspector.servers",
+        "contents": "No configured server.\n[Add Server](command:bevyInspector.addServer)"
       }
     ]
   },

@@ -13,3 +13,7 @@ export interface EventMessage<T> {
   type: string;
   data: T;
 }
+
+export function isEventMessage<T>(message: unknown): message is EventMessage<T> {
+  return typeof message === 'object' && message !== null && 'type' in message && 'data' in message;
+}

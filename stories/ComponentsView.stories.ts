@@ -1,13 +1,15 @@
+import { ComponentsView } from '@bevy-inspector/components-view/ComponentsView';
+import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
+import type { Mat3 } from '@bevy-inspector/schema-components/schema';
 import type { Meta, StoryObj } from '@storybook/react';
-import { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
-import { EntityDetails } from '@bevy-inspector/resources-view/components/EntityDetails';
-import { Mat3 } from '@bevy-inspector/schema-components/schema';
 import * as schema from './schema.json';
+import { messenger } from '@bevy-inspector/components-view/vscodeMessenger';
+import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
 
 const meta = {
-  title: 'EntityDetails',
-  component: EntityDetails,
-} satisfies Meta<typeof EntityDetails>;
+  title: 'ComponentsView',
+  component: ComponentsView,
+} satisfies Meta<typeof ComponentsView>;
 
 const getSchema = (typePath: TypePath): BevyJsonSchemaDefinition => {
   switch (typePath) {
@@ -37,12 +39,13 @@ const getSchema = (typePath: TypePath): BevyJsonSchemaDefinition => {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const EntityWithPrimitiveObject: Story = {
-  args: {
-    entity: {
-      id: 1,
-      name: 'Soldier',
-      components: [
+export const Empty: Story = {};
+
+export const ComponentWithSinglePrimitiveObject: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
         {
           value: {
             name: 'Soldier',
@@ -52,31 +55,30 @@ export const EntityWithPrimitiveObject: Story = {
           schema: getSchema('custom::Unit'),
         },
       ],
-    },
+    });
   },
 };
 
-export const EntityWithError: Story = {
-  args: {
-    entity: {
-      id: 2,
-      components: [
+export const ComponentWithError: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
         {
           value: undefined,
           error: 'Unable to read the value of "bevy_ecs::name::Name".',
           schema: getSchema('bevy_ecs::name::Name'),
         },
       ],
-    },
+    });
   },
 };
 
-export const EntityWithPrimitives: Story = {
-  args: {
-    entity: {
-      id: 3,
-      name: 'Test',
-      components: [
+export const ComponentWithMultiplePrimitives: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
         {
           value: 'Test',
           schema: getSchema('bevy_ecs::name::Name'),
@@ -90,15 +92,15 @@ export const EntityWithPrimitives: Story = {
           schema: getSchema('bevy_render::view::visibility::InheritedVisibility'),
         },
       ],
-    },
+    });
   },
 };
 
-export const EntityWithOneOf: Story = {
-  args: {
-    entity: {
-      id: 4,
-      components: [
+export const ComponentWithOneOf: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
         {
           value: 'Hovered',
           schema: getSchema('bevy_picking::hover::PickingInteraction'),
@@ -108,15 +110,15 @@ export const EntityWithOneOf: Story = {
           schema: getSchema('core::option::Option<f32>'),
         },
       ],
-    },
+    });
   },
 };
 
-export const EntityWithVectors: Story = {
-  args: {
-    entity: {
-      id: 5,
-      components: [
+export const ComponentWithVectors: Story = {
+  play: () => {
+    messenger.handleIncomingMessage({
+      type: ValuesUpdated,
+      data: [
         {
           value: {
             translation: [1, -2, 1.5],
@@ -142,6 +144,6 @@ export const EntityWithVectors: Story = {
           schema: getSchema('glam::Mat3A'),
         },
       ],
-    },
+    });
   },
 };

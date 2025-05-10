@@ -1,11 +1,11 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
+import type { BrpSchema, Reference } from '../../brp/brp-0.16';
 import type {
   BevyJsonSchema,
   BevyJsonSchemaDefinition,
   BevyRootJsonSchema,
   TypePath,
 } from '../../inspector-data/types';
-import type { Reference, Schema } from './brp';
 
 export class TypeSchemaService {
   private cachedSchema: BevyRootJsonSchema | null = null;
@@ -17,7 +17,7 @@ export class TypeSchemaService {
 
   public async getTypeSchema(
     typePath: TypePath,
-    registryFetcher: () => Promise<Record<TypePath, Schema>>,
+    registryFetcher: () => Promise<Record<TypePath, BrpSchema>>,
   ): Promise<BevyJsonSchemaDefinition> {
     if (this.cachedSchema === null) {
       console.debug('Cache miss for schema');
@@ -39,10 +39,10 @@ export class TypeSchemaService {
   }
 }
 
-function toJsonSchema(registry: Record<TypePath, Schema>): BevyRootJsonSchema {
+function toJsonSchema(registry: Record<TypePath, BrpSchema>): BevyRootJsonSchema {
   return {
     $defs: Object.fromEntries(
-      Object.entries(registry).map(([key, value]: [TypePath, Schema]) => {
+      Object.entries(registry).map(([key, value]: [TypePath, BrpSchema]) => {
         const definition = toDefinition(value);
         definition.shortPath = value.shortPath;
         definition.typePath = value.typePath;
@@ -52,7 +52,7 @@ function toJsonSchema(registry: Record<TypePath, Schema>): BevyRootJsonSchema {
   };
 }
 
-function toDefinition(schema: Schema): BevyJsonSchema {
+function toDefinition(schema: BrpSchema): BevyJsonSchema {
   switch (schema.kind) {
     case 'Value': {
       switch (schema.type) {
@@ -128,7 +128,7 @@ function toDefinition(schema: Schema): BevyJsonSchema {
         additionalProperties: schema.valueType?.type,
       };
     case 'Enum': {
-      const oneOf: BevyJsonSchema[] = (schema.oneOf || []).map((value: string | Schema) => {
+      const oneOf: BevyJsonSchema[] = (schema.oneOf || []).map((value: string | BrpSchema) => {
         if (typeof value === 'string') {
           return {
             type: 'string',

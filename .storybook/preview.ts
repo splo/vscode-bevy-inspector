@@ -3,7 +3,7 @@ import '@vscode-elements/webview-playground';
 import { VsCodeApiMock } from '../stories/vscodeApiMock';
 
 const preview: Preview = {
-  tags: ['autodocs'],
+  tags: [],
   parameters: {
     layout: 'centered',
   },
