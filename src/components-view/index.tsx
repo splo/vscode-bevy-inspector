@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { SelectionView } from './SelectionView';
+import { ComponentsView } from './ComponentsView';
 
 const root = createRoot(document.getElementById('root')!);
-root.render(<SelectionView />);
+root.render(<ComponentsView />);

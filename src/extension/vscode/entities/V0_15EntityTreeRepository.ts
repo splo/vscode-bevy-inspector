@@ -52,4 +52,8 @@ export class V0_15EntityTreeRepository implements EntityTreeRepository {
     };
     await this.brp.reparent(params);
   }
+
+  isNameType(typePath: string): boolean {
+    return typePath === 'bevy_core::name::Name';
+  }
 }

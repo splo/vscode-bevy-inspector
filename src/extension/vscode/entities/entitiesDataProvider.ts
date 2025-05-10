@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import type { TypePath } from '../../../brp/types';
-import type { EntityNode, EntityTreeRepository } from './entityTree';
+import type { EntityId, TypePath } from '../../../brp/types';
+import type { EntityNode } from './entityTree';
 
 class EntityItem extends vscode.TreeItem {
   constructor(entity: EntityNode) {
@@ -21,19 +21,27 @@ class EntityItem extends vscode.TreeItem {
 type TreeDataChange = EntityNode | undefined | null | void;
 
 export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
-  private readonly treeDataChangeEmitter: vscode.EventEmitter<TreeDataChange> =
-    new vscode.EventEmitter<TreeDataChange>();
-  public readonly onDidChangeTreeData: vscode.Event<TreeDataChange> = this.treeDataChangeEmitter.event;
+  private readonly treeDataChangeEmitter = new vscode.EventEmitter<TreeDataChange>();
+  public readonly onDidChangeTreeData = this.treeDataChangeEmitter.event;
 
-  repository: EntityTreeRepository;
+  private entities: EntityNode[] | undefined;
 
-  constructor(repository: EntityTreeRepository) {
-    this.repository = repository;
+  public setEntities(entities: EntityNode[]) {
+    this.entities = entities.sort((a, b) => a.id - b.id);
+    this.treeDataChangeEmitter.fire();
   }
 
-  public refresh(element?: EntityNode): void {
-    console.debug(`Refreshing "${element?.id || 'root'}" node`);
-    this.treeDataChangeEmitter.fire(element);
+  public setEntityName(entityId: EntityId, newName: string) {
+    this.entities = this.entities?.map((entity) => {
+      if (entity.id === entityId) {
+        return {
+          ...entity,
+          name: newName,
+        };
+      }
+      return entity;
+    });
+    this.treeDataChangeEmitter.fire();
   }
 
   getTreeItem(element: EntityNode): vscode.TreeItem {
@@ -42,14 +50,10 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
 
   getChildren(element?: EntityNode | undefined): vscode.ProviderResult<EntityNode[]> {
     if (element === undefined) {
-      return this.listEntities();
+      return this.entities;
     } else {
       return element.children;
     }
-  }
-
-  private async listEntities(): Promise<EntityNode[]> {
-    return (await this.repository.tree()).sort((a, b) => a.id - b.id);
   }
 }
 

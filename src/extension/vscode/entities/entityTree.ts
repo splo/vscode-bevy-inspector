@@ -18,4 +18,6 @@ export interface EntityTreeRepository {
   destroy(entity: EntityNode): Promise<void>;
   /** Reparents the specified entity under a new parent in the repository. */
   reparent(entity: EntityNode, parent: EntityNode | undefined): Promise<void>;
+  /** Checks if the specified type path is a name type. */
+  isNameType(typePath: string): boolean;
 }

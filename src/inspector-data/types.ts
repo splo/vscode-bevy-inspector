@@ -1,35 +1,11 @@
 import type { JSONSchema7 } from 'json-schema';
 
 /** A unique identifier for an entity within a Bevy world. */
-
 export type EntityId = number;
 /** The full path that defines a type. */
 export type TypePath = string;
-/** A reference to an entity. */
 
-export interface EntityRef {
-  id: EntityId;
-  name?: string;
-  parentId?: EntityId;
-  componentNames: TypePath[];
-}
-/** An entity with its components. */
-
-export interface Entity {
-  id: EntityId;
-  name?: string;
-  components: Component[];
-}
-/** An entity component with its value. */
-
-export interface Component {
-  value: unknown;
-  error?: string;
-  schema: BevyJsonSchemaDefinition;
-}
-/** A resource with its value. */
-
-export interface Resource {
+export interface TypedValue {
   value: unknown;
   error?: string;
   schema: BevyJsonSchemaDefinition;
