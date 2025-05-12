@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { V0_15BevyRemoteService } from '../../brp/http/v0_15JsonRpcBrp';
 import { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
-import type { Server, ServerRepository } from './server';
+import { isServer, type Server, type ServerRepository } from './server';
 import { ServerDataProvider } from './serverDataProvider';
 
 export class ServerController {
@@ -50,8 +50,8 @@ export class ServerController {
     }
   }
 
-  async removeServer(server: Server | undefined): Promise<void> {
-    if (server !== undefined && 'id' in server) {
+  async removeServer(server: unknown): Promise<void> {
+    if (isServer(server)) {
       const lastConnectedId = await this.repository.getLastConnected();
       if (lastConnectedId === server.id) {
         await this.disconnect(server);
@@ -61,8 +61,8 @@ export class ServerController {
     }
   }
 
-  async connect(server: Server | undefined): Promise<void> {
-    if (server !== undefined && 'id' in server) {
+  async connect(server: unknown): Promise<void> {
+    if (isServer(server)) {
       const connectedServer = await this.repository.getLastConnected().then((lastConnectedId) => {
         if (lastConnectedId !== undefined) {
           return this.repository.list().then((servers) => servers.find((s) => s.id === lastConnectedId));
@@ -104,8 +104,8 @@ export class ServerController {
     }
   }
 
-  async disconnect(server: Server | undefined): Promise<void> {
-    if (server !== undefined && 'id' in server) {
+  async disconnect(server: unknown): Promise<void> {
+    if (isServer(server)) {
       await this.repository.update({
         ...server,
       });

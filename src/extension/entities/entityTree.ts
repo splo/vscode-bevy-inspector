@@ -8,6 +8,17 @@ export interface EntityNode {
   children: EntityNode[];
 }
 
+export function isEntityNode(node: unknown): node is EntityNode {
+  return (
+    typeof node === 'object' &&
+    node !== null &&
+    'id' in node &&
+    'name' in node &&
+    'componentNames' in node &&
+    'children' in node
+  );
+}
+
 /** Repository interface for managing a tree of entities. */
 export interface EntityTreeRepository {
   /** Lists all entities in the repository as a tree structure. */

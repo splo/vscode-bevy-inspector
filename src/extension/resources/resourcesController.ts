@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
 import { isEventMessage } from '../../messages/types';
-import { PollingService } from '../vscode/polling';
+import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
 import { ResourcesViewProvider } from './resourcesViewProvider';
 
@@ -19,17 +19,35 @@ export class ResourcesController {
     );
     this.resourcesViewProvider.onMessageReceived(this.handleMessage.bind(this));
     context.subscriptions.push(
-      vscode.commands.registerCommand('bevyInspector.refreshResources', () => this.refresh()),
-      vscode.commands.registerCommand('bevyInspector.enableResourcesPolling', () => {
-        vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', true);
-        this.pollingService.enablePolling();
-      }),
-      vscode.commands.registerCommand('bevyInspector.disableResourcesPolling', () => {
-        vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', false);
-        this.pollingService.disablePolling();
-      }),
+      vscode.commands.registerCommand('bevyInspector.refreshResources', this.refresh.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.enableResourcesPolling', this.enablePolling.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.disableResourcesPolling', this.disablePolling.bind(this)),
     );
-    this.pollingService.onRefresh(async () => this.refresh());
+    this.pollingService.onRefresh(this.refresh.bind(this));
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
+        const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
+        this.pollingService.setDelay(delay);
+      }
+    });
+  }
+
+  private async enablePolling() {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', true);
+    this.pollingService.enablePolling();
+  }
+
+  private async disablePolling() {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', false);
+    this.pollingService.disablePolling();
+  }
+
+  private async refresh() {
+    const resources = await this.repository.listResources();
+    this.resourcesViewProvider.postMessage({
+      type: ValuesUpdated,
+      data: resources,
+    } satisfies ValuesUpdatedEvent);
   }
 
   private async handleMessage(message: unknown): Promise<void> {
@@ -50,14 +68,6 @@ export class ResourcesController {
         // Ignore others.
       }
     }
-  }
-
-  private async refresh() {
-    const resources = await this.repository.listResources();
-    this.resourcesViewProvider.postMessage({
-      type: ValuesUpdated,
-      data: resources,
-    } satisfies ValuesUpdatedEvent);
   }
 
   private async setResourceValue(event: UpdateRequestedEvent): Promise<boolean> {
