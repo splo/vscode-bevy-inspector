@@ -36,6 +36,7 @@ export class TreeController {
       }
     });
     context.subscriptions.push(
+      vscode.commands.registerCommand('bevyInspector.spawnEntity', this.spawnEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', this.destroyEntity.bind(this)),
     );
   }
@@ -65,6 +66,11 @@ export class TreeController {
 
   private handleSelectionChange(selectionChanged: vscode.TreeViewSelectionChangeEvent<EntityNode>) {
     this.entityNodeEmitter.fire(selectionChanged.selection[0]);
+  }
+
+  private async spawnEntity(): Promise<void> {
+    await this.repository.spawn();
+    this.refresh();
   }
 
   private async destroyEntity(entity: unknown): Promise<void> {
