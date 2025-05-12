@@ -2,7 +2,7 @@ import type * as vscode from 'vscode';
 import type { Server, ServerRepository } from './server';
 
 export class VscodeStateServerRepository implements ServerRepository {
-  state: vscode.Memento;
+  private state: vscode.Memento;
 
   constructor(state: vscode.Memento) {
     this.state = state;

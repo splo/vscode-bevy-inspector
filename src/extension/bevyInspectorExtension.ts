@@ -22,36 +22,41 @@ export class BevyInspectorExtension {
     serverController.onServerConnected((server: Server) => {
       switch ((server.version ?? '0.15.x').substring(0, 4)) {
         case '0.15': {
-          vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', true);
-          const brp = new V0_15BevyRemoteService(server.url);
-          const schemaService = new ReflectionSchemaService();
-          const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
-          const componentsController = new ComponentsController(
-            context,
-            new V0_15ComponentRepository(brp, schemaService),
-          );
-          treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-          componentsController.onValueUpdated(() => treeController.refresh());
+          this.setupBevy0_15(server, context);
           break;
         }
-        default:
-          vscode.window.showErrorMessage(`Unsupported Bevy version: "${server.version}".`);
-        // Falls through: try using latest version.
         case '0.16': {
-          vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', false);
-          const brp = new V0_16BevyRemoteService(server.url);
-          const schemaService = new RemoteSchemaService(brp);
-          const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
-          const componentsController = new ComponentsController(
-            context,
-            new V0_16ComponentRepository(brp, schemaService),
-          );
-          new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
-          treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-          componentsController.onValueUpdated((entityUpdated) => treeController.refreshNames(entityUpdated));
+          this.setupBevy0_16(server, context);
+          break;
+        }
+        default: {
+          vscode.window.showWarningMessage(`Unsupported Bevy version: "${server.version}".`);
+          // Still try to connect using the 0.16.x protocol.
+          this.setupBevy0_16(server, context);
           break;
         }
       }
     });
+  }
+
+  private setupBevy0_15(server: Server, context: vscode.ExtensionContext) {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', true);
+    const brp = new V0_15BevyRemoteService(server.url);
+    const schemaService = new ReflectionSchemaService();
+    const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
+    const componentsController = new ComponentsController(context, new V0_15ComponentRepository(brp, schemaService));
+    treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
+    componentsController.onValueUpdated(() => treeController.refresh());
+  }
+
+  private setupBevy0_16(server: Server, context: vscode.ExtensionContext) {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', false);
+    const brp = new V0_16BevyRemoteService(server.url);
+    const schemaService = new RemoteSchemaService(brp);
+    const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
+    const componentsController = new ComponentsController(context, new V0_16ComponentRepository(brp, schemaService));
+    new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
+    treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
+    componentsController.onValueUpdated((entityUpdated) => treeController.refreshNames(entityUpdated));
   }
 }
