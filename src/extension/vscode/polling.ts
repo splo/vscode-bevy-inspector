@@ -23,11 +23,9 @@ export class PollingService {
   public disablePolling() {
     clearInterval(this.timeout);
     this.timeout = undefined;
-    console.debug('Polling disabled');
   }
 
   public enablePolling() {
     this.timeout = setInterval(() => this.refreshEmitter.fire(), this.delay);
-    console.debug('Polling enabled');
   }
 }

@@ -5,8 +5,8 @@ import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
 import type { ComponentRepository } from './components';
 
 export class V0_16ComponentRepository implements ComponentRepository {
-  brp: BevyRemoteService;
-  schemaService: RemoteSchemaService;
+  private brp: BevyRemoteService;
+  private schemaService: RemoteSchemaService;
 
   constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
     this.brp = brp;

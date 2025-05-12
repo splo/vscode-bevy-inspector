@@ -1,12 +1,12 @@
 import type { BevyRemoteService, GetParams } from '../../brp/brp-0.15';
-import type { BevyJsonSchemaDefinition, TypedValue, TypePath } from '../../inspector-data/types';
+import type { TypedValue } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 import type { ReflectionSchemaService } from '../schemas/reflectionSchemaService';
 import type { ComponentRepository } from './components';
 
 export class V0_15ComponentRepository implements ComponentRepository {
-  brp: BevyRemoteService;
-  schemaService: ReflectionSchemaService;
+  private brp: BevyRemoteService;
+  private schemaService: ReflectionSchemaService;
 
   constructor(brp: BevyRemoteService, schemaService: ReflectionSchemaService) {
     this.brp = brp;
@@ -20,28 +20,22 @@ export class V0_15ComponentRepository implements ComponentRepository {
     };
     const result = await this.brp.get(params);
     const valuedComponents: TypedValue[] = await Promise.all(
-      Object.entries(result.components).map(async ([typePath, value]) => ({
+      Object.entries(result.components).map(([typePath, value]) => ({
         value,
-        schema: await this.schemaService.createTypeSchema(typePath, value),
+        schema: this.schemaService.createTypeSchema(typePath, value),
       })),
     );
     const erroneousComponents: TypedValue[] = await Promise.all(
-      Object.entries(result.errors).map(async ([typePath, error]) => ({
+      Object.entries(result.errors).map(([typePath, error]) => ({
         value: undefined,
         error: error.message,
-        schema: await this.schemaService.createTypeSchema(typePath, undefined),
+        schema: this.schemaService.createTypeSchema(typePath, undefined),
       })),
     );
     return valuedComponents.concat(erroneousComponents);
   }
 
   async setComponentValue(): Promise<void> {
-    throw new Error('Unsupported operation: setComponentValue');
-  }
-
-  getTypeSchema(typePath: TypePath): BevyJsonSchemaDefinition {
-    return {
-      typePath,
-    } as BevyJsonSchemaDefinition;
+    throw new Error("Bevy 0.15.x doesn't support setting component values");
   }
 }

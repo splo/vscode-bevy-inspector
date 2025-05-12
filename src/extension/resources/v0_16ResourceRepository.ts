@@ -4,8 +4,8 @@ import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
 import type { ResourceRepository } from './resources';
 
 export class V0_16ResourceRepository implements ResourceRepository {
-  brp: BevyRemoteService;
-  schemaService: RemoteSchemaService;
+  private brp: BevyRemoteService;
+  private schemaService: RemoteSchemaService;
 
   constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
     this.brp = brp;
