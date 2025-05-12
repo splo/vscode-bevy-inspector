@@ -4,6 +4,8 @@ import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import { EntityTreeDataProvider } from './entitiesDataProvider';
 import { isEntityNode, type EntityNode, type EntityTreeRepository } from './entityTree';
 
+const ENTITY_MIMETYPE = 'application/vnd.code.tree.bevyinspector.entities';
+
 export class TreeController {
   private repository: EntityTreeRepository;
   private treeDataProvider: EntityTreeDataProvider;
@@ -19,6 +21,12 @@ export class TreeController {
       treeDataProvider: this.treeDataProvider,
       showCollapseAll: true,
       canSelectMany: false,
+      dragAndDropController: {
+        dragMimeTypes: [ENTITY_MIMETYPE],
+        dropMimeTypes: [ENTITY_MIMETYPE],
+        handleDrag: this.handleDrag.bind(this),
+        handleDrop: this.handleDrop.bind(this),
+      },
     });
     context.subscriptions.push(this.treeView);
     this.repository.tree().then(this.treeDataProvider.setEntities.bind(this.treeDataProvider));
@@ -38,6 +46,7 @@ export class TreeController {
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.spawnEntity', this.spawnEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', this.destroyEntity.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.moveEntityToTopLevel', this.moveEntityToTopLevel.bind(this)),
     );
   }
 
@@ -79,6 +88,29 @@ export class TreeController {
       if (this.treeView.selection[0]?.id === entity.id) {
         this.entityNodeEmitter.fire(undefined);
       }
+      await this.refresh();
+    }
+  }
+
+  private async moveEntityToTopLevel(entity: unknown): Promise<void> {
+    if (isEntityNode(entity)) {
+      await this.repository.reparent(entity, undefined);
+      await this.refresh();
+    }
+  }
+
+  private handleDrag(source: readonly EntityNode[], dataTransfer: vscode.DataTransfer): void {
+    const entity = source[0];
+    dataTransfer.set(ENTITY_MIMETYPE, new vscode.DataTransferItem(entity));
+  }
+
+  private async handleDrop(target: EntityNode | undefined, dataTransfer: vscode.DataTransfer): Promise<void> {
+    const source = dataTransfer.get(ENTITY_MIMETYPE)?.value as EntityNode | undefined;
+    if (source) {
+      if (source.id === target?.id) {
+        target = undefined;
+      }
+      await this.repository.reparent(source, target);
       await this.refresh();
     }
   }
