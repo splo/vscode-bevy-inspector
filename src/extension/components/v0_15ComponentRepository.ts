@@ -1,4 +1,4 @@
-import type { BevyRemoteService, GetParams } from '../../brp/brp-0.15';
+import type { BevyRemoteService, EntityId, GetParams, InsertParams, TypePath } from '../../brp/brp-0.15';
 import type { TypedValue } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 import type { ReflectionSchemaService } from '../schemas/reflectionSchemaService';
@@ -37,5 +37,15 @@ export class V0_15ComponentRepository implements ComponentRepository {
 
   async setComponentValue(): Promise<void> {
     throw new Error("Bevy 0.15.x doesn't support setting component values");
+  }
+
+  async insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
+    const params: InsertParams = {
+      entity: entityId,
+      components: {
+        [typePath]: value,
+      },
+    };
+    await this.brp.insert(params);
   }
 }

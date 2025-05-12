@@ -11,4 +11,5 @@ export interface EntityUpdated {
 export interface ComponentRepository {
   listEntityComponents(entity: EntityNode): Promise<TypedValue[]>;
   setComponentValue(entityId: EntityId, typePath: TypePath, path: string, value: unknown): Promise<void>;
+  insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void>;
 }

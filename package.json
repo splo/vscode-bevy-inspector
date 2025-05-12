@@ -182,6 +182,13 @@
         "icon": "$(trash)",
         "category": "Bevy Inspector",
         "enablement": "view == bevyInspector.entities && viewItem == entity"
+      },
+      {
+        "command": "bevyInspector.insertComponent",
+        "title": "Insert Component",
+        "icon": "$(add)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.components"
       }
     ],
     "configuration": {
@@ -251,6 +258,11 @@
         {
           "command": "bevyInspector.spawnEntity",
           "when": "view == bevyInspector.entities",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.insertComponent",
+          "when": "view == bevyInspector.components",
           "group": "navigation"
         }
       ],

@@ -55,6 +55,24 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
       return element.children;
     }
   }
+
+  getParent(element: EntityNode): vscode.ProviderResult<EntityNode> {
+    return (this.entities || [])
+      .map((root) => this.findParentRecursive(root, element.id))
+      .find((parent) => parent !== undefined);
+  }
+
+  private findParentRecursive(node: EntityNode, childId: EntityId): EntityNode | undefined {
+    return node.children.find((child) => {
+      if (child.id === childId) {
+        return true;
+      }
+      const found = this.findParentRecursive(child, childId);
+      return !!found;
+    })
+      ? node
+      : node.children.map((child) => this.findParentRecursive(child, childId)).find((found) => found !== undefined);
+  }
 }
 
 function findNameFromComponents(typePaths: TypePath[]): string | undefined {

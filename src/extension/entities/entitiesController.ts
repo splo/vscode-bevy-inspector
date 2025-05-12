@@ -9,7 +9,7 @@ export class TreeController {
   private treeDataProvider: EntityTreeDataProvider;
   private treeView: vscode.TreeView<EntityNode>;
   private pollingService: PollingService = new PollingService();
-  private readonly entityNodeEmitter = new vscode.EventEmitter<EntityNode>();
+  private readonly entityNodeEmitter = new vscode.EventEmitter<EntityNode | undefined>();
   public readonly onSelectionChanged = this.entityNodeEmitter.event;
 
   constructor(context: vscode.ExtensionContext, repository: EntityTreeRepository) {
@@ -51,11 +51,10 @@ export class TreeController {
     this.pollingService.disablePolling();
   }
 
-  public refresh() {
-    this.repository.tree().then(this.treeDataProvider.setEntities.bind(this.treeDataProvider));
-    if (this.treeView.selection.length > 0) {
-      this.entityNodeEmitter.fire(this.treeView.selection[0]);
-    }
+  public async refresh() {
+    const entities = await this.repository.tree();
+    this.treeDataProvider.setEntities(entities);
+    this.entityNodeEmitter.fire(this.treeView.selection[0]);
   }
 
   public refreshNames(entityUpdated: EntityUpdated) {
@@ -69,14 +68,18 @@ export class TreeController {
   }
 
   private async spawnEntity(): Promise<void> {
-    await this.repository.spawn();
-    this.refresh();
+    const newEntity = await this.repository.spawn();
+    await this.refresh();
+    this.treeView.reveal(newEntity, { select: true, focus: true });
   }
 
   private async destroyEntity(entity: unknown): Promise<void> {
     if (isEntityNode(entity)) {
       await this.repository.destroy(entity);
-      this.refresh();
+      if (this.treeView.selection[0]?.id === entity.id) {
+        this.entityNodeEmitter.fire(undefined);
+      }
+      await this.refresh();
     }
   }
 }
