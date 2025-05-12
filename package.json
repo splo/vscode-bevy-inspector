@@ -170,6 +170,13 @@
         "enablement": "view == bevyInspector.resources"
       },
       {
+        "command": "bevyInspector.spawnEntity",
+        "title": "Spawn Entity",
+        "icon": "$(add)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.entities"
+      },
+      {
         "command": "bevyInspector.destroyEntity",
         "title": "Destroy Entity",
         "icon": "$(trash)",
@@ -239,6 +246,11 @@
         {
           "command": "bevyInspector.disableResourcesPolling",
           "when": "view == bevyInspector.resources && bevyInspector.resourcesPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.spawnEntity",
+          "when": "view == bevyInspector.entities",
           "group": "navigation"
         }
       ],
