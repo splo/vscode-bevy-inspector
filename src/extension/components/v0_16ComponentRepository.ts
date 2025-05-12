@@ -1,4 +1,4 @@
-import type { BevyRemoteService, GetParams, MutateComponentParams } from '../../brp/brp-0.16';
+import type { BevyRemoteService, GetParams, InsertParams, MutateComponentParams } from '../../brp/brp-0.16';
 import type { EntityId, TypedValue, TypePath } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
@@ -47,5 +47,15 @@ export class V0_16ComponentRepository implements ComponentRepository {
       value,
     };
     await this.brp.mutateComponent(params);
+  }
+
+  async insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
+    const params: InsertParams = {
+      entity: entityId,
+      components: {
+        [typePath]: value,
+      },
+    };
+    await this.brp.insert(params);
   }
 }

@@ -36,6 +36,14 @@ export class ComponentsController {
     });
     // Enable polling by default.
     this.enablePolling();
+    context.subscriptions.push(
+      vscode.commands.registerCommand('bevyInspector.insertComponent', this.insertComponent.bind(this)),
+    );
+  }
+
+  public async updateSelection(selectedEntity: EntityNode | undefined): Promise<void> {
+    this.selectedEntity = selectedEntity;
+    await this.refresh();
   }
 
   private async enablePolling() {
@@ -48,9 +56,52 @@ export class ComponentsController {
     this.pollingService.disablePolling();
   }
 
-  public async updateSelection(selectedEntity: EntityNode | undefined): Promise<void> {
-    this.selectedEntity = selectedEntity;
-    await this.refresh();
+  private async refresh() {
+    if (this.selectedEntity === undefined) {
+      this.componentsViewProvider.updateWithNoSelection();
+    } else {
+      const components = await this.repository.listEntityComponents(this.selectedEntity);
+      this.componentsViewProvider.updateWithSelectedEntity(this.selectedEntity, components);
+      this.componentsViewProvider.postMessage({
+        type: ValuesUpdated,
+        data: components,
+      } satisfies ValuesUpdatedEvent);
+    }
+  }
+
+  private async insertComponent(): Promise<void> {
+    if (this.selectedEntity === undefined) {
+      vscode.window.showErrorMessage('No entity selected');
+    } else {
+      const typePath = await vscode.window.showInputBox({
+        prompt: 'Enter the component type to insert',
+        placeHolder: 'bevy_ecs::name::Name or bevy_transform::components::transform::Transform',
+        ignoreFocusOut: true,
+      });
+      if (typePath) {
+        const jsonValue = await vscode.window.showInputBox({
+          prompt: 'Enter the component value in JSON format',
+          placeHolder: '"New Component" or { "translation": [0, 1, 0], "scale": [1, 1, 1], "rotation": [0, 0, 0, 1] }',
+          ignoreFocusOut: true,
+        });
+        if (jsonValue) {
+          try {
+            const value = JSON.parse(jsonValue);
+            await this.repository.insertComponent(this.selectedEntity.id, typePath, value);
+            this.selectedEntity.componentNames.push(typePath);
+            this.refresh();
+            this.valueUpdatedEmitter.fire({
+              entityId: this.selectedEntity.id,
+              typePath,
+              path: '',
+              newValue: value,
+            });
+          } catch (error: unknown) {
+            vscode.window.showErrorMessage(`Error inserting component: ${(error as Error).message}`);
+          }
+        }
+      }
+    }
   }
 
   private async handleMessage(message: unknown): Promise<void> {
@@ -69,19 +120,6 @@ export class ComponentsController {
         }
         // Ignore others.
       }
-    }
-  }
-
-  private async refresh() {
-    if (this.selectedEntity === undefined) {
-      this.componentsViewProvider.updateWithNoSelection();
-    } else {
-      const components = await this.repository.listEntityComponents(this.selectedEntity);
-      this.componentsViewProvider.updateWithSelectedEntity(this.selectedEntity, components);
-      this.componentsViewProvider.postMessage({
-        type: ValuesUpdated,
-        data: components,
-      } satisfies ValuesUpdatedEvent);
     }
   }
 
