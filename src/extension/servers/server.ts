@@ -5,6 +5,10 @@ export interface Server {
   version?: string | undefined;
 }
 
+export function isServer(object: unknown): object is Server {
+  return typeof object === 'object' && object !== null && 'id' in object && 'url' in object;
+}
+
 export interface ServerRepository {
   list(): Promise<Server[]>;
   add(url: string): Promise<Server>;

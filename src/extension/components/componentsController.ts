@@ -3,7 +3,7 @@ import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
 import { isEventMessage } from '../../messages/types';
 import type { EntityNode } from '../entities/entityTree';
-import { PollingService } from '../vscode/polling';
+import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ComponentRepository, EntityUpdated } from './components';
 import { ComponentsViewProvider } from './componentsViewProvider';
 
@@ -23,19 +23,29 @@ export class ComponentsController {
     );
     this.componentsViewProvider.onMessageReceived(this.handleMessage.bind(this));
     context.subscriptions.push(
-      vscode.commands.registerCommand('bevyInspector.refreshComponents', () => this.refresh()),
-      vscode.commands.registerCommand('bevyInspector.enableComponentsPolling', () => {
-        vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', true);
-        this.pollingService.enablePolling();
-      }),
-      vscode.commands.registerCommand('bevyInspector.disableComponentsPolling', () => {
-        vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', false);
-        this.pollingService.disablePolling();
-      }),
+      vscode.commands.registerCommand('bevyInspector.refreshComponents', this.refresh.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.enableComponentsPolling', this.enablePolling.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.disableComponentsPolling', this.disablePolling.bind(this)),
     );
-    this.pollingService.onRefresh(async () => this.refresh());
+    this.pollingService.onRefresh(this.refresh.bind(this));
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
+        const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
+        this.pollingService.setDelay(delay);
+      }
+    });
     // Enable polling by default.
-    vscode.commands.executeCommand('bevyInspector.enableComponentsPolling');
+    this.enablePolling();
+  }
+
+  private async enablePolling() {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', true);
+    this.pollingService.enablePolling();
+  }
+
+  private async disablePolling() {
+    vscode.commands.executeCommand('setContext', 'bevyInspector.componentsPollingEnabled', false);
+    this.pollingService.disablePolling();
   }
 
   public async updateSelection(selectedEntity: EntityNode | undefined): Promise<void> {
