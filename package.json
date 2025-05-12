@@ -184,6 +184,13 @@
         "enablement": "view == bevyInspector.entities && viewItem == entity"
       },
       {
+        "command": "bevyInspector.moveEntityToTopLevel",
+        "title": "Move Entity to Top Level",
+        "icon": "$(arrow-up)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.entities && viewItem == entity"
+      },
+      {
         "command": "bevyInspector.insertComponent",
         "title": "Insert Component",
         "icon": "$(add)",
@@ -289,6 +296,10 @@
         },
         {
           "command": "bevyInspector.destroyEntity",
+          "when": "view == bevyInspector.entities && viewItem == entity"
+        },
+        {
+          "command": "bevyInspector.moveEntityToTopLevel",
           "when": "view == bevyInspector.entities && viewItem == entity"
         }
       ],
