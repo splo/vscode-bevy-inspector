@@ -1,13 +1,13 @@
 import '@vscode-elements/elements/dist/vscode-collapsible';
 import '@vscode-elements/elements/dist/vscode-form-container';
 import { useState } from 'react';
-import type { UpdateRequestedData } from '../../inspector-data/messages';
-import { UpdateRequested } from '../../inspector-data/messages';
-import type { TypedValue } from '../../inspector-data/types';
-import { DynamicValue } from '../../schema-components/DynamicValue';
-import type { ValueUpdated } from '../../schema-components/valueProps';
-import { useRequest } from '../useRequest';
+import type { UpdateRequestedData } from '../inspector-data/messages';
+import { UpdateRequested } from '../inspector-data/messages';
+import type { TypedValue } from '../inspector-data/types';
+import { usePublisher } from '../messenger/usePublisher';
+import { DynamicValue } from './DynamicValue';
 import { ErrorCard } from './ErrorCard';
+import type { ValueUpdated } from './valueProps';
 
 interface TypedValueDetailsProps {
   typedValue: TypedValue;
@@ -15,7 +15,7 @@ interface TypedValueDetailsProps {
 
 export function TypedValueDetails({ typedValue }: TypedValueDetailsProps) {
   const [requestData, setRequestData] = useState<UpdateRequestedData>();
-  useRequest<UpdateRequestedData>(UpdateRequested, requestData);
+  usePublisher(UpdateRequested, requestData);
 
   if (typedValue.error || !typedValue.schema) {
     const errorMessage = typedValue.error || 'No schema found.';
@@ -28,8 +28,7 @@ export function TypedValueDetails({ typedValue }: TypedValueDetailsProps) {
     return null;
   }
 
-  const onValueChange = (event: ValueUpdated, treeValue: unknown) => {
-    console.debug('onValueChange:', event, treeValue);
+  const onValueChange = (event: ValueUpdated) => {
     setRequestData({ typePath: typedValue.schema.typePath, path: event.path, newValue: event.value });
   };
 

@@ -1,5 +1,4 @@
-import type { EventMessage } from '../messages/types';
-import type { TypedValue, TypePath } from './types';
+import type { EventMessage, TypedValue, TypePath } from './types';
 
 // Events passing from the views to the extension.
 export const ViewReady = 'ViewReady';

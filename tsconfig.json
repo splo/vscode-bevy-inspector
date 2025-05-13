@@ -1,14 +1,13 @@
 {
   "files": [],
   "references": [
-    { "path": "./src/brp/tsconfig.json" },
-    { "path": "./src/messages/tsconfig.json" },
-    { "path": "./src/messenger/tsconfig.json" },
-    { "path": "./src/schema-components/tsconfig.json" },
-    { "path": "./src/inspector-data/tsconfig.json" },
-    { "path": "./src/extension/tsconfig.json" },
-    { "path": "./src/components-view/tsconfig.json" },
-    { "path": "./src/resources-view/tsconfig.json" },
-    { "path": "./stories/tsconfig.json" }
+    { "path": "./src/brp" },
+    { "path": "./src/messenger" },
+    { "path": "./src/schema-components" },
+    { "path": "./src/inspector-data" },
+    { "path": "./src/extension" },
+    { "path": "./src/components-view" },
+    { "path": "./src/resources-view" },
+    { "path": "./stories" }
   ]
 }

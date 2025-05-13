@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../messages" }, { "path": "../inspector-data" }],
+  "references": [{ "path": "../brp" }, { "path": "../inspector-data" }],
   "compilerOptions": {
     // Modules
     "outDir": "../../out/extension",

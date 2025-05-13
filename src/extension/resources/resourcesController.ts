@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
-import { isEventMessage } from '../../messages/types';
+import { isEventMessage } from '../../inspector-data/types';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
 import { ResourcesViewProvider } from './resourcesViewProvider';

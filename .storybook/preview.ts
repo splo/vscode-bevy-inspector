@@ -17,6 +17,7 @@ window.vscodeApiMock.handler = (message) => {
   if (messageOutputElement) {
     messageOutputElement.textContent = JSON.stringify(message, null, 2);
   }
+  window.postMessage(message);
 };
 
 // @ts-expect-error This is fine.

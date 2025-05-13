@@ -5,6 +5,15 @@ export type EntityId = number;
 /** The full path that defines a type. */
 export type TypePath = string;
 
+export interface EventMessage<T> {
+  type: string;
+  data: T;
+}
+
+export function isEventMessage<T>(message: unknown): message is EventMessage<T> {
+  return typeof message === 'object' && message !== null && 'type' in message && 'data' in message;
+}
+
 export interface TypedValue {
   value: unknown;
   error?: string;

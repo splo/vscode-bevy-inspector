@@ -1,10 +1,12 @@
-import { ComponentsView } from '@bevy-inspector/components-view/ComponentsView';
+import { ComponentsView } from '@bevy-inspector/components-view/components/ComponentsView';
+import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
 import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
+import { VsCodeMessenger } from '@bevy-inspector/messenger/vscodeMessenger';
 import type { Mat3 } from '@bevy-inspector/schema-components/schema';
 import type { Meta, StoryObj } from '@storybook/react';
 import * as schema from './schema.json';
-import { messenger } from '@bevy-inspector/components-view/vscodeMessenger';
-import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
+
+const vscodeMessenger = new VsCodeMessenger(window.vscodeApiMock);
 
 const meta = {
   title: 'ComponentsView',
@@ -43,7 +45,7 @@ export const Empty: Story = {};
 
 export const ComponentWithSinglePrimitiveObject: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
@@ -61,7 +63,7 @@ export const ComponentWithSinglePrimitiveObject: Story = {
 
 export const ComponentWithReadOnlySchema: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
@@ -106,7 +108,7 @@ export const ComponentWithReadOnlySchema: Story = {
 
 export const ComponentWithError: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
@@ -121,7 +123,7 @@ export const ComponentWithError: Story = {
 
 export const ComponentWithMultiplePrimitives: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
@@ -143,7 +145,7 @@ export const ComponentWithMultiplePrimitives: Story = {
 
 export const ComponentWithOneOf: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
@@ -161,7 +163,7 @@ export const ComponentWithOneOf: Story = {
 
 export const ComponentWithVectors: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {

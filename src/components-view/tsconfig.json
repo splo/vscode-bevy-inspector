@@ -1,6 +1,14 @@
 {
   "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }, { "path": "../schema-components" }],
-  "include": ["**/*.ts", "**/*.d.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "**/*.css"],
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.css",
+    "../schema-components/TypedValueDetails.tsx"
+, "../schema-components/ErrorCard.tsx"  ],
   "compilerOptions": {
     // Type Checking
     "strict": true,
