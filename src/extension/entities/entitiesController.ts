@@ -6,7 +6,7 @@ import { isEntityNode, type EntityNode, type EntityTreeRepository } from './enti
 
 const ENTITY_MIMETYPE = 'application/vnd.code.tree.bevyinspector.entities';
 
-export class TreeController {
+export class TreeController implements vscode.Disposable {
   private repository: EntityTreeRepository;
   private treeDataProvider: EntityTreeDataProvider;
   private treeView: vscode.TreeView<EntityNode>;
@@ -50,6 +50,11 @@ export class TreeController {
     );
   }
 
+  dispose() {
+    this.disablePolling();
+    this.treeView.dispose();
+  }
+
   private async enablePolling() {
     vscode.commands.executeCommand('setContext', 'bevyInspector.entitiesPollingEnabled', true);
     this.pollingService.enablePolling();
@@ -61,6 +66,7 @@ export class TreeController {
   }
 
   public async refresh() {
+    console.debug(`[${new Date().toISOString()}] Refreshing entities view`);
     const entities = await this.repository.tree();
     this.treeDataProvider.setEntities(entities);
     this.entityNodeEmitter.fire(this.treeView.selection[0]);

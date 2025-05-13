@@ -7,7 +7,7 @@ import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ComponentRepository, EntityUpdated } from './components';
 import { ComponentsViewProvider } from './componentsViewProvider';
 
-export class ComponentsController {
+export class ComponentsController implements vscode.Disposable {
   private repository: ComponentRepository;
   private componentsViewProvider: ComponentsViewProvider;
   private selectedEntity: EntityNode | undefined;
@@ -36,9 +36,15 @@ export class ComponentsController {
     });
     // Enable polling by default.
     this.enablePolling();
+
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.insertComponent', this.insertComponent.bind(this)),
     );
+  }
+
+  dispose() {
+    this.disablePolling();
+    this.selectedEntity = undefined;
   }
 
   public async updateSelection(selectedEntity: EntityNode | undefined): Promise<void> {
@@ -57,6 +63,7 @@ export class ComponentsController {
   }
 
   private async refresh() {
+    console.debug(`[${new Date().toISOString()}] Refreshing components view`);
     if (this.selectedEntity === undefined) {
       this.componentsViewProvider.updateWithNoSelection();
     } else {

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { V0_15BevyRemoteService } from '../../brp/http/v0_15JsonRpcBrp';
 import { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
+import type { ConnectionChange } from './server';
 import { isServer, type Server, type ServerRepository } from './server';
 import { ServerDataProvider } from './serverDataProvider';
 
@@ -8,8 +9,8 @@ export class ServerController {
   private repository: ServerRepository;
   private dataProvider: ServerDataProvider;
   private treeView: vscode.TreeView<Server>;
-  private readonly serverConnectedEmitter = new vscode.EventEmitter<Server>();
-  public readonly onServerConnected = this.serverConnectedEmitter.event;
+  private readonly connectionChangeEmmiter = new vscode.EventEmitter<ConnectionChange>();
+  public readonly onConnectionChanged = this.connectionChangeEmmiter.event;
 
   constructor(context: vscode.ExtensionContext, repository: ServerRepository) {
     this.repository = repository;
@@ -99,8 +100,11 @@ export class ServerController {
       await this.repository.setLastConnected(updatedServer.id);
       this.dataProvider.setConnectedServerId(updatedServer.id);
       this.dataProvider.setServers(await this.repository.list());
-      this.serverConnectedEmitter.fire(updatedServer);
       vscode.commands.executeCommand('setContext', 'bevyInspector.connected', true);
+      this.connectionChangeEmmiter.fire({
+        server: updatedServer,
+        connected: true,
+      });
     }
   }
 
@@ -113,6 +117,10 @@ export class ServerController {
       this.dataProvider.setConnectedServerId(undefined);
       this.dataProvider.setServers(await this.repository.list());
       vscode.commands.executeCommand('setContext', 'bevyInspector.connected', false);
+      this.connectionChangeEmmiter.fire({
+        server,
+        connected: false,
+      });
     }
   }
 }
