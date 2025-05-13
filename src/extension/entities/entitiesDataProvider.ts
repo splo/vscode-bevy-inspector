@@ -14,14 +14,13 @@ class EntityItem extends vscode.TreeItem {
       findIconFromComponents(entity.componentNames) || 'symbol-class',
       new vscode.ThemeColor('symbolIcon.classForeground'),
     );
-    this.contextValue = 'entity';
   }
 }
 
 type TreeDataChange = EntityNode | undefined | null | void;
 
 export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
-  private readonly treeDataChangeEmitter = new vscode.EventEmitter<TreeDataChange>();
+  private treeDataChangeEmitter = new vscode.EventEmitter<TreeDataChange>();
   public readonly onDidChangeTreeData = this.treeDataChangeEmitter.event;
 
   private entities: EntityNode[] | undefined;
@@ -32,23 +31,26 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
   }
 
   public setEntityName(entityId: EntityId, newName: string) {
-    this.entities = this.entities?.map((entity) => {
-      if (entity.id === entityId) {
-        return {
-          ...entity,
-          name: newName,
-        };
-      }
-      return entity;
-    });
+    const updateNameRecursive = (entities: EntityNode[] | undefined): EntityNode[] | undefined => {
+      return entities?.map((entity) => {
+        if (entity.id === entityId) {
+          entity.name = newName;
+        }
+        entity.children = updateNameRecursive(entity.children) || [];
+        return entity;
+      });
+    };
+    this.entities = updateNameRecursive(this.entities);
     this.treeDataChangeEmitter.fire();
   }
 
   getTreeItem(element: EntityNode): vscode.TreeItem {
+    console.debug('getTreeItem', element);
     return new EntityItem(element);
   }
 
   getChildren(element?: EntityNode | undefined): vscode.ProviderResult<EntityNode[]> {
+    console.debug('getChildren', element);
     if (element === undefined) {
       return this.entities;
     } else {

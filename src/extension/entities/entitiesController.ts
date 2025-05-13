@@ -72,7 +72,7 @@ export class TreeController implements vscode.Disposable {
     this.entityNodeEmitter.fire(this.treeView.selection[0]);
   }
 
-  public refreshNames(entityUpdated: EntityUpdated) {
+  public refreshName(entityUpdated: EntityUpdated) {
     if (this.repository.isNameType(entityUpdated.typePath) && typeof entityUpdated.newValue === 'string') {
       this.treeDataProvider.setEntityName(entityUpdated.entityId, entityUpdated.newValue);
     }

@@ -56,7 +56,7 @@ export class BevyInspectorExtension {
     const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
     const componentsController = new ComponentsController(context, new V0_15ComponentRepository(brp, schemaService));
     treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-    componentsController.onValueUpdated((entityUpdated) => treeController.refreshNames(entityUpdated));
+    componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
     this.disposables.push(treeController, componentsController);
   }
 
@@ -69,7 +69,7 @@ export class BevyInspectorExtension {
     const resourcesController = new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
     const registryController = new RegistryController(context, new BrpRegistryRepository(brp));
     treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-    componentsController.onValueUpdated((entityUpdated) => treeController.refreshNames(entityUpdated));
+    componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
     this.disposables.push(treeController, componentsController, resourcesController, registryController);
   }
 }
