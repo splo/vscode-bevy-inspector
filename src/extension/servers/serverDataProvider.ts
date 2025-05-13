@@ -8,7 +8,7 @@ class ServerItem extends vscode.TreeItem {
     this.id = String(server.id);
     this.description = connected ? server.version : 'Disconnected';
     this.tooltip = server.url;
-    this.iconPath = new vscode.ThemeIcon('server');
+    this.iconPath = new vscode.ThemeIcon(connected ? 'vm-active' : 'vm');
     this.contextValue = connected ? 'connectedServer' : 'disconnectedServer';
   }
 }

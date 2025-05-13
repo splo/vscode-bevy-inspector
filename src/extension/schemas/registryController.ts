@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { RegistryDataProvider } from './registryDataProvider';
 import type { RegistryRepository } from './schemas';
 
-export class RegistryController {
+export class RegistryController implements vscode.Disposable {
   private repository: RegistryRepository;
   private treeDataProvider: RegistryDataProvider;
   private treeView: vscode.TreeView<unknown>;
@@ -22,7 +22,12 @@ export class RegistryController {
     );
   }
 
+  dispose() {
+    this.treeView.dispose();
+  }
+
   public async refresh() {
+    console.debug(`[${new Date().toISOString()}] Refreshing registry view`);
     const registry = await this.repository.registry();
     this.treeDataProvider.setRegistry(registry);
   }

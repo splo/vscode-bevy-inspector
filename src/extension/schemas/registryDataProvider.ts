@@ -53,7 +53,9 @@ function toTree(registry: BrpSchema[]): SchemaNodeItem[] {
         nodes.push(toPath(key, mapToNodes(value.children)));
       }
     }
-    return nodes;
+    return nodes.sort((a, b) => {
+      return a.type.localeCompare(b.type) * 10 + (a.label?.toString() ?? '').localeCompare(b.label?.toString() ?? '');
+    });
   }
 
   const tree = new Map<string, TreeNode>();
@@ -62,9 +64,7 @@ function toTree(registry: BrpSchema[]): SchemaNodeItem[] {
     return insertType(tree, modulePaths, schema);
   });
 
-  return mapToNodes(tree).sort((a, b) => {
-    return a.type.localeCompare(b.type);
-  });
+  return mapToNodes(tree);
 }
 
 /** Split typePath by '::' but ignore '::' inside parentheses and brackets */

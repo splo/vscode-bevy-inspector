@@ -6,7 +6,7 @@ import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
 import { ResourcesViewProvider } from './resourcesViewProvider';
 
-export class ResourcesController {
+export class ResourcesController implements vscode.Disposable {
   private repository: ResourceRepository;
   private resourcesViewProvider: ResourcesViewProvider;
   private pollingService: PollingService = new PollingService();
@@ -32,6 +32,10 @@ export class ResourcesController {
     });
   }
 
+  dispose() {
+    this.disablePolling();
+  }
+
   private async enablePolling() {
     vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesPollingEnabled', true);
     this.pollingService.enablePolling();
@@ -43,6 +47,7 @@ export class ResourcesController {
   }
 
   private async refresh() {
+    console.debug(`[${new Date().toISOString()}] Refreshing resources view`);
     const resources = await this.repository.listResources();
     this.resourcesViewProvider.postMessage({
       type: ValuesUpdated,
