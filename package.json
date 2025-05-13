@@ -170,6 +170,13 @@
         "enablement": "view == bevyInspector.resources"
       },
       {
+        "command": "bevyInspector.refreshSchemas",
+        "title": "Refresh Schema Registry",
+        "icon": "$(refresh)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.schemas"
+      },
+      {
         "command": "bevyInspector.spawnEntity",
         "title": "Spawn Entity",
         "icon": "$(add)",
@@ -260,6 +267,11 @@
         {
           "command": "bevyInspector.disableResourcesPolling",
           "when": "view == bevyInspector.resources && bevyInspector.resourcesPollingEnabled",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.refreshSchemas",
+          "when": "view == bevyInspector.schemas",
           "group": "navigation"
         },
         {
@@ -371,6 +383,15 @@
           "type": "webview",
           "when": "!bevyInspector.resourcesUnsupported && bevyInspector.connected",
           "initialSize": 8
+        },
+        {
+          "id": "bevyInspector.schemas",
+          "name": "Schema Registry",
+          "icon": "resources/bevy-inspector.png",
+          "type": "tree",
+          "when": "!bevyInspector.registryUnsupported && bevyInspector.connected",
+          "initialSize": 2,
+          "visibility": "collapsed"
         }
       ]
     },
