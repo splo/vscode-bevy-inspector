@@ -188,14 +188,14 @@
         "title": "Destroy Entity",
         "icon": "$(trash)",
         "category": "Bevy Inspector",
-        "enablement": "view == bevyInspector.entities && viewItem == entity"
+        "enablement": "view == bevyInspector.entities"
       },
       {
         "command": "bevyInspector.moveEntityToTopLevel",
         "title": "Move Entity to Top Level",
         "icon": "$(arrow-up)",
         "category": "Bevy Inspector",
-        "enablement": "view == bevyInspector.entities && viewItem == entity"
+        "enablement": "view == bevyInspector.entities"
       },
       {
         "command": "bevyInspector.insertComponent",
@@ -303,16 +303,16 @@
         },
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector.entities && viewItem == entity",
+          "when": "view == bevyInspector.entities",
           "group": "inline"
         },
         {
           "command": "bevyInspector.destroyEntity",
-          "when": "view == bevyInspector.entities && viewItem == entity"
+          "when": "view == bevyInspector.entities"
         },
         {
           "command": "bevyInspector.moveEntityToTopLevel",
-          "when": "view == bevyInspector.entities && viewItem == entity"
+          "when": "view == bevyInspector.entities"
         }
       ],
       "commandPalette": [
