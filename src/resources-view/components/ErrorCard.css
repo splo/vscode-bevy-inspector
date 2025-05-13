@@ -1,8 +1,0 @@
-.error-card vscode-icon {
-  color: var(--vscode-errorForeground);
-}
-
-.error-card p {
-  overflow-x: scroll;
-  scrollbar-color: auto;
-}

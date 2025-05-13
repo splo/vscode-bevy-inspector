@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../messages" }],
+  "references": [{ "path": "../inspector-data" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -22,6 +22,7 @@
     // Language and Environment
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "target": "ES2022",
+    "jsx": "react-jsx",
 
     // Project
     "composite": true,

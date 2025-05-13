@@ -2,10 +2,10 @@
   "include": ["global.d.ts", "**/*", "**/*.json"],
   "exclude": ["tsconfig.json"],
   "references": [
-    { "path": "../src/schema-components/tsconfig.json" },
-    { "path": "../src/inspector-data/tsconfig.json" },
-    { "path": "../src/components-view/tsconfig.json" },
-    { "path": "../src/resources-view/tsconfig.json" }
+    { "path": "../src/schema-components" },
+    { "path": "../src/inspector-data" },
+    { "path": "../src/components-view" },
+    { "path": "../src/resources-view" }
   ],
   "compilerOptions": {
     // Type Checking

@@ -1,9 +1,11 @@
 import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
 import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
-import { ResourcesView } from '@bevy-inspector/resources-view/ResourcesView';
-import { messenger } from '@bevy-inspector/resources-view/vscodeMessenger';
+import { VsCodeMessenger } from '@bevy-inspector/messenger/vscodeMessenger';
+import { ResourcesView } from '@bevy-inspector/resources-view/components/ResourcesView';
 import type { Meta, StoryObj } from '@storybook/react';
 import * as schema from './schema.json';
+
+const vscodeMessenger = new VsCodeMessenger(window.vscodeApiMock);
 
 const meta = {
   title: 'ResourcesView',
@@ -19,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 export const ResourceWithPrimitiveObject: Story = {
   play: () => {
-    messenger.handleIncomingMessage({
+    vscodeMessenger.publishEvent({
       type: ValuesUpdated,
       data: [
         {
