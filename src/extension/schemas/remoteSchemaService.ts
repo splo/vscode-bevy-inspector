@@ -18,6 +18,12 @@ export class RemoteSchemaService {
   }
 
   public async getTypeSchema(typePath: TypePath): Promise<BevyJsonSchemaDefinition> {
+    const root = await this.getRootSchema();
+    // If missing type schema, return a default one, used for error details.
+    return root.$defs[typePath] || { typePath, shortPath: shortenTypePath(typePath) };
+  }
+
+  private async getRootSchema(): Promise<BevyRootJsonSchema> {
     if (this.cachedSchema === null) {
       console.debug('Cache miss for schema');
       const registry = await this.brp.registrySchema();
@@ -28,8 +34,7 @@ export class RemoteSchemaService {
     } else {
       console.debug('Cache hit for schema');
     }
-    // If missing type schema, return a default one, used for error details.
-    return this.cachedSchema.$defs[typePath] || { typePath, shortPath: shortenTypePath(typePath) };
+    return this.cachedSchema;
   }
 
   public invalidateCache() {

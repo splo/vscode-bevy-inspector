@@ -9,7 +9,9 @@ import { V0_15EntityTreeRepository } from './entities/v0_15EntityTreeRepository'
 import { V0_16EntityTreeRepository } from './entities/v0_16EntityTreeRepository';
 import { ResourcesController } from './resources/resourcesController';
 import { V0_16ResourceRepository } from './resources/v0_16ResourceRepository';
+import { BrpRegistryRepository } from './schemas/brpRegistryRepository';
 import { ReflectionSchemaService } from './schemas/reflectionSchemaService';
+import { RegistryController } from './schemas/registryController';
 import { RemoteSchemaService } from './schemas/remoteSchemaService';
 import type { Server } from './servers/server';
 import { ServerController } from './servers/serverController';
@@ -56,6 +58,7 @@ export class BevyInspectorExtension {
     const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
     const componentsController = new ComponentsController(context, new V0_16ComponentRepository(brp, schemaService));
     new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
+    new RegistryController(context, new BrpRegistryRepository(brp));
     treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
     componentsController.onValueUpdated((entityUpdated) => treeController.refreshNames(entityUpdated));
   }
