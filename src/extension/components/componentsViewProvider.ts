@@ -4,10 +4,12 @@ import type { EntityNode } from '../entities/entityTree';
 import { loadHtml } from '../vscode/htmlLoader';
 
 export class ComponentsViewProvider implements vscode.WebviewViewProvider {
-  private readonly messageReceivedEmitter = new vscode.EventEmitter<unknown>();
-  public readonly onMessageReceived = this.messageReceivedEmitter.event;
   private extensionUri: vscode.Uri;
   private view: vscode.WebviewView | undefined;
+  private readonly messageReceivedEmitter = new vscode.EventEmitter<unknown>();
+  private readonly visibilityChangeEmitter = new vscode.EventEmitter<boolean>();
+  public readonly onMessageReceived = this.messageReceivedEmitter.event;
+  public readonly onVisibilityChanged = this.visibilityChangeEmitter.event;
 
   constructor(extensionUri: vscode.Uri) {
     this.extensionUri = extensionUri;
@@ -18,6 +20,7 @@ export class ComponentsViewProvider implements vscode.WebviewViewProvider {
     this.view.webview.options = {
       enableScripts: true,
     };
+    this.view.onDidChangeVisibility(() => this.visibilityChangeEmitter.fire(this.view?.visible ?? false));
     this.view.webview.html = loadHtml({
       webview: this.view.webview,
       contentBaseUri: this.extensionUri,
