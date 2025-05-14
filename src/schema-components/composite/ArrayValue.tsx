@@ -4,7 +4,7 @@ import '@vscode-elements/elements/dist/vscode-label';
 import { capitalCase } from 'text-case';
 import type { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
-import { generateDefault } from '../schema';
+import { generateDefault } from '../../inspector-data/schema';
 import type { ValueProps, ValueUpdated } from '../valueProps';
 import './ArrayValue.css';
 
