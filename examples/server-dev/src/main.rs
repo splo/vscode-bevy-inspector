@@ -24,6 +24,7 @@ fn main() {
         .add_systems(Update, move_cube)
         .register_type::<Cube>()
         .register_type::<MyObject>()
+        .register_type::<MoveSpeed>()
         .run();
 }
 
@@ -36,6 +37,12 @@ struct Cube(f32);
 struct MyObject {
     vec3: Vec3,
     color: Color,
+}
+
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+struct MoveSpeed {
+    value: f32,
 }
 
 fn setup(
@@ -97,8 +104,13 @@ fn setup(
     ));
 }
 
-fn move_cube(mut query: Query<&mut Transform, With<Cube>>, time: Res<Time>) {
+fn move_cube(
+    mut query: Query<&mut Transform, With<Cube>>,
+    time: Res<Time>,
+    move_speed_res: Option<Res<MoveSpeed>>,
+) {
+    let move_speed = move_speed_res.map(|res| res.value).unwrap_or(1.0);
     for mut transform in &mut query {
-        transform.translation.y = -cos(time.elapsed_secs()) + 1.5;
+        transform.translation.y = -cos(time.elapsed_secs() * move_speed) + 1.5;
     }
 }
