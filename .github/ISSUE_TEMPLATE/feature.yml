@@ -1,0 +1,45 @@
+name: Feature Request
+description: Request a new feature.
+title: 'Missing <name of feature>'
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests should be framed as a problem that needs to be solved.
+        Issues are problems; pull requests are solutions.
+  - type: dropdown
+    id: version
+    attributes:
+      label: Bevy Inspector Version
+      description: Which version of Bevy Inspector are you using?
+      options:
+        - 0.3.x
+        - 0.2.x
+        - 0.1.x
+      multiple: false
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Feature Description
+      description: Describe the feature you want to request. It should be framed as a problem that needs to be solved.
+      placeholder: There is no way to <describe the feature> ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution(s) for the feature.
+    validations:
+      required: false
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, logs, screenshots, or references to related issues or discussions.
+    validations:
+      required: false
