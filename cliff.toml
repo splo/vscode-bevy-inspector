@@ -35,7 +35,7 @@ Unreleased
 
     {% for commit in commits -%}
         - {{ commit.message | split(pat="\n") | first | upper_first | trim_end_matches(pat=".") -}}
-            {% if commit.remote.username != "splo" %} by @{{ commit.remote.username }}{%- endif %}.
+            {% if commit.remote is defined and commit.remote.username is defined and commit.remote.username != "splo" %} by @{{ commit.remote.username }}{%- endif %}.
     {% endfor %}
 {%- endfor %}
 
