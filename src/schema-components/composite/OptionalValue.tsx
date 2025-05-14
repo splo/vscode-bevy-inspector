@@ -6,7 +6,7 @@ import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { capitalCase } from 'text-case';
 import { DynamicValue } from '../DynamicValue';
-import { generateDefault } from '../schema';
+import { generateDefault } from '../../inspector-data/schema';
 import type { ValueProps } from '../valueProps';
 
 export function OptionalValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<unknown>) {

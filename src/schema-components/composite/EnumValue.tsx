@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { capitalCase } from 'text-case';
 import type { BevyJsonSchema } from '../../inspector-data/types';
 import { DynamicValue } from '../DynamicValue';
-import { adheresToSchema, generateDefault } from '../schema';
+import { adheresToSchema, generateDefault } from '../../inspector-data/schema';
 import type { ValueProps, ValueUpdated } from '../valueProps';
 
 export function EnumValue({ name, path, value, schema, readOnly, onValueChange }: ValueProps<unknown>) {
