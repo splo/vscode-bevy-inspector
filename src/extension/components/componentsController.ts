@@ -19,7 +19,9 @@ export class ComponentsController implements vscode.Disposable {
     this.repository = repository;
     this.componentsViewProvider = new ComponentsViewProvider(context.extensionUri);
     context.subscriptions.push(
-      vscode.window.registerWebviewViewProvider('bevyInspector.components', this.componentsViewProvider),
+      vscode.window.registerWebviewViewProvider('bevyInspector.components', this.componentsViewProvider, {
+        webviewOptions: { retainContextWhenHidden: true },
+      }),
     );
     this.componentsViewProvider.onMessageReceived(this.handleMessage.bind(this));
     context.subscriptions.push(
@@ -36,6 +38,14 @@ export class ComponentsController implements vscode.Disposable {
     });
     // Enable polling by default.
     this.enablePolling();
+
+    this.componentsViewProvider.onVisibilityChanged((visible) => {
+      if (visible) {
+        this.enablePolling();
+      } else {
+        this.disablePolling();
+      }
+    });
 
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.insertComponent', this.insertComponent.bind(this)),
