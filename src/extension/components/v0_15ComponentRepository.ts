@@ -39,6 +39,10 @@ export class V0_15ComponentRepository implements ComponentRepository {
     throw new Error("Bevy 0.15.x doesn't support setting component values");
   }
 
+  async listTypePaths(): Promise<TypePath[]> {
+    throw new Error("Bevy 0.15.x doesn't support listing type paths");
+  }
+
   async insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
     const params: InsertParams = {
       entity: entityId,

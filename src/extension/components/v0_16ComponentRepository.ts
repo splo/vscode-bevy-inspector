@@ -49,6 +49,11 @@ export class V0_16ComponentRepository implements ComponentRepository {
     await this.brp.mutateComponent(params);
   }
 
+  async listTypePaths(): Promise<TypePath[]> {
+    const registry = await this.brp.registrySchema();
+    return Object.keys(registry);
+  }
+
   async insertComponent(entityId: EntityId, typePath: TypePath, value: unknown): Promise<void> {
     const params: InsertParams = {
       entity: entityId,
