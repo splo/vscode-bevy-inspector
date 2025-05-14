@@ -3,6 +3,9 @@ description: Report a bug.
 labels:
   - bug
 body:
+  - type: markdown
+    attributes:
+      value: Read the [contributing guide](https://github.com/splo/vscode-bevy-inspector/CONTRIBUTING.md).
   - type: dropdown
     id: version
     attributes:
