@@ -6,6 +6,9 @@ labels:
 body:
   - type: markdown
     attributes:
+      value: Read the [contributing guide](https://github.com/splo/vscode-bevy-inspector/CONTRIBUTING.md).
+  - type: markdown
+    attributes:
       value: |
         Feature requests should be framed as a problem that needs to be solved.
         Issues are problems; pull requests are solutions.
