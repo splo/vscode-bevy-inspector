@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
@@ -30,6 +31,10 @@ export class ResourcesController implements vscode.Disposable {
         this.pollingService.setDelay(delay);
       }
     });
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('bevyInspector.insertResource', this.insertResource.bind(this)),
+    );
   }
 
   dispose() {
@@ -83,6 +88,44 @@ export class ResourcesController implements vscode.Disposable {
       const message = (error as Error).message;
       vscode.window.showErrorMessage(`Error setting resource value: ${message}`);
       return false;
+    }
+  }
+
+  private async insertResource(): Promise<void> {
+    const typePath = await this.promptForTypePath();
+    if (typePath) {
+      const jsonValue = await vscode.window.showInputBox({
+        prompt: 'Enter the resource value in JSON format',
+        placeHolder: '{"key": "value"}',
+        ignoreFocusOut: true,
+      });
+      if (jsonValue) {
+        try {
+          const value = JSON.parse(jsonValue);
+          await this.repository.insertResource(typePath, value);
+          this.refresh();
+        } catch (error: unknown) {
+          vscode.window.showErrorMessage(`Error inserting resource: ${(error as Error).message}`);
+        }
+      }
+    }
+  }
+
+  private async promptForTypePath(): Promise<TypePath | undefined> {
+    try {
+      const items = await this.repository.listTypePaths();
+      return await vscode.window.showQuickPick(items, {
+        title: 'Enter the resource type to insert',
+        ignoreFocusOut: true,
+        canPickMany: false,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      return await vscode.window.showInputBox({
+        title: 'Enter the resource type to insert',
+        placeHolder: 'bevy_core::name::Name or bevy_transform::components::transform::Transform',
+        ignoreFocusOut: true,
+      });
     }
   }
 }
