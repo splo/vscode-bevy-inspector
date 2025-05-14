@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
@@ -90,11 +91,7 @@ export class ComponentsController implements vscode.Disposable {
     if (this.selectedEntity === undefined) {
       vscode.window.showErrorMessage('No entity selected');
     } else {
-      const typePath = await vscode.window.showInputBox({
-        prompt: 'Enter the component type to insert',
-        placeHolder: 'bevy_ecs::name::Name or bevy_transform::components::transform::Transform',
-        ignoreFocusOut: true,
-      });
+      const typePath = await this.promptForTypePath();
       if (typePath) {
         const jsonValue = await vscode.window.showInputBox({
           prompt: 'Enter the component value in JSON format',
@@ -162,6 +159,24 @@ export class ComponentsController implements vscode.Disposable {
       const message = (error as Error).message;
       vscode.window.showErrorMessage(`Error setting component value: ${message}`);
       return false;
+    }
+  }
+
+  private async promptForTypePath(): Promise<TypePath | undefined> {
+    try {
+      const items = await this.repository.listTypePaths();
+      return await vscode.window.showQuickPick(items, {
+        title: 'Enter the component type to insert',
+        ignoreFocusOut: true,
+        canPickMany: false,
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error: unknown) {
+      return await vscode.window.showInputBox({
+        title: 'Enter the component type to insert',
+        placeHolder: 'bevy_core::name::Name or bevy_transform::components::transform::Transform',
+        ignoreFocusOut: true,
+      });
     }
   }
 }
