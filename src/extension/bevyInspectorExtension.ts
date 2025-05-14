@@ -51,6 +51,7 @@ export class BevyInspectorExtension {
 
   private setupBevy0_15(server: Server, context: vscode.ExtensionContext) {
     vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', true);
+    vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', true);
     const brp = new V0_15BevyRemoteService(server.url);
     const schemaService = new ReflectionSchemaService();
     const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
@@ -62,6 +63,7 @@ export class BevyInspectorExtension {
 
   private setupBevy0_16(server: Server, context: vscode.ExtensionContext) {
     vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', false);
+    vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', false);
     const brp = new V0_16BevyRemoteService(server.url);
     const schemaService = new RemoteSchemaService(brp);
     const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
