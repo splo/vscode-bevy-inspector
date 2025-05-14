@@ -1,4 +1,11 @@
-import type { BevyRemoteService, BrpError, GetResourceParams, MutateResourceParams } from '../../brp/brp-0.16';
+import type {
+  BevyRemoteService,
+  BrpError,
+  GetResourceParams,
+  InsertResourceParams,
+  MutateResourceParams,
+  TypePath,
+} from '../../brp/brp-0.16';
 import type { TypedValue } from '../../inspector-data/types';
 import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
 import type { ResourceRepository } from './resources';
@@ -33,6 +40,19 @@ export class V0_16ResourceRepository implements ResourceRepository {
       }),
     );
     return resources;
+  }
+
+  async listTypePaths(): Promise<TypePath[]> {
+    const registry = await this.brp.registrySchema();
+    return Object.keys(registry);
+  }
+
+  async insertResource(typePath: string, value: unknown): Promise<void> {
+    const params: InsertResourceParams = {
+      resource: typePath,
+      value,
+    };
+    await this.brp.insertResource(params);
   }
 
   async setResourceValue(typePath: string, path: string, value: unknown): Promise<void> {

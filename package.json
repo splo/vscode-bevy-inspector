@@ -204,6 +204,13 @@
         "icon": "$(add)",
         "category": "Bevy Inspector",
         "enablement": "view == bevyInspector.components"
+      },
+      {
+        "command": "bevyInspector.insertResource",
+        "title": "Insert Resource",
+        "icon": "$(add)",
+        "category": "Bevy Inspector",
+        "enablement": "!bevyInspector.resourcesUnsupported && view == bevyInspector.resources"
       }
     ],
     "configuration": {
@@ -283,6 +290,11 @@
         {
           "command": "bevyInspector.insertComponent",
           "when": "view == bevyInspector.components",
+          "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.insertResource",
+          "when": "!bevyInspector.resourcesUnsupported && view == bevyInspector.resources",
           "group": "navigation"
         }
       ],
