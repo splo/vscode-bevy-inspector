@@ -9,6 +9,7 @@ export class ServerController {
   private repository: ServerRepository;
   private dataProvider: ServerDataProvider;
   private treeView: vscode.TreeView<Server>;
+  private statusBar: vscode.StatusBarItem;
   private readonly connectionChangeEmmiter = new vscode.EventEmitter<ConnectionChange>();
   public readonly onConnectionChanged = this.connectionChangeEmmiter.event;
 
@@ -20,8 +21,11 @@ export class ServerController {
       showCollapseAll: false,
       canSelectMany: false,
     });
+    this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
+    this.setStatusBarStatus('Disconnected');
+    this.statusBar.show();
     this.initializeServers();
-    context.subscriptions.push(this.treeView);
+    context.subscriptions.push(this.treeView, this.statusBar);
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.addServer', this.addServer.bind(this)),
       vscode.commands.registerCommand('bevyInspector.removeServer', this.removeServer.bind(this)),
@@ -64,6 +68,7 @@ export class ServerController {
 
   async connect(server: unknown): Promise<void> {
     if (isServer(server)) {
+      this.setStatusBarStatus('Connecting');
       const connectedServer = await this.repository.getLastConnected().then((lastConnectedId) => {
         if (lastConnectedId !== undefined) {
           return this.repository.list().then((servers) => servers.find((s) => s.id === lastConnectedId));
@@ -101,6 +106,7 @@ export class ServerController {
       this.dataProvider.setConnectedServerId(updatedServer.id);
       this.dataProvider.setServers(await this.repository.list());
       vscode.commands.executeCommand('setContext', 'bevyInspector.connected', true);
+      this.setStatusBarStatus('Connected', updatedServer);
       this.connectionChangeEmmiter.fire({
         server: updatedServer,
         connected: true,
@@ -117,10 +123,33 @@ export class ServerController {
       this.dataProvider.setConnectedServerId(undefined);
       this.dataProvider.setServers(await this.repository.list());
       vscode.commands.executeCommand('setContext', 'bevyInspector.connected', false);
+      this.setStatusBarStatus('Disconnected');
       this.connectionChangeEmmiter.fire({
         server,
         connected: false,
       });
     }
   }
+
+  private setStatusBarStatus(status: StatusBarStatus, server?: Server): void {
+    switch (status) {
+      case 'Connecting': {
+        this.statusBar.command = 'bevyInspector.disconnect';
+        this.statusBar.text = `$(sync~spin) Connecting...`;
+        break;
+      }
+      case 'Connected': {
+        this.statusBar.command = 'bevyInspector.disconnect';
+        this.statusBar.text = `$(vm-active) ${server?.version ?? 'Connected'}`;
+        break;
+      }
+      case 'Disconnected': {
+        this.statusBar.command = 'bevyInspector.connect';
+        this.statusBar.text = `$(vm-connect) Not connected`;
+        break;
+      }
+    }
+  }
 }
+
+type StatusBarStatus = 'Connecting' | 'Connected' | 'Disconnected';
