@@ -45,12 +45,10 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
   }
 
   getTreeItem(element: EntityNode): vscode.TreeItem {
-    console.debug('getTreeItem', element);
     return new EntityItem(element);
   }
 
   getChildren(element?: EntityNode | undefined): vscode.ProviderResult<EntityNode[]> {
-    console.debug('getChildren', element);
     if (element === undefined) {
       return this.entities;
     } else {

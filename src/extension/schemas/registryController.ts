@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { logger } from '../vscode/logger';
 import { RegistryDataProvider } from './registryDataProvider';
 import type { RegistryRepository } from './schemas';
 
@@ -27,7 +28,7 @@ export class RegistryController implements vscode.Disposable {
   }
 
   public async refresh() {
-    console.debug(`[${new Date().toISOString()}] Refreshing registry view`);
+    logger.debug(`Refreshing registry view`);
     const registry = await this.repository.registry();
     this.treeDataProvider.setRegistry(registry);
   }

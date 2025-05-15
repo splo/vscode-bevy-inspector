@@ -7,10 +7,12 @@ import type * as brp from '../../brp/brp-0.16';
 export class V0_16BevyRemoteService implements brp.BevyRemoteService {
   private _url: string;
   private _currentId: number;
+  private logger: (message: string, ...args: unknown[]) => void;
 
-  public constructor(url: string) {
+  public constructor(url: string, logger: (message: string, ...args: unknown[]) => void) {
     this._url = url;
     this._currentId = 0;
+    this.logger = logger;
   }
 
   public get url(): string {
@@ -119,9 +121,9 @@ export class V0_16BevyRemoteService implements brp.BevyRemoteService {
         'Content-Type': 'application/json',
       },
     };
-    console.debug('BRP request:', request);
+    this.logger('BRP request:', request);
     const response = await axios.post<RS, AxiosResponse<RS>, RQ>(this.url, request, config);
-    console.debug('BRP response:', response.data);
+    this.logger('BRP response:', response.data);
     if (isJsonRpcSuccess<R>(response.data)) {
       return response.data.result;
     } else {

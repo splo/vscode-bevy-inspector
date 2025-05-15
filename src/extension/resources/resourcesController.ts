@@ -3,6 +3,7 @@ import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../
 import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
 import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
+import { logger } from '../vscode/logger';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ResourceRepository } from './resources';
 import { ResourcesViewProvider } from './resourcesViewProvider';
@@ -52,7 +53,7 @@ export class ResourcesController implements vscode.Disposable {
   }
 
   private async refresh() {
-    console.debug(`[${new Date().toISOString()}] Refreshing resources view`);
+    logger.debug(`Refreshing resources view`);
     const resources = await this.repository.listResources();
     this.resourcesViewProvider.postMessage({
       type: ValuesUpdated,

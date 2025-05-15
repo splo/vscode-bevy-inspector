@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { V0_15BevyRemoteService } from '../../brp/http/v0_15JsonRpcBrp';
 import { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
+import { logger } from '../vscode/logger';
 import type { ConnectionChange } from './server';
 import { isServer, type Server, type ServerRepository } from './server';
 import { ServerDataProvider } from './serverDataProvider';
@@ -82,14 +83,14 @@ export class ServerController {
         ...server,
       };
       try {
-        const service = new V0_16BevyRemoteService(server.url);
+        const service = new V0_16BevyRemoteService(server.url, logger.debug);
         const serverInfo = await service.discover();
         updatedServer.name = serverInfo.servers[0].name;
         updatedServer.version = serverInfo.info.version;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error: unknown) {
         try {
-          const service = new V0_15BevyRemoteService(server.url);
+          const service = new V0_15BevyRemoteService(server.url, logger.debug);
           await service.query({ data: {} });
           updatedServer.version = '0.15.x';
         } catch (error: unknown) {

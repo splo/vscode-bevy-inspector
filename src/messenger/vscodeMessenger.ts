@@ -15,7 +15,6 @@ export class VsCodeMessenger<T = unknown> {
 
   public subscribeToEvent<T>(type: string, handler: (event: EventMessage<T>) => void): () => void {
     const listener = (message: MessageEvent<EventMessage<T>>): void => {
-      console.debug('Listener triggered:', message);
       if (isEventMessage(message.data) && message.data.type === type) {
         handler(message.data);
       }

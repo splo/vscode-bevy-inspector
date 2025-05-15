@@ -16,6 +16,7 @@ import { RemoteSchemaService } from './schemas/remoteSchemaService';
 import type { ConnectionChange, Server } from './servers/server';
 import { ServerController } from './servers/serverController';
 import { VscodeStateServerRepository } from './servers/vscodeStateServerRepository';
+import { logger } from './vscode/logger';
 
 export class BevyInspectorExtension {
   private disposables: vscode.Disposable[] = [];
@@ -41,37 +42,46 @@ export class BevyInspectorExtension {
             break;
           }
         }
-        console.debug(`Connected to server v${server.version} (${server.url})`);
+        logger.info(`Connected to server v${server.version} (${server.url})`);
       } else {
         this.disposables.forEach((d) => d.dispose());
-        console.debug(`Disconnected from server v${server.version} (${server.url})`);
+        logger.info(`Disconnected from server v${server.version} (${server.url})`);
       }
     });
+    logger.info('Bevy Inspector extension started');
   }
 
   private setupBevy0_15(server: Server, context: vscode.ExtensionContext) {
-    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', true);
-    vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', true);
-    const brp = new V0_15BevyRemoteService(server.url);
-    const schemaService = new ReflectionSchemaService();
-    const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
-    const componentsController = new ComponentsController(context, new V0_15ComponentRepository(brp, schemaService));
-    treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-    componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
-    this.disposables.push(treeController, componentsController);
+    try {
+      vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', true);
+      vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', true);
+      const brp = new V0_15BevyRemoteService(server.url, logger.debug);
+      const schemaService = new ReflectionSchemaService();
+      const treeController = new TreeController(context, new V0_15EntityTreeRepository(brp));
+      const componentsController = new ComponentsController(context, new V0_15ComponentRepository(brp, schemaService));
+      treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
+      componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
+      this.disposables.push(treeController, componentsController);
+    } catch (error: unknown) {
+      logger.error('Failed to setup for Bevy 0.15', error);
+    }
   }
 
   private setupBevy0_16(server: Server, context: vscode.ExtensionContext) {
-    vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', false);
-    vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', false);
-    const brp = new V0_16BevyRemoteService(server.url);
-    const schemaService = new RemoteSchemaService(brp);
-    const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
-    const componentsController = new ComponentsController(context, new V0_16ComponentRepository(brp, schemaService));
-    const resourcesController = new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
-    const registryController = new RegistryController(context, new BrpRegistryRepository(brp));
-    treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-    componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
-    this.disposables.push(treeController, componentsController, resourcesController, registryController);
+    try {
+      vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', false);
+      vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', false);
+      const brp = new V0_16BevyRemoteService(server.url, logger.debug);
+      const schemaService = new RemoteSchemaService(brp);
+      const treeController = new TreeController(context, new V0_16EntityTreeRepository(brp));
+      const componentsController = new ComponentsController(context, new V0_16ComponentRepository(brp, schemaService));
+      const resourcesController = new ResourcesController(context, new V0_16ResourceRepository(brp, schemaService));
+      const registryController = new RegistryController(context, new BrpRegistryRepository(brp));
+      treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
+      componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
+      this.disposables.push(treeController, componentsController, resourcesController, registryController);
+    } catch (error: unknown) {
+      logger.error('Failed to setup for Bevy 0.16', error);
+    }
   }
 }
