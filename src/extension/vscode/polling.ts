@@ -26,6 +26,7 @@ export class PollingService {
   }
 
   public enablePolling() {
+    this.disablePolling();
     this.timeout = setInterval(() => this.refreshEmitter.fire(), this.delay);
   }
 }
