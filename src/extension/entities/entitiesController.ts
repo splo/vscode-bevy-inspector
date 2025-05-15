@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { EntityUpdated } from '../components/components';
+import { logger } from '../vscode/logger';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import { EntityTreeDataProvider } from './entitiesDataProvider';
 import { isEntityNode, type EntityNode, type EntityTreeRepository } from './entityTree';
@@ -66,7 +67,7 @@ export class TreeController implements vscode.Disposable {
   }
 
   public async refresh() {
-    console.debug(`[${new Date().toISOString()}] Refreshing entities view`);
+    logger.debug(`Refreshing entities view`);
     const entities = await this.repository.tree();
     this.treeDataProvider.setEntities(entities);
     this.entityNodeEmitter.fire(this.treeView.selection[0]);

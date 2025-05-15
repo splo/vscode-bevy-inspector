@@ -7,6 +7,7 @@ import type { EntityNode } from '../entities/entityTree';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ComponentRepository, EntityUpdated } from './components';
 import { ComponentsViewProvider } from './componentsViewProvider';
+import { logger } from '../vscode/logger';
 
 export class ComponentsController implements vscode.Disposable {
   private repository: ComponentRepository;
@@ -74,7 +75,7 @@ export class ComponentsController implements vscode.Disposable {
   }
 
   private async refresh() {
-    console.debug(`[${new Date().toISOString()}] Refreshing components view`);
+    logger.debug('Refreshing components view');
     if (this.selectedEntity === undefined) {
       this.componentsViewProvider.updateWithNoSelection();
     } else {

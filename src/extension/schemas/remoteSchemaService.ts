@@ -25,21 +25,17 @@ export class RemoteSchemaService {
 
   private async getRootSchema(): Promise<BevyRootJsonSchema> {
     if (this.cachedSchema === null) {
-      console.debug('Cache miss for schema');
       const registry = await this.brp.registrySchema();
       const schema = toJsonSchema(registry);
       const fixedSchema = fixDocument(schema);
       const derefSchema = await dereferenceSchema(fixedSchema);
       this.cachedSchema = derefSchema;
-    } else {
-      console.debug('Cache hit for schema');
     }
     return this.cachedSchema;
   }
 
   public invalidateCache() {
     this.cachedSchema = null;
-    console.debug('Schema cache invalidated');
   }
 }
 
