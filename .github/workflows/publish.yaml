@@ -15,8 +15,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Install vsce
-        run: npm install -g vsce ovsx
+      - name: Install packagers
+        run: npm install -g @vscode/vsce ovsx
       - name: Install dependencies
         run: npm install
       - name: Publish extension to VS Code Marketplace
