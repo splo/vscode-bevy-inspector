@@ -12,8 +12,8 @@ body:
       label: Bevy Inspector Version
       description: Which version of Bevy Inspector are you using?
       options:
-        - 0.3.x
-        - 0.2.x
+        - 0.3.0
+        - 0.2.0
         - 0.1.x
       multiple: false
     validations:

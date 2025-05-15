@@ -1,4 +1,5 @@
 examples/**
+docs/**
 node_modules/**
 out/**
 public/**
