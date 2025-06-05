@@ -14,7 +14,7 @@
     "check-types": "tsc --build",
     "clean": "rimraf dist out node_modules/.tmp .vscode-test",
     "format": "prettier --write src",
-    "postinstall": "npm --prefix node_modules/@designbyadrian/react-interactive-input/ install && npm --prefix node_modules/@designbyadrian/react-interactive-input/ run build",
+    "postinstall": "npm --ignore-scripts --prefix node_modules/@designbyadrian/react-interactive-input/ install && npm --prefix node_modules/@designbyadrian/react-interactive-input/ run build",
     "lint": "eslint src",
     "storybook": "storybook dev -p 6006",
     "vscode:prepublish": "npm run build",
