@@ -1,5 +1,5 @@
 name: Feature Request
-description: Request a new feature.
+description: Request a new feature or improvement.
 title: 'Missing <name of feature>'
 labels:
   - enhancement
@@ -22,6 +22,7 @@ body:
         - 0.2.0
         - 0.1.x
       multiple: false
+      default: 0
     validations:
       required: false
   - type: textarea
