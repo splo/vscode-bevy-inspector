@@ -9,6 +9,7 @@ class EntityItem extends vscode.TreeItem {
       entity.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
     super(label, collapsibleState);
     this.id = String(entity.id);
+    this.tooltip = this.id;
     this.description = entity.name || findNameFromComponents(entity.componentNames);
     this.iconPath = new vscode.ThemeIcon(
       findIconFromComponents(entity.componentNames) || 'symbol-class',
