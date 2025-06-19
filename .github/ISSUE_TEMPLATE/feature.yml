@@ -26,10 +26,10 @@ body:
     validations:
       required: false
   - type: textarea
-    id: description
+    id: problem
     attributes:
-      label: Feature Description
-      description: Describe the feature you want to request. It should be framed as a problem that needs to be solved.
+      label: Problem Description
+      description: Describe the feature or enhancement you request. It should be framed as a problem that needs to be solved.
       placeholder: There is no way to <describe the feature> ...
     validations:
       required: true
