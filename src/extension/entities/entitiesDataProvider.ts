@@ -4,11 +4,12 @@ import type { EntityNode } from './entityTree';
 
 class EntityItem extends vscode.TreeItem {
   constructor(entity: EntityNode) {
-    const label = String(entity.id);
+    const label = entityIdToString(entity.id);
     const collapsibleState =
       entity.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None;
     super(label, collapsibleState);
     this.id = String(entity.id);
+    this.tooltip = this.id;
     this.description = entity.name || findNameFromComponents(entity.componentNames);
     this.iconPath = new vscode.ThemeIcon(
       findIconFromComponents(entity.componentNames) || 'symbol-class',
@@ -73,6 +74,14 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
       ? node
       : node.children.map((child) => this.findParentRecursive(child, childId)).find((found) => found !== undefined);
   }
+}
+
+function entityIdToString(entityId: EntityId): string {
+  // Mask to get the lowest 32 bits.
+  const low = Number(BigInt(entityId) & 0xffffffffn);
+  // Shift right by 32 bits to get the high part, then mask.
+  const high = Number((BigInt(entityId) >> 32n) & 0xffffffffn);
+  return `${low}v${high}`;
 }
 
 function findNameFromComponents(typePaths: TypePath[]): string | undefined {
