@@ -78,9 +78,9 @@ export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNod
 
 function entityIdToString(entityId: EntityId): string {
   // Mask to get the lowest 32 bits.
-  const low = Number(BigInt(entityId) & 0xffffffffn);
+  const low = BigInt(entityId) & 0xffffffffn;
   // Shift right by 32 bits to get the high part, then mask.
-  const high = Number((BigInt(entityId) >> 32n) & 0xffffffffn);
+  const high = (BigInt(entityId) >> 32n) & 0xffffffffn;
   return `${low}v${high}`;
 }
 
