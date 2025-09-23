@@ -60,6 +60,19 @@
       "problemMatcher": ["$rustc-watch"]
     },
     {
+      "label": "run-server-0.17-example",
+      "detail": "Start the 0.17 server example",
+      "icon": { "id": "server-process", "color": "terminal.ansiCyan" },
+      "type": "process",
+      "command": "cargo",
+      "args": ["run"],
+      "options": {
+        "cwd": "${workspaceFolder}/examples/server-0.17"
+      },
+      "isBackground": true,
+      "problemMatcher": ["$rustc-watch"]
+    },
+    {
       "label": "run-server-dev-example",
       "detail": "Start the development server example",
       "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
