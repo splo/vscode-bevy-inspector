@@ -1,6 +1,7 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 import type { BrpSchema, Reference } from '../../brp/brp-0.16';
 import type { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
+import type { V0_17BevyRemoteService } from '../../brp/http/v0_17JsonRpcBrp';
 import type {
   BevyJsonSchema,
   BevyJsonSchemaDefinition,
@@ -9,11 +10,13 @@ import type {
 } from '../../inspector-data/types';
 import { shortenTypePath } from './schemas';
 
+type SupportedVersions = V0_16BevyRemoteService | V0_17BevyRemoteService;
+
 export class RemoteSchemaService {
-  private brp: V0_16BevyRemoteService;
+  private brp: SupportedVersions;
   private cachedSchema: BevyRootJsonSchema | null = null;
 
-  constructor(brp: V0_16BevyRemoteService) {
+  constructor(brp: SupportedVersions) {
     this.brp = brp;
   }
 
