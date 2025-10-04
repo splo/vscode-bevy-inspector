@@ -19,8 +19,6 @@ jobs:
         run: npm install -g @vscode/vsce ovsx
       - name: Install dependencies
         run: npm install
-      - name: Remove extraneous nested node_modules
-        run: rm -rf node_modules/@designbyadrian/react-interactive-input/node_modules
       - name: Publish extension to VS Code Marketplace
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
