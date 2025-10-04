@@ -10,13 +10,13 @@ import type {
 } from '../../inspector-data/types';
 import { shortenTypePath } from './schemas';
 
-type SupportedVersions = V0_16BevyRemoteService | V0_17BevyRemoteService;
+type SupportedBevyRemoteService = V0_16BevyRemoteService | V0_17BevyRemoteService;
 
 export class RemoteSchemaService {
-  private brp: SupportedVersions;
+  private brp: SupportedBevyRemoteService;
   private cachedSchema: BevyRootJsonSchema | null = null;
 
-  constructor(brp: SupportedVersions) {
+  constructor(brp: SupportedBevyRemoteService) {
     this.brp = brp;
   }
 

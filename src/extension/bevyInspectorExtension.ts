@@ -110,5 +110,4 @@ export class BevyInspectorExtension {
       logger.error('Failed to setup for Bevy 0.17', error);
     }
   }
-
 }
