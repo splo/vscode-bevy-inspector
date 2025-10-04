@@ -14,7 +14,6 @@
     "check-types": "tsc --build",
     "clean": "rimraf dist out node_modules/.tmp .vscode-test",
     "format": "prettier --write src",
-    "postinstall": "npm --ignore-scripts --prefix node_modules/@designbyadrian/react-interactive-input/ install && npm --prefix node_modules/@designbyadrian/react-interactive-input/ run build",
     "lint": "eslint src",
     "storybook": "storybook dev -p 6006",
     "vscode:prepublish": "npm run build",
@@ -24,7 +23,6 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^12.0.1",
-    "@designbyadrian/react-interactive-input": "https://github.com/designbyadrian/react-interactive-input/tarball/c9b8b3d616016026edf1acab6f9c8cfb315edbd9",
     "@vscode-elements/elements": "^1.15.0",
     "axios": "^1.9.0",
     "fast-levenshtein": "^3.0.0",

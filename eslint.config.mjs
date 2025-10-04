@@ -32,6 +32,11 @@ export default tseslint.config(
     },
   },
   {
+    // Ignore vendored code to keep it pristine and reduce noise.
+    name: '@bevy-inspector/ignore-vendored',
+    ignores: ['src/react-interactive-input/**/*'],
+  },
+  {
     name: '@bevy-inspector/vscode-extension',
     files: ['src/extension/**/*.ts'],
     ignores: ['src/extension/{out,.vscode-test}/**/*'],

@@ -8,6 +8,7 @@
     { "path": "./src/extension" },
     { "path": "./src/components-view" },
     { "path": "./src/resources-view" },
+    { "path": "./src/react-interactive-input" },
     { "path": "./stories" }
   ]
 }

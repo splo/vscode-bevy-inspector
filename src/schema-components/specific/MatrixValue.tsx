@@ -1,4 +1,4 @@
-import { InteractiveInput } from '@designbyadrian/react-interactive-input';
+import { InteractiveInput } from '../../react-interactive-input';
 import type { ChangeEvent } from 'react';
 import { capitalCase } from 'text-case';
 import type { Mat3 } from '../schema';

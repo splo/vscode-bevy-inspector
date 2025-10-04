@@ -1,4 +1,4 @@
-import { InteractiveInput } from '@designbyadrian/react-interactive-input';
+import { InteractiveInput } from '../../react-interactive-input';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
