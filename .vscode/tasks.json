@@ -52,7 +52,7 @@
       "icon": { "id": "server-process", "color": "terminal.ansiCyan" },
       "type": "process",
       "command": "cargo",
-      "args": ["run"],
+      "args": ["run", "--", "15716"],
       "options": {
         "cwd": "${workspaceFolder}/examples/server-0.16"
       },
@@ -78,7 +78,7 @@
       "icon": { "id": "server-process", "color": "terminal.ansiMagenta" },
       "type": "process",
       "command": "cargo",
-      "args": ["run", "--", "15717"],
+      "args": ["run", "--", "15718"],
       "options": {
         "cwd": "${workspaceFolder}/examples/server-dev"
       },

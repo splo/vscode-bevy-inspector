@@ -1,4 +1,4 @@
-// Example adapted from https://raw.githubusercontent.com/bevyengine/bevy/refs/heads/main/examples/remote/server.rs
+// Example adapted from https://raw.githubusercontent.com/bevyengine/bevy/refs/tags/v0.16.0/examples/remote/server.rs
 //! A Bevy app that you can connect to with the BRP and edit.
 
 use std::env;
