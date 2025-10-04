@@ -61,7 +61,7 @@ export class V0_17BevyRemoteService implements brp.BevyRemoteService {
   }
 
   public async mutateComponent(params: brp.MutateComponentParams): Promise<brp.MutateComponentResult> {
-    return await this.doRequest(params, 'world.mutate_component');
+    return await this.doRequest(params, 'world.mutate_components');
   }
 
   public async getWatch(params: brp.GetWatchParams): Promise<brp.GetWatchResult> {
