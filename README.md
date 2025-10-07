@@ -40,7 +40,7 @@ In short here are the requirements:
 ```toml
 # Cargo.toml
 [dependencies]
-bevy = { version = "0.16.0", features = ["bevy_remote"] }
+bevy = { version = "0.17.0", features = ["bevy_remote"] }
 ```
 
 - A Bevy application with the `RemotePlugin` and `RemoteHttpPlugin` plugins enabled.

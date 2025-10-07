@@ -4,7 +4,7 @@ This is an example Bevy app with a quite minimal setup that allows to demonstrat
 
 It uses the `0.17` version of Bevy.
 
-It is an adaptation of Bevy's original [remote server example](https://raw.githubusercontent.com/bevyengine/bevy/refs/tags/v0.16.0/examples/remote/server.rs).
+It is an adaptation of Bevy's original [remote server example](https://raw.githubusercontent.com/bevyengine/bevy/refs/tags/v0.17.0/examples/remote/server.rs).
 
 ## Usage
 
