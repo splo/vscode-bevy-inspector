@@ -19,7 +19,7 @@ Thank you for your interest in contributing!
 - Write clear, concise commit messages. This project uses a relaxed form of [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
   - `feat: Add <new feature>` for new/improved features.
   - `fix: <bug>` for bug fixes.
-  - All other kinds of commit `type` is ignore and considered `chore`.
+  - All other kinds of commit `type` is ignored and considered `chore`.
 
 ## Code Style
 
@@ -45,11 +45,11 @@ Thank you for your interest in contributing!
 
 - Example servers are in the `examples/` directory and can be started via VS Code tasks:
   - `run-server-0.15-example`: Starts the [Bevy 0.15 server](./examples/server-0.15/) (port `15715`).
-  - `run-server-0.16-example`: Starts the [Bevy 0.16 server](./examples/server-0.16/) (port `15702`, Bevy's default).
+  - `run-server-0.16-example`: Starts the [Bevy 0.16 server](./examples/server-0.16/) (port `15716`).
   - `run-server-0.17-example`: Starts the [Bevy 0.17 server](./examples/server-0.17/) (port `15702`, Bevy's default).
-  - `run-server-dev-example`: Starts the [Bevy main branch server](./examples/server-dev/) (port `15717`).
+  - `run-server-dev-example`: Starts the [Bevy main branch server](./examples/server-dev/) (port `15718`).
 - These servers expose the JSON-RPC BRP protocol at `http://127.0.0.1:<port>` and are useful for testing the extension.
-- Ports can be changed by manually running the `cargo` examples with an argument: `cargo run --manifest-path ./examples/server-0.16/Cargo.toml -- 15999`.
+- Ports can be changed by manually running the `cargo` examples with an argument: `cargo run --manifest-path ./examples/server-0.17/Cargo.toml -- 15999`.
 
 ### Code Style, Linting, and Formatting
 
@@ -73,7 +73,7 @@ Code in `src/extension/`.
 
 Handles extension activation, commands, and communication with webviews. Depends on most other subdirectories.
 
-Most of data come from communication with the [Bevy Remote Procotol](https://docs.rs/bevy/latest/bevy/remote/index.html) (BRP), except servers that are stored in VS Code's global state.
+Most data comes from communication with the [Bevy Remote Protocol](https://docs.rs/bevy/latest/bevy/remote/index.html) (BRP), except servers, which are stored in VS Code's global state.
 
 ### React-Based Webviews
 
@@ -83,7 +83,7 @@ Used for displaying and editing Bevy components and resources. Loaded by the ext
 
 ### Shared Libraries
 
-- `brp/`: TypeScript interfaces and protocol logic for BRP communication. Used by the extension and its data repositories.
+- `brp/`: TypeScript interfaces and protocol logic for BRP communication, used by the extension and its data repositories.
 - `inspector-data/`: shared types, messages, and schemas for communication between the extension and webviews.
 - `messenger/`: utilities for message passing between webviews and the extension.
 - `schema-components/`: React components for rendering and editing values based on Bevy schemas. Used by both webviews.
