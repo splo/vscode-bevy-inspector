@@ -1,6 +1,6 @@
 import '@vscode-elements/elements/dist/vscode-collapsible';
 import '@vscode-elements/elements/dist/vscode-form-container';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { UpdateRequestedData } from '../inspector-data/messages';
 import { UpdateRequested } from '../inspector-data/messages';
 import type { TypedValue } from '../inspector-data/types';
@@ -28,9 +28,18 @@ export function TypedValueDetails({ typedValue }: TypedValueDetailsProps) {
     return null;
   }
 
-  const onValueChange = (event: ValueUpdated) => {
-    setRequestData({ typePath: typedValue.schema.typePath, path: event.path, newValue: event.value });
-  };
+  const onValueChange = useCallback(
+    (event: ValueUpdated) => {
+      // Defer state updates to avoid cross-component update during child render.
+      const update: UpdateRequestedData = {
+        typePath: typedValue.schema.typePath,
+        path: event.path,
+        newValue: event.value,
+      };
+      setTimeout(() => setRequestData(update), 0);
+    },
+    [typedValue.schema.typePath],
+  );
 
   return (
     <vscode-form-container>
