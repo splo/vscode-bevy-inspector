@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "vscode-bevy-inspector",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Display live data from your Bevy application using the Bevy Remote Protocol HTTP plugin.",
   "license": "MIT",
   "repository": {
