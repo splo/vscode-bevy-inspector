@@ -6,6 +6,7 @@ import type {
 } from '../../brp/brp-0.15';
 import type { BevyRemoteService as V0_16BevyRemoteService, QueryParams as V0_16QueryParams } from '../../brp/brp-0.16';
 import type { BevyRemoteService as V0_17BevyRemoteService, QueryParams as V0_17QueryParams } from '../../brp/brp-0.17';
+import { logger } from '../vscode/logger';
 import type { EntityNode } from './entityTree';
 
 const ENTITY_NOT_FOUND_ERROR_CODE = -23401;
@@ -45,9 +46,10 @@ export async function getEntitiesTree<
         }
       } catch (error: unknown) {
         if (getErrorCode(error) === ENTITY_NOT_FOUND_ERROR_CODE) {
-        // If listing components fails (e.g., entity despawned), skip this entity.
-        // We intentionally do not add it to the tree and continue processing others.
-        return;
+          // If listing components fails (e.g., entity despawned), skip this entity.
+          // We intentionally do not add it to the tree and continue processing others.
+          logger.warn(`Entity ${row.entity} not found when listing components, skipping`);
+          return;
         } else {
           throw error;
         }
