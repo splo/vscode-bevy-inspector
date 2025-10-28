@@ -43,7 +43,7 @@ export function TypedValueDetails({ typedValue }: TypedValueDetailsProps) {
 
   return (
     <vscode-form-container>
-      <vscode-collapsible title={typedValue.schema.shortPath} description={typedValue.schema.typePath} open>
+      <vscode-collapsible title={typedValue.schema.shortPath} description={typedValue.schema.typePath}>
         <DynamicValue path="" value={typedValue.value} schema={typedValue.schema} onValueChange={onValueChange} />
       </vscode-collapsible>
     </vscode-form-container>
