@@ -1,8 +1,9 @@
 import type { BevyJsonSchema, BevyJsonSchemaDefinition, TypePath } from '../../inspector-data/types';
+import type { SchemaService } from './schemas';
 import { shortenTypePath } from './schemas';
 
-export class ReflectionSchemaService {
-  public createTypeSchema(typePath: TypePath, value: unknown): BevyJsonSchemaDefinition {
+export class ReflectionSchemaService implements SchemaService {
+  public async getTypeSchema(typePath: TypePath, value?: unknown): Promise<BevyJsonSchemaDefinition> {
     return {
       typePath,
       shortPath: shortenTypePath(typePath),

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { V0_15BevyRemoteService } from '../../brp/http/v0_15JsonRpcBrp';
-import { V0_16BevyRemoteService } from '../../brp/http/v0_16JsonRpcBrp';
+import { V0_15BevyRemoteService } from '../../brp/http/v0_15BevyRemoteService';
+import { V0_16BevyRemoteService } from '../../brp/http/v0_16BevyRemoteService';
 import { logger } from '../vscode/logger';
 import type { ConnectionChange } from './server';
 import { isServer, type Server, type ServerRepository } from './server';
@@ -83,6 +83,7 @@ export class ServerController {
         ...server,
       };
       try {
+        // Try BRP 0.16 so JSON-RPC discovery can be used.
         const service = new V0_16BevyRemoteService(server.url, logger.debug);
         const serverInfo = await service.discover();
         updatedServer.name = serverInfo.servers[0].name;
@@ -90,6 +91,7 @@ export class ServerController {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error: unknown) {
         try {
+          // Fallback to BRP 0.15 that doesn't support JSON-RPC discovery.
           const service = new V0_15BevyRemoteService(server.url, logger.debug);
           await service.query({ data: {} });
           updatedServer.version = '0.15.x';

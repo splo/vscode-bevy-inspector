@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { logger } from '../vscode/logger';
 import { RegistryDataProvider } from './registryDataProvider';
-import type { RegistryRepository } from './schemas';
+import type { RegistryRepository } from './registryRepository';
 
 export class RegistryController implements vscode.Disposable {
   private repository: RegistryRepository;

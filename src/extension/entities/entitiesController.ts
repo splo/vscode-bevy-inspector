@@ -3,7 +3,8 @@ import type { EntityUpdated } from '../components/components';
 import { logger } from '../vscode/logger';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import { EntityTreeDataProvider } from './entitiesDataProvider';
-import { isEntityNode, type EntityNode, type EntityTreeRepository } from './entityTree';
+import { isEntityNode, type EntityNode } from './entityTree';
+import type { EntityTreeRepository } from './entityTreeRepository';
 
 const ENTITY_MIMETYPE = 'application/vnd.code.tree.bevyinspector.entities';
 

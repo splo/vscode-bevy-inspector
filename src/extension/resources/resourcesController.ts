@@ -5,7 +5,7 @@ import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import { logger } from '../vscode/logger';
 import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
-import type { ResourceRepository } from './resources';
+import type { ResourceRepository } from './resourceRepository';
 import { ResourcesViewProvider } from './resourcesViewProvider';
 
 export class ResourcesController implements vscode.Disposable {

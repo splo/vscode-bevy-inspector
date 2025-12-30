@@ -1,5 +1,4 @@
 import type {
-  BevyRemoteService,
   BrpError,
   GetResourceParams,
   InsertResourceParams,
@@ -7,14 +6,14 @@ import type {
   TypePath,
 } from '../../brp/brp-0.17';
 import type { TypedValue } from '../../inspector-data/types';
-import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
-import type { ResourceRepository } from './resources';
+import type { BrpAdapter } from '../brp/adapter';
+import type { SchemaService } from '../schemas/schemas';
 
-export class V0_17ResourceRepository implements ResourceRepository {
-  private brp: BevyRemoteService;
-  private schemaService: RemoteSchemaService;
+export class ResourceRepository {
+  private brp: BrpAdapter;
+  private schemaService: SchemaService;
 
-  constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
+  constructor(brp: BrpAdapter, schemaService: SchemaService) {
     this.brp = brp;
     this.schemaService = schemaService;
   }

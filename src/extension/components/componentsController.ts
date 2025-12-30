@@ -4,10 +4,11 @@ import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/
 import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
-import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
-import type { ComponentRepository, EntityUpdated } from './components';
-import { ComponentsViewProvider } from './componentsViewProvider';
 import { logger } from '../vscode/logger';
+import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
+import type { ComponentRepository } from './componentRepository';
+import type { EntityUpdated } from './components';
+import { ComponentsViewProvider } from './componentsViewProvider';
 
 export class ComponentsController implements vscode.Disposable {
   private repository: ComponentRepository;
