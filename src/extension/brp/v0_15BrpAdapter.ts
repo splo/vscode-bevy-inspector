@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as brp15 from '../../brp/brp-0.15';
-import type * as brp17 from '../../brp/brp-0.17';
+import type * as brp18 from '../../brp/brp-0.18';
 import type { BrpAdapter } from './adapter';
 
 export class V0_15BrpAdapter implements BrpAdapter {
@@ -24,86 +24,86 @@ export class V0_15BrpAdapter implements BrpAdapter {
     return (value as NameComponent | undefined)?.name;
   }
 
-  public parentIdFromParentComponent(value: unknown): brp17.EntityId | undefined {
+  public parentIdFromParentComponent(value: unknown): brp18.EntityId | undefined {
     type ParentComponent = brp15.EntityId;
     return value as ParentComponent | undefined;
   }
 
-  public async get(params: brp17.GetStrictParams): Promise<brp17.GetStrictResult>;
-  public async get(params: brp17.GetLenientParams): Promise<brp17.GetLenientResult>;
-  public async get(params: brp17.GetParams): Promise<brp17.GetResult> {
-    return await this.remoteService.get({
-      entity: params.entity,
-      components: params.components,
-      strict: params.strict ? undefined : false,
-    } satisfies brp15.GetParams);
+  public async get(params: brp18.GetStrictParams): Promise<brp18.GetStrictResult>;
+  public async get(params: brp18.GetLenientParams): Promise<brp18.GetLenientResult>;
+  public async get(params: brp18.GetParams): Promise<brp18.GetResult> {
+    if (params.strict === true) {
+      return await this.remoteService.get(params satisfies brp15.GetStrictParams);
+    } else {
+      return await this.remoteService.get(params satisfies brp15.GetLenientParams);
+    }
   }
 
-  public async query(params: brp17.QueryParams): Promise<brp17.QueryResult> {
+  public async query(params: brp18.QueryParams): Promise<brp18.QueryResult> {
     return await this.remoteService.query(params);
   }
 
-  public async spawn(params: brp17.SpawnParams): Promise<brp17.SpawnResult> {
+  public async spawn(params: brp18.SpawnParams): Promise<brp18.SpawnResult> {
     return await this.remoteService.spawn(params);
   }
 
-  public async insert(params: brp17.InsertParams): Promise<brp17.InsertResult> {
+  public async insert(params: brp18.InsertParams): Promise<brp18.InsertResult> {
     return await this.remoteService.insert(params);
   }
 
-  public async remove(params: brp17.RemoveParams): Promise<brp17.RemoveResult> {
+  public async remove(params: brp18.RemoveParams): Promise<brp18.RemoveResult> {
     return await this.remoteService.remove(params);
   }
 
-  public async destroy(params: brp17.DestroyParams): Promise<brp17.DestroyResult> {
+  public async destroy(params: brp18.DestroyParams): Promise<brp18.DestroyResult> {
     return await this.remoteService.destroy(params);
   }
 
-  public async reparent(params: brp17.ReparentParams): Promise<brp17.ReparentResult> {
+  public async reparent(params: brp18.ReparentParams): Promise<brp18.ReparentResult> {
     return await this.remoteService.reparent(params);
   }
 
-  public async list(params?: brp17.ListParams): Promise<brp17.ListResult> {
+  public async list(params?: brp18.ListParams): Promise<brp18.ListResult> {
     return await this.remoteService.list(params);
   }
 
-  public async mutateComponent(params: brp17.MutateComponentParams): Promise<brp17.MutateComponentResult> {
+  public async mutateComponent(params: brp18.MutateComponentParams): Promise<brp18.MutateComponentResult> {
     throw new Error("Bevy 0.15.x doesn't support component mutation");
   }
 
-  public async getWatch(params: brp17.GetWatchParams): Promise<brp17.GetWatchResult> {
+  public async getWatch(params: brp18.GetWatchParams): Promise<brp18.GetWatchResult> {
     return await this.remoteService.getWatch(params);
   }
 
-  public async listWatch(params: brp17.ListWatchParams): Promise<brp17.ListWatchResult> {
+  public async listWatch(params: brp18.ListWatchParams): Promise<brp18.ListWatchResult> {
     return await this.remoteService.listWatch(params);
   }
 
-  public async getResource(params: brp17.GetResourceParams): Promise<brp17.GetResourceResult> {
+  public async getResource(params: brp18.GetResourceParams): Promise<brp18.GetResourceResult> {
     throw new Error("Bevy 0.15.x doesn't support resource retrieval");
   }
 
-  public async insertResource(params: brp17.InsertResourceParams): Promise<brp17.InsertResourceResult> {
+  public async insertResource(params: brp18.InsertResourceParams): Promise<brp18.InsertResourceResult> {
     throw new Error("Bevy 0.15.x doesn't support resource insertion");
   }
 
-  public async removeResource(params: brp17.RemoveResourceParams): Promise<brp17.RemoveResourceResult> {
+  public async removeResource(params: brp18.RemoveResourceParams): Promise<brp18.RemoveResourceResult> {
     throw new Error("Bevy 0.15.x doesn't support resource removal");
   }
 
-  public async mutateResource(params: brp17.MutateResourceParams): Promise<brp17.MutateResourceResult> {
+  public async mutateResource(params: brp18.MutateResourceParams): Promise<brp18.MutateResourceResult> {
     throw new Error("Bevy 0.15.x doesn't support resource mutation");
   }
 
-  public async listResources(params: brp17.ListResourcesParams): Promise<brp17.ListResourcesResult> {
+  public async listResources(params: brp18.ListResourcesParams): Promise<brp18.ListResourcesResult> {
     throw new Error("Bevy 0.15.x doesn't support resource listing");
   }
 
-  public async registrySchema(params?: brp17.RegistrySchemaParams): Promise<brp17.RegistrySchemaResult> {
+  public async registrySchema(params?: brp18.RegistrySchemaParams): Promise<brp18.RegistrySchemaResult> {
     throw new Error("Bevy 0.15.x doesn't support registry schema");
   }
 
-  public async discover(params: brp17.RpcDiscoverParams): Promise<brp17.RpcDiscoverResult> {
+  public async discover(params: brp18.RpcDiscoverParams): Promise<brp18.RpcDiscoverResult> {
     throw new Error("Bevy 0.15.x doesn't support JSON RPC discovery");
   }
 }

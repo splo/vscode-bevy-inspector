@@ -4,7 +4,7 @@ import type {
   InsertResourceParams,
   MutateResourceParams,
   TypePath,
-} from '../../brp/brp-0.17';
+} from '../../brp/brp-0.18';
 import type { TypedValue } from '../../inspector-data/types';
 import type { BrpAdapter } from '../brp/adapter';
 import type { SchemaService } from '../schemas/schemas';
