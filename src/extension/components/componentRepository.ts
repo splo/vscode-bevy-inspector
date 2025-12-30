@@ -1,4 +1,4 @@
-import type { GetParams, InsertParams, MutateComponentParams } from '../../brp/brp-0.17';
+import type { GetParams, InsertParams, MutateComponentParams } from '../../brp/brp-0.18';
 import type { EntityId, TypedValue, TypePath } from '../../inspector-data/types';
 import type { BrpAdapter } from '../brp/adapter';
 import type { EntityNode } from '../entities/entityTree';

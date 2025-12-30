@@ -1,4 +1,4 @@
-import type { DestroyParams, EntityId, QueryParams, ReparentParams, SpawnParams } from '../../brp/brp-0.17';
+import type { DestroyParams, EntityId, QueryParams, ReparentParams, SpawnParams } from '../../brp/brp-0.18';
 import type { BrpAdapter } from '../brp/adapter';
 import { logger } from '../vscode/logger';
 import type { EntityNode } from './entityTree';

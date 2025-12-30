@@ -1,4 +1,4 @@
-import type { BrpSchema } from '../../brp/brp-0.17';
+import type { BrpSchema } from '../../brp/brp-0.18';
 import type { BrpAdapter } from '../brp/adapter';
 
 export class RegistryRepository {

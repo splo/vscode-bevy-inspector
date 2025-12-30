@@ -1,5 +1,5 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
-import type { BrpSchema, Reference } from '../../brp/brp-0.17';
+import type { BrpSchema, Reference } from '../../brp/brp-0.18';
 import type {
   BevyJsonSchema,
   BevyJsonSchemaDefinition,

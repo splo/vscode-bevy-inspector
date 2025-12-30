@@ -1,4 +1,4 @@
-import type { BevyRemoteService, EntityId, TypePath } from '../../brp/brp-0.17';
+import type { BevyRemoteService, EntityId, TypePath } from '../../brp/brp-0.18';
 
 export interface BrpAdapter extends BevyRemoteService {
   /** The supported Bevy version. */
