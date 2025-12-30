@@ -83,7 +83,7 @@ Used for displaying and editing Bevy components and resources. Loaded by the ext
 
 ### Shared Libraries
 
-- `brp/`: TypeScript interfaces and protocol logic for BRP communication, used by the extension and its data repositories.
+- `brp/`: TypeScript interfaces and JSON-RPC client implementations for BRP communication, used by the extension and its data repositories.
 - `inspector-data/`: shared types, messages, and schemas for communication between the extension and webviews.
 - `messenger/`: utilities for message passing between webviews and the extension.
 - `schema-components/`: React components for rendering and editing values based on Bevy schemas. Used by both webviews.

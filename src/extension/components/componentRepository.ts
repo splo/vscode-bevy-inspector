@@ -1,14 +1,14 @@
-import type { BevyRemoteService, GetParams, InsertParams, MutateComponentParams } from '../../brp/brp-0.17';
+import type { GetParams, InsertParams, MutateComponentParams } from '../../brp/brp-0.17';
 import type { EntityId, TypedValue, TypePath } from '../../inspector-data/types';
+import type { BrpAdapter } from '../brp/adapter';
 import type { EntityNode } from '../entities/entityTree';
-import type { RemoteSchemaService } from '../schemas/remoteSchemaService';
-import type { ComponentRepository } from './components';
+import type { SchemaService } from '../schemas/schemas';
 
-export class V0_17ComponentRepository implements ComponentRepository {
-  private brp: BevyRemoteService;
-  private schemaService: RemoteSchemaService;
+export class ComponentRepository {
+  private brp: BrpAdapter;
+  private schemaService: SchemaService;
 
-  constructor(brp: BevyRemoteService, schemaService: RemoteSchemaService) {
+  constructor(brp: BrpAdapter, schemaService: SchemaService) {
     this.brp = brp;
     this.schemaService = schemaService;
   }
@@ -20,21 +20,17 @@ export class V0_17ComponentRepository implements ComponentRepository {
     };
     const result = await this.brp.get(params);
     const valuedComponents: TypedValue[] = await Promise.all(
-      Object.entries(result.components).map(async ([typePath, value]) => {
-        return {
-          value,
-          schema: await this.schemaService.getTypeSchema(typePath),
-        };
-      }),
+      Object.entries(result.components).map(async ([typePath, value]) => ({
+        value,
+        schema: await this.schemaService.getTypeSchema(typePath, value),
+      })),
     );
     const erroneousComponents: TypedValue[] = await Promise.all(
-      Object.entries(result.errors).map(async ([typePath, error]) => {
-        return {
-          value: undefined,
-          error: error.message,
-          schema: await this.schemaService.getTypeSchema(typePath),
-        };
-      }),
+      Object.entries(result.errors).map(async ([typePath, error]) => ({
+        value: undefined,
+        error: error.message,
+        schema: await this.schemaService.getTypeSchema(typePath),
+      })),
     );
     return valuedComponents.concat(erroneousComponents);
   }
