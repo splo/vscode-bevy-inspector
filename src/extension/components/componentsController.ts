@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
-import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import {
+  CollapsibleStateChanged,
+  SetCollapsibleState,
+  UpdateRequested,
+  ValuesUpdated,
+  ViewReady,
+} from '../../inspector-data/messages';
 import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
@@ -31,6 +37,8 @@ export class ComponentsController implements vscode.Disposable {
       vscode.commands.registerCommand('bevyInspector.refreshComponents', this.refresh.bind(this)),
       vscode.commands.registerCommand('bevyInspector.enableComponentsPolling', this.enablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.disableComponentsPolling', this.disablePolling.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.expandAllComponents', this.expandAll.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.collapseAllComponents', this.collapseAll.bind(this)),
     );
     this.pollingService.onRefresh(this.refresh.bind(this));
     vscode.workspace.onDidChangeConfiguration((e) => {
@@ -41,6 +49,8 @@ export class ComponentsController implements vscode.Disposable {
     });
     // Enable polling by default.
     this.enablePolling();
+
+    vscode.commands.executeCommand('setContext', 'bevyInspector.anyComponentExpanded', false);
 
     this.componentsViewProvider.onVisibilityChanged((visible) => {
       if (visible) {
@@ -127,6 +137,10 @@ export class ComponentsController implements vscode.Disposable {
         case ViewReady: {
           break;
         }
+        case CollapsibleStateChanged: {
+          vscode.commands.executeCommand('setContext', 'bevyInspector.anyComponentExpanded', event.data.anyExpanded);
+          break;
+        }
         case UpdateRequested: {
           const updated = await this.setComponentValue(event);
           if (updated) {
@@ -137,6 +151,20 @@ export class ComponentsController implements vscode.Disposable {
         // Ignore others.
       }
     }
+  }
+
+  private expandAll(): void {
+    this.componentsViewProvider.postMessage({
+      type: SetCollapsibleState,
+      data: { anyExpanded: true },
+    });
+  }
+
+  private collapseAll(): void {
+    this.componentsViewProvider.postMessage({
+      type: SetCollapsibleState,
+      data: { anyExpanded: false },
+    });
   }
 
   private async setComponentValue(event: UpdateRequestedEvent): Promise<boolean> {

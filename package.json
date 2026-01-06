@@ -134,6 +134,20 @@
         "category": "Bevy Inspector"
       },
       {
+        "command": "bevyInspector.expandAllComponents",
+        "title": "Expand",
+        "icon": "$(expand-all)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.components"
+      },
+      {
+        "command": "bevyInspector.collapseAllComponents",
+        "title": "Collapse",
+        "icon": "$(collapse-all)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.components"
+      },
+      {
         "command": "bevyInspector.enableComponentsPolling",
         "title": "Enable Polling Components",
         "icon": "$(sync-ignored)",
@@ -151,6 +165,20 @@
         "command": "bevyInspector.refreshResources",
         "title": "Refresh Resources",
         "icon": "$(refresh)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.resources"
+      },
+      {
+        "command": "bevyInspector.expandAllResources",
+        "title": "Expand",
+        "icon": "$(expand-all)",
+        "category": "Bevy Inspector",
+        "enablement": "view == bevyInspector.resources"
+      },
+      {
+        "command": "bevyInspector.collapseAllResources",
+        "title": "Collapse",
+        "icon": "$(collapse-all)",
         "category": "Bevy Inspector",
         "enablement": "view == bevyInspector.resources"
       },
@@ -251,6 +279,16 @@
           "group": "navigation"
         },
         {
+          "command": "bevyInspector.expandAllComponents",
+          "when": "view == bevyInspector.components && !bevyInspector.anyComponentExpanded",
+          "group": "navigation@99"
+        },
+        {
+          "command": "bevyInspector.collapseAllComponents",
+          "when": "view == bevyInspector.components && bevyInspector.anyComponentExpanded",
+          "group": "navigation@99"
+        },
+        {
           "command": "bevyInspector.enableComponentsPolling",
           "when": "view == bevyInspector.components && !bevyInspector.componentsPollingEnabled",
           "group": "navigation"
@@ -264,6 +302,16 @@
           "command": "bevyInspector.refreshResources",
           "when": "view == bevyInspector.resources",
           "group": "navigation"
+        },
+        {
+          "command": "bevyInspector.expandAllResources",
+          "when": "view == bevyInspector.resources && !bevyInspector.anyResourceExpanded",
+          "group": "navigation@99"
+        },
+        {
+          "command": "bevyInspector.collapseAllResources",
+          "when": "view == bevyInspector.resources && bevyInspector.anyResourceExpanded",
+          "group": "navigation@99"
         },
         {
           "command": "bevyInspector.enableResourcesPolling",

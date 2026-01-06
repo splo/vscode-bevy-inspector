@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
-import { UpdateRequested, ValuesUpdated, ViewReady } from '../../inspector-data/messages';
+import {
+  CollapsibleStateChanged,
+  SetCollapsibleState,
+  UpdateRequested,
+  ValuesUpdated,
+  ViewReady,
+} from '../../inspector-data/messages';
 import type { TypePath } from '../../inspector-data/types';
 import { isEventMessage } from '../../inspector-data/types';
 import { logger } from '../vscode/logger';
@@ -24,6 +30,8 @@ export class ResourcesController implements vscode.Disposable {
       vscode.commands.registerCommand('bevyInspector.refreshResources', this.refresh.bind(this)),
       vscode.commands.registerCommand('bevyInspector.enableResourcesPolling', this.enablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.disableResourcesPolling', this.disablePolling.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.expandAllResources', this.expandAll.bind(this)),
+      vscode.commands.registerCommand('bevyInspector.collapseAllResources', this.collapseAll.bind(this)),
     );
     this.pollingService.onRefresh(this.refresh.bind(this));
     vscode.workspace.onDidChangeConfiguration((e) => {
@@ -36,6 +44,8 @@ export class ResourcesController implements vscode.Disposable {
     context.subscriptions.push(
       vscode.commands.registerCommand('bevyInspector.insertResource', this.insertResource.bind(this)),
     );
+
+    vscode.commands.executeCommand('setContext', 'bevyInspector.anyResourceExpanded', false);
   }
 
   dispose() {
@@ -69,6 +79,10 @@ export class ResourcesController implements vscode.Disposable {
           await this.refresh();
           break;
         }
+        case CollapsibleStateChanged: {
+          vscode.commands.executeCommand('setContext', 'bevyInspector.anyResourceExpanded', event.data.anyExpanded);
+          break;
+        }
         case UpdateRequested: {
           const updated = await this.setResourceValue(event);
           if (updated) {
@@ -79,6 +93,20 @@ export class ResourcesController implements vscode.Disposable {
         // Ignore others.
       }
     }
+  }
+
+  private expandAll(): void {
+    this.resourcesViewProvider.postMessage({
+      type: SetCollapsibleState,
+      data: { anyExpanded: true },
+    });
+  }
+
+  private collapseAll(): void {
+    this.resourcesViewProvider.postMessage({
+      type: SetCollapsibleState,
+      data: { anyExpanded: false },
+    });
   }
 
   private async setResourceValue(event: UpdateRequestedEvent): Promise<boolean> {
