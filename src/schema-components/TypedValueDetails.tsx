@@ -24,6 +24,10 @@ export function TypedValueDetails({ typedValue, collapsibleState }: TypedValueDe
   const collapsibleKey = typedValue.schema.typePath;
 
   useEffect(() => {
+    reportCollapsibleState(collapsibleKey, open);
+  }, [collapsibleKey, open]);
+
+  useEffect(() => {
     return () => {
       reportCollapsibleState(collapsibleKey, false);
     };
@@ -32,7 +36,6 @@ export function TypedValueDetails({ typedValue, collapsibleState }: TypedValueDe
   useEffect(() => {
     if (collapsibleState !== undefined) {
       setOpen(collapsibleState.anyExpanded);
-      reportCollapsibleState(collapsibleKey, collapsibleState.anyExpanded);
     }
   }, [collapsibleState, collapsibleKey]);
 
@@ -40,7 +43,6 @@ export function TypedValueDetails({ typedValue, collapsibleState }: TypedValueDe
     (e: VscCollapsibleToggleEvent) => {
       const expanded = e.detail.open;
       setOpen(expanded);
-      reportCollapsibleState(collapsibleKey, expanded);
     },
     [collapsibleKey],
   );
