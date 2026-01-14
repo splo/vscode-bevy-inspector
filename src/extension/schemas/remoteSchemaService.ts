@@ -363,16 +363,7 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
 }
 
 async function dereferenceSchema(schema: BevyRootJsonSchema): Promise<BevyRootJsonSchema> {
-  const derefSchema = await $RefParser.dereference<BevyRootJsonSchema>(schema);
-  // Restore 'typePath' and 'shortPath' overwritten by dereference.
-  derefSchema.$defs = Object.fromEntries(
-    Object.entries(derefSchema.$defs || {}).map(([name, definition]: [TypePath, BevyJsonSchemaDefinition]) => {
-      if (definition.typePath !== name) {
-        definition.typePath = name;
-        definition.shortPath = shortenTypePath(name);
-      }
-      return [name, definition];
-    }),
-  );
-  return derefSchema;
+  return await $RefParser.dereference<BevyRootJsonSchema>(schema, {
+    dereference: { preservedProperties: ['typePath', 'shortPath'] },
+  });
 }
