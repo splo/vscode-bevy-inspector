@@ -4,12 +4,7 @@ const rootDir = new URL('..', import.meta.url).pathname;
 
 const config: StorybookConfig = {
   stories: ['../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
-  addons: [
-    {
-      name: '@storybook/addon-essentials',
-      options: {},
-    },
-  ],
+  addons: [],
   framework: {
     name: '@storybook/react-vite',
     options: {},
