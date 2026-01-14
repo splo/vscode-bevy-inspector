@@ -3,27 +3,31 @@ name: Publish Extension
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
-  publish:
+  publish-vscodemarketplace:
+    name: Publish extension to VS Code Marketplace
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install packagers
-        run: npm install -g @vscode/vsce ovsx
-      - name: Install dependencies
-        run: npm install
-      - name: Publish extension to VS Code Marketplace
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+      - name: Publish extension
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: vsce publish
-      - name: Publish extension to OpenVSX
+
+  publish-openvsx:
+    name: Publish extension to OpenVSX
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Install ovsx
+        run: npm install -g ovsx
+      - name: Publish extension
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: ovsx publish
