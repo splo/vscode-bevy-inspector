@@ -3,7 +3,6 @@
   "compilerOptions": {
     // Type Checking
     "strict": true,
-    "skipLibCheck": true,
 
     // Modules
     "module": "ESNext",
@@ -28,6 +27,9 @@
 
     // Project
     "composite": true,
-    "tsBuildInfoFile": "../../node_modules/.tmp/react-interactive-input.tsbuildinfo"
+    "tsBuildInfoFile": "../../node_modules/.tmp/react-interactive-input.tsbuildinfo",
+
+    // Completeness
+    "skipLibCheck": true
   }
 }

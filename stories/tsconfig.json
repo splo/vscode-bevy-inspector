@@ -37,6 +37,9 @@
 
     // Projects
     "composite": true,
-    "tsBuildInfoFile": "../node_modules/.tmp/stories.tsbuildinfo"
+    "tsBuildInfoFile": "../node_modules/.tmp/stories.tsbuildinfo",
+
+    // Completeness
+    "skipLibCheck": true
   }
 }
