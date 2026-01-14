@@ -12,6 +12,7 @@ body:
       label: Bevy Inspector Version
       description: Which version of Bevy Inspector are you using?
       options:
+        - 0.5.x
         - 0.4.x
         - 0.3.x
         - 0.2.x
