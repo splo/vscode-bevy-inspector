@@ -1,5 +1,5 @@
 import type * as brp16 from '../../brp/brp-0.16';
-import type * as brp18 from '../../brp/brp-0.18';
+import type * as brplatest from '../../brp/brp-0.18';
 import type { BrpAdapter } from './adapter';
 
 export class V0_16BrpAdapter implements BrpAdapter {
@@ -20,14 +20,14 @@ export class V0_16BrpAdapter implements BrpAdapter {
     return value as NameComponent | undefined;
   }
 
-  public parentIdFromParentComponent(value: unknown): brp18.EntityId | undefined {
+  public parentIdFromParentComponent(value: unknown): brplatest.EntityId | undefined {
     type ChildOfComponent = brp16.EntityId;
     return value as ChildOfComponent | undefined;
   }
 
-  public async getComponents(params: brp18.GetStrictParams): Promise<brp18.GetStrictResult>;
-  public async getComponents(params: brp18.GetLenientParams): Promise<brp18.GetLenientResult>;
-  public async getComponents(params: brp18.GetParams): Promise<brp18.GetResult> {
+  public async getComponents(params: brplatest.GetStrictParams): Promise<brplatest.GetStrictResult>;
+  public async getComponents(params: brplatest.GetLenientParams): Promise<brplatest.GetLenientResult>;
+  public async getComponents(params: brplatest.GetParams): Promise<brplatest.GetResult> {
     if (params.strict === true) {
       return await this.remoteService.get(params satisfies brp16.GetStrictParams);
     } else {
@@ -35,71 +35,71 @@ export class V0_16BrpAdapter implements BrpAdapter {
     }
   }
 
-  public async query(params: brp18.QueryParams): Promise<brp18.QueryResult> {
+  public async query(params: brplatest.QueryParams): Promise<brplatest.QueryResult> {
     return await this.remoteService.query(params);
   }
 
-  public async spawnEntity(params: brp18.SpawnParams): Promise<brp18.SpawnResult> {
+  public async spawnEntity(params: brplatest.SpawnParams): Promise<brplatest.SpawnResult> {
     return await this.remoteService.spawn(params);
   }
 
-  public async insertComponents(params: brp18.InsertParams): Promise<brp18.InsertResult> {
+  public async insertComponents(params: brplatest.InsertParams): Promise<brplatest.InsertResult> {
     return await this.remoteService.insert(params);
   }
 
-  public async removeComponents(params: brp18.RemoveParams): Promise<brp18.RemoveResult> {
+  public async removeComponents(params: brplatest.RemoveParams): Promise<brplatest.RemoveResult> {
     return await this.remoteService.remove(params);
   }
 
-  public async despawnEntity(params: brp18.DestroyParams): Promise<brp18.DestroyResult> {
+  public async despawnEntity(params: brplatest.DestroyParams): Promise<brplatest.DestroyResult> {
     return await this.remoteService.destroy(params);
   }
 
-  public async reparentEntities(params: brp18.ReparentParams): Promise<brp18.ReparentResult> {
+  public async reparentEntities(params: brplatest.ReparentParams): Promise<brplatest.ReparentResult> {
     return await this.remoteService.reparent(params);
   }
 
-  public async listComponents(params?: brp18.ListParams): Promise<brp18.ListResult> {
+  public async listComponents(params?: brplatest.ListParams): Promise<brplatest.ListResult> {
     return await this.remoteService.list(params);
   }
 
-  public async mutateComponents(params: brp18.MutateComponentParams): Promise<brp18.MutateComponentResult> {
+  public async mutateComponents(params: brplatest.MutateComponentParams): Promise<brplatest.MutateComponentResult> {
     return await this.remoteService.mutateComponent(params);
   }
 
-  public async watchGetComponents(params: brp18.GetWatchParams): Promise<brp18.GetWatchResult> {
+  public async watchGetComponents(params: brplatest.GetWatchParams): Promise<brplatest.GetWatchResult> {
     return await this.remoteService.getWatch(params);
   }
 
-  public async watchListComponents(params: brp18.ListWatchParams): Promise<brp18.ListWatchResult> {
+  public async watchListComponents(params: brplatest.ListWatchParams): Promise<brplatest.ListWatchResult> {
     return await this.remoteService.listWatch(params);
   }
 
-  public async getResources(params: brp18.GetResourceParams): Promise<brp18.GetResourceResult> {
+  public async getResources(params: brplatest.GetResourceParams): Promise<brplatest.GetResourceResult> {
     return await this.remoteService.getResource(params);
   }
 
-  public async insertResources(params: brp18.InsertResourceParams): Promise<brp18.InsertResourceResult> {
+  public async insertResources(params: brplatest.InsertResourceParams): Promise<brplatest.InsertResourceResult> {
     return await this.remoteService.insertResource(params);
   }
 
-  public async removeResources(params: brp18.RemoveResourceParams): Promise<brp18.RemoveResourceResult> {
+  public async removeResources(params: brplatest.RemoveResourceParams): Promise<brplatest.RemoveResourceResult> {
     return await this.remoteService.removeResource(params);
   }
 
-  public async mutateResources(params: brp18.MutateResourceParams): Promise<brp18.MutateResourceResult> {
+  public async mutateResources(params: brplatest.MutateResourceParams): Promise<brplatest.MutateResourceResult> {
     return await this.remoteService.mutateResource(params);
   }
 
-  public async listResources(params: brp18.ListResourcesParams): Promise<brp18.ListResourcesResult> {
+  public async listResources(params: brplatest.ListResourcesParams): Promise<brplatest.ListResourcesResult> {
     return await this.remoteService.listResources(params);
   }
 
-  public async registrySchema(params?: brp18.RegistrySchemaParams): Promise<brp18.RegistrySchemaResult> {
+  public async registrySchema(params?: brplatest.RegistrySchemaParams): Promise<brplatest.RegistrySchemaResult> {
     return await this.remoteService.registrySchema(params);
   }
 
-  public async discover(params: brp18.RpcDiscoverParams): Promise<brp18.RpcDiscoverResult> {
+  public async discover(params: brplatest.RpcDiscoverParams): Promise<brplatest.RpcDiscoverResult> {
     return await this.remoteService.discover(params);
   }
 }
