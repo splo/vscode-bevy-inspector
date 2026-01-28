@@ -1,4 +1,4 @@
-import type * as brp from '../brp-0.17';
+import type * as brp from '../brp-0.18';
 import { JsonRpcClient } from './jsonRpcClient';
 
 export class V0_18BevyRemoteService extends JsonRpcClient implements brp.BevyRemoteService {
