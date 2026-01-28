@@ -10,50 +10,50 @@ export type TypePath = string;
  */
 export interface BevyRemoteService {
   /** Retrieve the values of one or more components from an entity. */
-  get(params: GetStrictParams): Promise<GetStrictResult>;
-  get(params: GetLenientParams): Promise<GetLenientResult>;
+  getComponents(params: GetStrictParams): Promise<GetStrictResult>;
+  getComponents(params: GetLenientParams): Promise<GetLenientResult>;
 
   /** Perform a query over components in the ECS, returning entities and component values that match. */
   query(params: QueryParams): Promise<QueryResult>;
 
   /** Create a new entity with the provided components and return the resulting entity ID. */
-  spawn(params: SpawnParams): Promise<SpawnResult>;
+  spawnEntity(params: SpawnParams): Promise<SpawnResult>;
 
   /** Insert one or more components into an entity. */
-  insert(params: InsertParams): Promise<InsertResult>;
+  insertComponents(params: InsertParams): Promise<InsertResult>;
 
   /** Delete one or more components from an entity. */
-  remove(params: RemoveParams): Promise<RemoveResult>;
+  removeComponents(params: RemoveParams): Promise<RemoveResult>;
 
   /** Despawn the entity with the given ID. */
-  destroy(params: DestroyParams): Promise<DestroyResult>;
+  despawnEntity(params: DestroyParams): Promise<DestroyResult>;
 
   /** Assign a new parent to one or more entities. */
-  reparent(params: ReparentParams): Promise<ReparentResult>;
+  reparentEntities(params: ReparentParams): Promise<ReparentResult>;
 
   /** List all registered components or all components present on an entity. */
-  list(params?: ListParams): Promise<ListResult>;
+  listComponents(params?: ListParams): Promise<ListResult>;
 
   /** Mutate a field in a component. */
-  mutateComponent(params: MutateComponentParams): Promise<MutateComponentResult>;
+  mutateComponents(params: MutateComponentParams): Promise<MutateComponentResult>;
 
   /** Watch the values of one or more components from an entity. */
-  getWatch(params: GetWatchParams): Promise<GetWatchResult>;
+  watchGetComponents(params: GetWatchParams): Promise<GetWatchResult>;
 
   /** Watch all components present on an entity. */
-  listWatch(params: ListWatchParams): Promise<ListWatchResult>;
+  watchListComponents(params: ListWatchParams): Promise<ListWatchResult>;
 
   /** Extract the value of a given resource from the world. */
-  getResource(params: GetResourceParams): Promise<GetResourceResult>;
+  getResources(params: GetResourceParams): Promise<GetResourceResult>;
 
   /** Insert the given resource into the world with the given value. */
-  insertResource(params: InsertResourceParams): Promise<InsertResourceResult>;
+  insertResources(params: InsertResourceParams): Promise<InsertResourceResult>;
 
   /** Remove the given resource from the world. */
-  removeResource(params: RemoveResourceParams): Promise<RemoveResourceResult>;
+  removeResources(params: RemoveResourceParams): Promise<RemoveResourceResult>;
 
   /** Mutate a field in a resource. */
-  mutateResource(params: MutateResourceParams): Promise<MutateResourceResult>;
+  mutateResources(params: MutateResourceParams): Promise<MutateResourceResult>;
 
   /** List all reflectable registered resource types. */
   listResources(params: ListResourcesParams): Promise<ListResourcesResult>;

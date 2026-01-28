@@ -26,7 +26,7 @@ export class EntityTreeRepository {
     await Promise.all(
       queryResult.map(async (row) => {
         try {
-          const componentNames = await this.brp.list({ entity: row.entity });
+          const componentNames = await this.brp.listComponents({ entity: row.entity });
           const name = this.brp.nameFromNameComponent(row.components[this.brp.nameTypePath]);
           const parentId = this.brp.parentIdFromParentComponent(row.components[this.brp.parentTypePath]);
           entityById.set(row.entity, {
@@ -74,7 +74,7 @@ export class EntityTreeRepository {
     const params: SpawnParams = {
       components: {},
     };
-    const result = await this.brp.spawn(params);
+    const result = await this.brp.spawnEntity(params);
     return {
       id: result.entity,
       componentNames: [],
@@ -87,7 +87,7 @@ export class EntityTreeRepository {
     const params: DestroyParams = {
       entity: entity.id,
     };
-    await this.brp.destroy(params);
+    await this.brp.despawnEntity(params);
   }
 
   /** Reparent the specified entity under a new parent in the repository. */
@@ -96,7 +96,7 @@ export class EntityTreeRepository {
       entities: [entity.id],
       parent: parent?.id,
     };
-    await this.brp.reparent(params);
+    await this.brp.reparentEntities(params);
   }
 
   /** Check if the specified type path is a name type. */

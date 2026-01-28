@@ -18,7 +18,7 @@ export class ComponentRepository {
       entity: entity.id,
       components: entity.componentNames,
     };
-    const result = await this.brp.get(params);
+    const result = await this.brp.getComponents(params);
     const valuedComponents: TypedValue[] = await Promise.all(
       Object.entries(result.components).map(async ([typePath, value]) => ({
         value,
@@ -42,7 +42,7 @@ export class ComponentRepository {
       path,
       value,
     };
-    await this.brp.mutateComponent(params);
+    await this.brp.mutateComponents(params);
   }
 
   async listTypePaths(): Promise<TypePath[]> {
@@ -57,6 +57,6 @@ export class ComponentRepository {
         [typePath]: value,
       },
     };
-    await this.brp.insert(params);
+    await this.brp.insertComponents(params);
   }
 }

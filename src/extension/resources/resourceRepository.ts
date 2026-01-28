@@ -24,7 +24,7 @@ export class ResourceRepository {
       resourceTypePaths.map(async (typePath) => {
         try {
           const params: GetResourceParams = { resource: typePath };
-          const result = await this.brp.getResource(params);
+          const result = await this.brp.getResources(params);
           return {
             value: result.value,
             schema: await this.schemaService.getTypeSchema(typePath),
@@ -51,7 +51,7 @@ export class ResourceRepository {
       resource: typePath,
       value,
     };
-    await this.brp.insertResource(params);
+    await this.brp.insertResources(params);
   }
 
   async setResourceValue(typePath: string, path: string, value: unknown): Promise<void> {
@@ -60,6 +60,6 @@ export class ResourceRepository {
       path,
       value,
     };
-    await this.brp.mutateResource(params);
+    await this.brp.mutateResources(params);
   }
 }
