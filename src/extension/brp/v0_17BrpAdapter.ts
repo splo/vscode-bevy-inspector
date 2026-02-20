@@ -95,6 +95,10 @@ export class V0_17BrpAdapter implements BrpAdapter {
     return await this.remoteService.listResources(params);
   }
 
+  public async triggerEvent(params: brplatest.TriggerEventParams): Promise<brplatest.TriggerEventResult> {
+    throw new Error("Bevy 0.17.x doesn't support event triggering");
+  }
+
   public async registrySchema(params?: brp17.RegistrySchemaParams): Promise<brplatest.RegistrySchemaResult> {
     return await this.remoteService.registrySchema(params);
   }

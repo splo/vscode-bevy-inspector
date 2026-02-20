@@ -99,6 +99,10 @@ export class V0_15BrpAdapter implements BrpAdapter {
     throw new Error("Bevy 0.15.x doesn't support resource listing");
   }
 
+  public async triggerEvent(params: brplatest.TriggerEventParams): Promise<brplatest.TriggerEventResult> {
+    throw new Error("Bevy 0.15.x doesn't support event triggering");
+  }
+
   public async registrySchema(params?: brplatest.RegistrySchemaParams): Promise<brplatest.RegistrySchemaResult> {
     throw new Error("Bevy 0.15.x doesn't support registry schema");
   }
