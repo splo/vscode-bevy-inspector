@@ -1,5 +1,5 @@
 import type * as brp16 from '../../brp/brp-0.16';
-import type * as brplatest from '../../brp/brp-0.18';
+import type * as brplatest from '../../brp/brp-0.19';
 import type { BrpAdapter } from './adapter';
 
 export class V0_16BrpAdapter implements BrpAdapter {

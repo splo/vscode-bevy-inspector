@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as brp15 from '../../brp/brp-0.15';
-import type * as brplatest from '../../brp/brp-0.18';
+import type * as brplatest from '../../brp/brp-0.19';
 import type { BrpAdapter } from './adapter';
 
 export class V0_15BrpAdapter implements BrpAdapter {
