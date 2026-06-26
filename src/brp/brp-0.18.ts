@@ -58,6 +58,9 @@ export interface BevyRemoteService {
   /** List all reflectable registered resource types. */
   listResources(params: ListResourcesParams): Promise<ListResourcesResult>;
 
+  /** Trigger an event. */
+  triggerEvent(params: TriggerEventParams): Promise<TriggerEventResult>;
+
   /** Return schema information about registered types. */
   registrySchema(params?: RegistrySchemaParams): Promise<RegistrySchemaResult>;
 
@@ -277,6 +280,13 @@ export type MutateResourceResult = void;
 export type ListResourcesParams = void;
 
 export type ListResourcesResult = TypePath[];
+
+export interface TriggerEventParams {
+  event: TypePath;
+  value: unknown;
+}
+
+export type TriggerEventResult = void;
 
 export interface RegistrySchemaParams {
   withoutCrates?: string[];
