@@ -1,4 +1,9 @@
-import type { BevyJsonSchema, BevyJsonSchemaDefinition, TypePath } from '../../inspector-data/types';
+import type {
+  BevyJsonSchema,
+  BevyJsonSchemaDefinition,
+  BevyRootJsonSchema,
+  TypePath,
+} from '../../inspector-data/types';
 import type { SchemaService } from './schemas';
 import { shortenTypePath } from './schemas';
 
@@ -9,6 +14,10 @@ export class ReflectionSchemaService implements SchemaService {
       shortPath: shortenTypePath(typePath),
       ...setReadOnly(toJsonSchema(typePath, value)),
     };
+  }
+  async getRootSchema(): Promise<BevyRootJsonSchema> {
+    //with empty $defs useSchemaResolver will fallback to the schemas we have produced, which are flat, and fully resolved already
+    return { $defs: {} };
   }
 }
 

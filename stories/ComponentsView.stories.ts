@@ -1,5 +1,5 @@
 import { ComponentsView } from '@bevy-inspector/components-view/components/ComponentsView';
-import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
+import { SchemaUpdated, ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
 import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
 import { VsCodeMessenger } from '@bevy-inspector/messenger/vscodeMessenger';
 import type { Mat3 } from '@bevy-inspector/schema-components/schema';
@@ -58,6 +58,10 @@ export const ComponentWithSinglePrimitiveObject: Story = {
         },
       ],
     });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
+    });
   },
 };
 
@@ -103,6 +107,10 @@ export const ComponentWithReadOnlySchema: Story = {
         },
       ],
     });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
+    });
   },
 };
 
@@ -117,6 +125,10 @@ export const ComponentWithError: Story = {
           schema: getSchema('bevy_ecs::name::Name'),
         },
       ],
+    });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
     });
   },
 };
@@ -140,6 +152,10 @@ export const ComponentWithMultiplePrimitives: Story = {
         },
       ],
     });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
+    });
   },
 };
 
@@ -157,6 +173,10 @@ export const ComponentWithOneOf: Story = {
           schema: getSchema('core::option::Option<f32>'),
         },
       ],
+    });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
     });
   },
 };
@@ -191,6 +211,10 @@ export const ComponentWithVectors: Story = {
           schema: getSchema('glam::Mat3A'),
         },
       ],
+    });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
     });
   },
 };

@@ -1,4 +1,4 @@
-import type { BevyJsonSchemaDefinition, TypePath } from '../../inspector-data/types';
+import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '../../inspector-data/types';
 
 export function shortenTypePath(typePath: TypePath): string {
   return typePath.replaceAll(/\w*::/g, '');
@@ -6,4 +6,5 @@ export function shortenTypePath(typePath: TypePath): string {
 
 export interface SchemaService {
   getTypeSchema(typePath: TypePath, value?: unknown): Promise<BevyJsonSchemaDefinition>;
+  getRootSchema(): Promise<BevyRootJsonSchema>;
 }

@@ -1,4 +1,4 @@
-import type { EventMessage, TypedValue, TypePath } from './types';
+import type { BevyRootJsonSchema, EventMessage, TypedValue, TypePath } from './types';
 
 // Events passing from the views to the extension.
 export const ViewReady = 'ViewReady';
@@ -35,3 +35,9 @@ export type SetCollapsibleStateEvent = EventMessage<CollapsibleStateData> & {
   type: typeof SetCollapsibleState;
 };
 export type ExtensionEvent = ValuesUpdatedEvent | SetCollapsibleStateEvent;
+
+export const SchemaUpdated = 'SchemaUpdated';
+export type SchemaUpdatedData = BevyRootJsonSchema;
+export type SchemaUpdatedEvent = EventMessage<SchemaUpdatedData> & {
+  type: typeof SchemaUpdated;
+};
