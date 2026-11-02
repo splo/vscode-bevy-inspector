@@ -15,6 +15,7 @@ export class TreeController implements vscode.Disposable {
   private pollingService: PollingService = new PollingService();
   private readonly entityNodeEmitter = new vscode.EventEmitter<EntityNode | undefined>();
   public readonly onSelectionChanged = this.entityNodeEmitter.event;
+  private disposables: vscode.Disposable[] = [];
 
   constructor(context: vscode.ExtensionContext, repository: EntityTreeRepository) {
     this.repository = repository;
@@ -30,10 +31,10 @@ export class TreeController implements vscode.Disposable {
         handleDrop: this.handleDrop.bind(this),
       },
     });
-    context.subscriptions.push(this.treeView);
+    this.disposables.push(this.treeView);
     this.repository.tree().then(this.treeDataProvider.setEntities.bind(this.treeDataProvider));
     this.treeView.onDidChangeSelection(this.handleSelectionChange.bind(this));
-    context.subscriptions.push(
+    this.disposables.push(
       vscode.commands.registerCommand('bevyInspector.refreshEntities', this.refresh.bind(this)),
       vscode.commands.registerCommand('bevyInspector.enableEntitiesPolling', this.enablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.disableEntitiesPolling', this.disablePolling.bind(this)),
@@ -45,16 +46,18 @@ export class TreeController implements vscode.Disposable {
         this.pollingService.setDelay(delay);
       }
     });
-    context.subscriptions.push(
+    this.disposables.push(
       vscode.commands.registerCommand('bevyInspector.spawnEntity', this.spawnEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', this.destroyEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.moveEntityToTopLevel', this.moveEntityToTopLevel.bind(this)),
     );
+    context.subscriptions.push(...this.disposables);
   }
 
   dispose() {
     this.disablePolling();
     this.treeView.dispose();
+    this.disposables.forEach((d) => d.dispose());
   }
 
   private async enablePolling() {
