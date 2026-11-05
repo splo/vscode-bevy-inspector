@@ -17,7 +17,7 @@ export class ReflectionSchemaService implements SchemaService {
   }
   async getRootSchema(): Promise<BevyRootJsonSchema> {
     //with empty $defs useSchemaResolver will fallback to the schemas we have produced, which are flat, and fully resolved already
-    return { $defs: {} };
+    return { $defs: {}, isReflected: true };
   }
 }
 

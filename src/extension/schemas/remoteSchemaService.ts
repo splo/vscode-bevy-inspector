@@ -48,6 +48,7 @@ function toJsonSchema(registry: Record<TypePath, BrpSchema>): BevyRootJsonSchema
         return [key, definition as BevyJsonSchemaDefinition];
       }),
     ),
+    isReflected: false,
   };
 }
 

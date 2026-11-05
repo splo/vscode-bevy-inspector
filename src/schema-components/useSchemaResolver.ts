@@ -31,8 +31,14 @@ export function useSchemaResolver(schema: BevyRootJsonSchema | undefined): Resol
       setDereferencedSchema(undefined);
     };
   });
-  return (def: TypedValue) => ({
-    ...def,
-    schema: dereferencedSchema?.$defs[def.schema.typePath] ?? def.schema,
-  });
+  if (dereferencedSchema && !dereferencedSchema.isReflected) {
+    return (def: TypedValue) => {
+      return {
+        ...def,
+        schema: dereferencedSchema.$defs[def.schema.typePath] ?? def.schema,
+      };
+    };
+  } else {
+    return undefined;
+  }
 }
