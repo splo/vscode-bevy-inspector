@@ -1,4 +1,4 @@
-import { InteractiveInput } from '../../react-interactive-input';
+import { InteractiveInput } from '@designbyadrian/react-interactive-input';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
@@ -27,6 +27,9 @@ export function NumberValue({ name, path, value, schema, readOnly, onValueChange
 
   function onNumberInputChange(event: ChangeEvent<HTMLInputElement>): void {
     const newValue = parseFloat(event.target.value);
+    if (!Number.isFinite(newValue)) {
+      return;
+    }
     onValueChange({ path, value: newValue }, newValue);
   }
 }

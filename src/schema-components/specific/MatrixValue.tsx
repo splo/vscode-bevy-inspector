@@ -1,4 +1,4 @@
-import { InteractiveInput } from '../../react-interactive-input';
+import { InteractiveInput } from '@designbyadrian/react-interactive-input';
 import type { ChangeEvent } from 'react';
 import { capitalCase } from 'text-case';
 import type { Mat3 } from '../schema';
@@ -12,7 +12,10 @@ export function MatrixValue({ name, path, value, schema, readOnly, onValueChange
     property: 'x' | 'y' | 'z',
     event: ChangeEvent<HTMLInputElement>,
   ) => {
-    const newValue = Number(event.target.value);
+    const newValue = parseFloat(event.target.value);
+    if (!Number.isFinite(newValue)) {
+      return;
+    }
     const newMatrix: Mat3 = {
       ...value,
       [axis]: {

@@ -1,4 +1,4 @@
-import { InteractiveInput } from '../../react-interactive-input';
+import { InteractiveInput } from '@designbyadrian/react-interactive-input';
 import '@vscode-elements/elements/dist/vscode-form-group';
 import '@vscode-elements/elements/dist/vscode-label';
 import '@vscode-elements/elements/dist/vscode-textfield';
@@ -15,7 +15,10 @@ export function VectorValue({ name, path, value, schema, readOnly, onValueChange
   const values = value || Array(schema?.minItems || 0).fill(0);
 
   function onInputChange(event: ChangeEvent<HTMLInputElement>, index: number) {
-    const newValue = Number(event.target.value);
+    const newValue = parseFloat(event.target.value);
+    if (!Number.isFinite(newValue)) {
+      return;
+    }
     const newValues = [...values];
     newValues[index] = newValue;
     const updatedPath = buildPath(path, LABELS[index]);
