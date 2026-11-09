@@ -52,7 +52,7 @@ async function main() {
       sourcesContent: false,
       legalComments: 'none',
       platform: 'node',
-      target: 'node20',
+      target: 'node22',
       outdir: 'dist/extension',
       external: ['vscode'],
       logLevel: 'silent',

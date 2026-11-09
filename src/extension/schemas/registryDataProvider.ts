@@ -190,14 +190,7 @@ function refToTypePath(ref: Reference): TypePath {
 }
 
 type SchemaNodeType =
-  | 'Path'
-  | 'Type'
-  | 'Items'
-  | 'Properties'
-  | 'OneOf'
-  | 'ReflectTypes'
-  | 'TypePathField'
-  | 'ValueField';
+  'Path' | 'Type' | 'Items' | 'Properties' | 'OneOf' | 'ReflectTypes' | 'TypePathField' | 'ValueField';
 
 interface NodeOptions {
   type: SchemaNodeType;

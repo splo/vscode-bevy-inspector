@@ -7,7 +7,7 @@
 
     // Modules
     "module": "ESNext",
-    "moduleResolution": "node10",
+    "moduleResolution": "bundler",
 
     // Emit
     "declaration": true,
