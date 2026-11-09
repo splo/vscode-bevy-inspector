@@ -88,7 +88,6 @@ Used for displaying and editing Bevy components and resources. Loaded by the ext
 - `inspector-data/`: shared types, messages, and schemas for communication between the extension and webviews.
 - `messenger/`: utilities for message passing between webviews and the extension.
 - `schema-components/`: React components for rendering and editing values based on Bevy schemas. Used by both webviews.
-- `react-interactive-input`: code is vendored from <https://github.com/designbyadrian/react-interactive-input> until a new release is [published](https://www.npmjs.com/package/@designbyadrian/react-interactive-input?activeTab=versions). ESLint is configured to ignore the directory. See its [README](./src/react-interactive-input/README.md).
 
 ## Questions
 

@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }, { "path": "../react-interactive-input" }],
+  "references": [{ "path": "../messenger" }, { "path": "../inspector-data" }],
   "compilerOptions": {
     // Type Checking
     "strict": true,
