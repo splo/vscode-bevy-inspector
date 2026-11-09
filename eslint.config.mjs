@@ -1,4 +1,5 @@
 import { default as eslint, default as js } from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import prettier from 'eslint-plugin-prettier/recommended';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -7,7 +8,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 /** @type { import("eslint").Linter.Config[] } */
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   tseslint.configs.stylistic,
