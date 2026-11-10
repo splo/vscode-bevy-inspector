@@ -8,4 +8,4 @@ It is an adaptation of Bevy's original [remote server example](https://raw.githu
 
 ## Usage
 
-Just launch from the `examples/server-0.17` directory with the `cargo run` command.
+Just launch from the `examples/server-0.17` directory with the `cargo run` command. The default port is `15702`. An optional argument sets the port, for example `cargo run -- 8080`.

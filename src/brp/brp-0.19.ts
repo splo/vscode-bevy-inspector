@@ -58,6 +58,21 @@ export interface BevyRemoteService {
   /** List all reflectable registered resource types. */
   listResources(params: ListResourcesParams): Promise<ListResourcesResult>;
 
+  /** Trigger a reflected event. */
+  triggerEvent(params: TriggerEventParams): Promise<TriggerEventResult>;
+
+  /** Write a reflected message to the world. */
+  writeMessage(params: WriteMessageParams): Promise<WriteMessageResult>;
+
+  /** Observe reflected events, optionally scoped to an entity. */
+  watchObserve(params: ObserveWatchParams): Promise<ObserveWatchResult>;
+
+  /** List available, unavailable, and empty schedules. */
+  listSchedules(params?: ListSchedulesParams): Promise<ListSchedulesResult>;
+
+  /** Retrieve the systems, sets, relationships, and conflicts in a schedule. */
+  getScheduleGraph(params: ScheduleGraphParams): Promise<ScheduleGraphResult>;
+
   /** Return schema information about registered types. */
   registrySchema(params?: RegistrySchemaParams): Promise<RegistrySchemaResult>;
 
@@ -157,7 +172,7 @@ export type GetResult = GetLenientResult | GetStrictResult;
 export interface QueryParams {
   data: {
     components?: TypePath[];
-    option?: TypePath[];
+    option?: TypePath[] | 'all';
     has?: TypePath[];
   };
   filter?: {
@@ -278,10 +293,57 @@ export type ListResourcesParams = void;
 
 export type ListResourcesResult = TypePath[];
 
+export interface TriggerEventParams {
+  event: TypePath;
+  value?: unknown;
+}
+
+export type TriggerEventResult = void;
+
+export interface WriteMessageParams {
+  message: TypePath;
+  value?: unknown;
+}
+
+export type WriteMessageResult = void;
+
+export interface ObserveWatchParams {
+  event: TypePath;
+  entity?: EntityId;
+}
+
+export type ObserveWatchResult = unknown[];
+
+export type ListSchedulesParams = void;
+
+export interface ListSchedulesResult {
+  schedule_labels: string[];
+  unavailable_schedule_labels: string[];
+  empty_schedule_labels: string[];
+}
+
+export interface ScheduleGraphParams {
+  schedule_label: string;
+}
+
+export type ScheduleIndex = { System: number } | { SystemSet: number };
+
+export interface ScheduleGraphResult {
+  schedule_data: {
+    name: string;
+    systems: { name: string; apply_deferred: boolean; exclusive: boolean; deferred: boolean }[];
+    system_sets: { name: string; conditions: { name: string }[] }[];
+    hierarchy: [number, ScheduleIndex][];
+    dependency: [ScheduleIndex, ScheduleIndex][];
+    components: { name: string }[];
+    conflicts: { system_1: number; system_2: number; conflicting_access: 'World' | { Components: number[] } }[];
+  };
+}
+
 export interface RegistrySchemaParams {
-  withoutCrates?: string[];
-  withCrates?: string[];
-  typeLimit?: {
+  without_crates?: string[];
+  with_crates?: string[];
+  type_limit?: {
     without?: string[];
     with?: string[];
   };

@@ -3,12 +3,14 @@ import { V0_15BevyRemoteService } from '../brp/http/v0_15BevyRemoteService';
 import { V0_16BevyRemoteService } from '../brp/http/v0_16BevyRemoteService';
 import { V0_17BevyRemoteService } from '../brp/http/v0_17BevyRemoteService';
 import { V0_18BevyRemoteService } from '../brp/http/v0_18BevyRemoteService';
+import { V0_19BevyRemoteService } from '../brp/http/v0_19BevyRemoteService';
 import type { BrpAdapter } from './brp/adapter';
 import { V0_15BrpAdapter } from './brp/v0_15BrpAdapter';
 import { V0_16BrpAdapter } from './brp/v0_16BrpAdapter';
 import { V0_17BrpAdapter } from './brp/v0_17BrpAdapter';
 import { V0_18BrpAdapter } from './brp/v0_18BrpAdapter';
 import { V0_19BrpAdapter } from './brp/v0_19BrpAdapter';
+import { V0_20BrpAdapter as LatestBrpAdapter } from './brp/v0_20BrpAdapter';
 import { ComponentRepository } from './components/componentRepository';
 import { ComponentsController } from './components/componentsController';
 import { TreeController } from './entities/entitiesController';
@@ -59,12 +61,15 @@ export class BevyInspectorExtension {
         return new V0_18BrpAdapter(new V0_18BevyRemoteService(server.url, logger.debug));
       }
       case '0.19': {
-        return new V0_19BrpAdapter(server.url, logger.debug);
+        return new V0_19BrpAdapter(new V0_19BevyRemoteService(server.url, logger.debug));
+      }
+      case '0.20': {
+        return new LatestBrpAdapter(server.url, logger.debug);
       }
       default: {
         vscode.window.showWarningMessage(`Unsupported Bevy version: "${server.version}".`);
         // Still try to connect using the latest protocol.
-        return new V0_19BrpAdapter(server.url, logger.debug);
+        return new LatestBrpAdapter(server.url, logger.debug);
       }
     }
   }

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import type { BrpSchema, Reference, TypePath } from '../../brp/brp-0.16';
+import type { BrpSchema, Reference, TypePath } from '../../brp/brp-0.20';
 
 type TreeDataChange = SchemaNodeItem | undefined | null | void;
 

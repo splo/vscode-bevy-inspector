@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type * as brp15 from '../../brp/brp-0.15';
-import type * as brplatest from '../../brp/brp-0.19';
+import type * as brplatest from '../../brp/brp-0.20';
 import type { BrpAdapter } from './adapter';
 
 export class V0_15BrpAdapter implements BrpAdapter {
@@ -40,7 +40,10 @@ export class V0_15BrpAdapter implements BrpAdapter {
   }
 
   public async query(params: brplatest.QueryParams): Promise<brplatest.QueryResult> {
-    return await this.remoteService.query(params);
+    if (params.data.option === 'all') {
+      throw new Error("Bevy 0.15.x doesn't support querying all optional components");
+    }
+    return await this.remoteService.query(params as brp15.QueryParams);
   }
 
   public async spawnEntity(params: brplatest.SpawnParams): Promise<brplatest.SpawnResult> {
@@ -97,6 +100,26 @@ export class V0_15BrpAdapter implements BrpAdapter {
 
   public async listResources(params: brplatest.ListResourcesParams): Promise<brplatest.ListResourcesResult> {
     throw new Error("Bevy 0.15.x doesn't support resource listing");
+  }
+
+  public async triggerEvent(): Promise<brplatest.TriggerEventResult> {
+    throw new Error("Bevy 0.15.x doesn't support event triggering");
+  }
+
+  public async writeMessage(): Promise<brplatest.WriteMessageResult> {
+    throw new Error("Bevy 0.15.x doesn't support message writing");
+  }
+
+  public async watchObserve(): Promise<brplatest.ObserveWatchResult> {
+    throw new Error("Bevy 0.15.x doesn't support event observation");
+  }
+
+  public async listSchedules(): Promise<brplatest.ListSchedulesResult> {
+    throw new Error("Bevy 0.15.x doesn't support schedule listing");
+  }
+
+  public async getScheduleGraph(): Promise<brplatest.ScheduleGraphResult> {
+    throw new Error("Bevy 0.15.x doesn't support schedule graph retrieval");
   }
 
   public async registrySchema(params?: brplatest.RegistrySchemaParams): Promise<brplatest.RegistrySchemaResult> {

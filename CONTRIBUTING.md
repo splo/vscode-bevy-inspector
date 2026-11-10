@@ -43,12 +43,15 @@ Thank you for your interest in contributing!
 
 ### Running Bevy Example Servers
 
+- Task ports are `15700` plus the Bevy minor version; the latest stable version uses Bevy's default port.
 - Example servers are in the `examples/` directory and can be started via VS Code tasks:
   - `run-server-0.15-example`: Starts the [Bevy 0.15 server](./examples/server-0.15/) (port `15715`).
   - `run-server-0.16-example`: Starts the [Bevy 0.16 server](./examples/server-0.16/) (port `15716`).
   - `run-server-0.17-example`: Starts the [Bevy 0.17 server](./examples/server-0.17/) (port `15717`).
-  - `run-server-0.18-example`: Starts the [Bevy 0.18 server](./examples/server-0.18/) (port `15702`, Bevy's default).
-  - `run-server-dev-example`: Starts the [Bevy main branch server](./examples/server-dev/) (port `15719`).
+  - `run-server-0.18-example`: Starts the [Bevy 0.18 server](./examples/server-0.18/) (port `15718`).
+  - `run-server-0.19-example`: Starts the [Bevy 0.19 server](./examples/server-0.19/) (port `15719`).
+  - `run-server-0.20-example`: Starts the [Bevy 0.20 server](./examples/server-0.20/) (port `15702`, Bevy's default).
+  - `run-server-dev-example`: Starts the [Bevy main branch server](./examples/server-dev/) (port `15721`, for Bevy 0.21).
 - These servers expose the JSON-RPC BRP protocol at `http://127.0.0.1:<port>` and are useful for testing the extension.
 - Ports can be changed by manually running the `cargo` examples with an argument: `cargo run --manifest-path ./examples/server-0.18/Cargo.toml -- 15999`.
 

@@ -16,7 +16,7 @@ Display live data from your [Bevy](https://bevyengine.org/) application using th
 
 <img alt="Reparent" src="./docs/images/reparent.gif" height="256" />
 
-- 🔗 Manage multiple Bevy servers. Compatible with Bevy `0.15`, `0.16` and more.
+- 🔗 Manage multiple Bevy servers. Compatible with Bevy `0.15` through `0.20`.
 
 <img alt="Servers" src="./docs/images/servers.png" height="192" />
 
@@ -40,7 +40,7 @@ In short here are the requirements:
 ```toml
 # Cargo.toml
 [dependencies]
-bevy = { version = "0.18.0", features = ["bevy_remote"] }
+bevy = { version = "0.20.0", features = ["bevy_remote"] }
 ```
 
 - A Bevy application with the `RemotePlugin` and `RemoteHttpPlugin` plugins enabled.

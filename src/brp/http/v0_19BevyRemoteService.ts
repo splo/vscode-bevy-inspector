@@ -72,6 +72,26 @@ export class V0_19BevyRemoteService extends JsonRpcClient implements brp.BevyRem
     return await this.doRequest(params, 'world.list_resources');
   }
 
+  public async triggerEvent(params: brp.TriggerEventParams): Promise<brp.TriggerEventResult> {
+    return await this.doRequest(params, 'world.trigger_event');
+  }
+
+  public async writeMessage(params: brp.WriteMessageParams): Promise<brp.WriteMessageResult> {
+    return await this.doRequest(params, 'world.write_message');
+  }
+
+  public async watchObserve(params: brp.ObserveWatchParams): Promise<brp.ObserveWatchResult> {
+    return await this.doRequest(params, 'world.observe+watch');
+  }
+
+  public async listSchedules(params?: brp.ListSchedulesParams): Promise<brp.ListSchedulesResult> {
+    return await this.doRequest(params, 'schedule.list');
+  }
+
+  public async getScheduleGraph(params: brp.ScheduleGraphParams): Promise<brp.ScheduleGraphResult> {
+    return await this.doRequest(params, 'schedule.graph');
+  }
+
   public async registrySchema(params?: brp.RegistrySchemaParams): Promise<brp.RegistrySchemaResult> {
     return await this.doRequest(params, 'registry.schema');
   }

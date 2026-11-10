@@ -1,5 +1,5 @@
 import $RefParser from '@apidevtools/json-schema-ref-parser';
-import type { BrpSchema, Reference } from '../../brp/brp-0.18';
+import type { BrpSchema, Reference } from '../../brp/brp-0.20';
 import type {
   BevyJsonSchema,
   BevyJsonSchemaDefinition,
@@ -86,6 +86,10 @@ function toDefinition(schema: BrpSchema): BevyJsonSchema {
         case 'object':
           return {
             type: 'object',
+          };
+        case 'null':
+          return {
+            type: 'null',
           };
       }
     }
