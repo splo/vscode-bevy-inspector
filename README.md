@@ -75,4 +75,5 @@ Read the [contributing guide](https://github.com/splo/vscode-bevy-inspector/CONT
   - [Main VS Code Extension Entry Point](./CONTRIBUTING.md#main-vs-code-extension-entry-point)
   - [React-Based Webviews](./CONTRIBUTING.md#react-based-webviews)
   - [Shared Libraries](./CONTRIBUTING.md#shared-libraries)
+- [Supporting a New Bevy Version](./CONTRIBUTING.md#supporting-a-new-bevy-version)
 - [Questions](./CONTRIBUTING.md#questions)

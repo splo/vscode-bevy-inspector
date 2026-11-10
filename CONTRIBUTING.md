@@ -92,6 +92,10 @@ Used for displaying and editing Bevy components and resources. Loaded by the ext
 - `messenger/`: utilities for message passing between webviews and the extension.
 - `schema-components/`: React components for rendering and editing values based on Bevy schemas. Used by both webviews.
 
+## Supporting a New Bevy Version
+
+For new Bevy releases, follow the [version support guide](./docs/new-bevy-version.md).
+
 ## Questions
 
 If you have questions, [open a discussion](https://github.com/splo/vscode-bevy-inspector/discussions).
