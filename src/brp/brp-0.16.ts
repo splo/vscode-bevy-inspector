@@ -279,9 +279,9 @@ export type ListResourcesParams = void;
 export type ListResourcesResult = TypePath[];
 
 export interface RegistrySchemaParams {
-  withoutCrates?: string[];
-  withCrates?: string[];
-  typeLimit?: {
+  without_crates?: string[];
+  with_crates?: string[];
+  type_limit?: {
     without?: string[];
     with?: string[];
   };

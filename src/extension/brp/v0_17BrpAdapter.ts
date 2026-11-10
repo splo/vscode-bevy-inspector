@@ -1,5 +1,5 @@
 import type * as brp17 from '../../brp/brp-0.17';
-import type * as brplatest from '../../brp/brp-0.19';
+import type * as brplatest from '../../brp/brp-0.20';
 import type { BrpAdapter } from './adapter';
 
 export class V0_17BrpAdapter implements BrpAdapter {
@@ -93,6 +93,26 @@ export class V0_17BrpAdapter implements BrpAdapter {
 
   public async listResources(params: brplatest.ListResourcesParams): Promise<brplatest.ListResourcesResult> {
     return await this.remoteService.listResources(params);
+  }
+
+  public async triggerEvent(): Promise<brplatest.TriggerEventResult> {
+    throw new Error("Bevy 0.17.x doesn't support event triggering");
+  }
+
+  public async writeMessage(): Promise<brplatest.WriteMessageResult> {
+    throw new Error("Bevy 0.17.x doesn't support message writing");
+  }
+
+  public async watchObserve(): Promise<brplatest.ObserveWatchResult> {
+    throw new Error("Bevy 0.17.x doesn't support event observation");
+  }
+
+  public async listSchedules(): Promise<brplatest.ListSchedulesResult> {
+    throw new Error("Bevy 0.17.x doesn't support schedule listing");
+  }
+
+  public async getScheduleGraph(): Promise<brplatest.ScheduleGraphResult> {
+    throw new Error("Bevy 0.17.x doesn't support schedule graph retrieval");
   }
 
   public async registrySchema(params?: brp17.RegistrySchemaParams): Promise<brplatest.RegistrySchemaResult> {
