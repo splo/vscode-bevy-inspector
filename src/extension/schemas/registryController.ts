@@ -9,7 +9,7 @@ export class RegistryController implements vscode.Disposable {
   private treeView: vscode.TreeView<unknown>;
   private disposables: vscode.Disposable[] = [];
 
-  constructor(context: vscode.ExtensionContext, repository: RegistryRepository) {
+  constructor(repository: RegistryRepository) {
     this.repository = repository;
     this.treeDataProvider = new RegistryDataProvider();
     this.treeView = vscode.window.createTreeView('bevyInspector.schemas', {
@@ -17,16 +17,16 @@ export class RegistryController implements vscode.Disposable {
       showCollapseAll: true,
       canSelectMany: false,
     });
-    this.disposables.push(this.treeView);
     this.repository.registry().then(this.treeDataProvider.setRegistry.bind(this.treeDataProvider));
-    this.disposables.push(vscode.commands.registerCommand('bevyInspector.refreshSchemas', this.refresh.bind(this)));
-
-    context.subscriptions.push(...this.disposables);
+    this.disposables.push(
+      this.treeView,
+      this.treeDataProvider,
+      vscode.commands.registerCommand('bevyInspector.refreshSchemas', this.refresh.bind(this)),
+    );
   }
 
   dispose() {
-    this.treeView.dispose();
-    this.disposables.forEach((d) => d.dispose());
+    this.disposables.splice(0).forEach((d) => d.dispose());
   }
 
   public async refresh() {

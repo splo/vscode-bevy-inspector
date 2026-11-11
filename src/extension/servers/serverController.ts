@@ -26,8 +26,11 @@ export class ServerController {
     this.setStatusBarStatus('Disconnected');
     this.statusBar.show();
     this.initializeServers();
-    context.subscriptions.push(this.treeView, this.statusBar);
     context.subscriptions.push(
+      this.treeView,
+      this.statusBar,
+      this.dataProvider,
+      this.connectionChangeEmmiter,
       vscode.commands.registerCommand('bevyInspector.addServer', this.addServer.bind(this)),
       vscode.commands.registerCommand('bevyInspector.removeServer', this.removeServer.bind(this)),
       vscode.commands.registerCommand('bevyInspector.connect', this.connect.bind(this)),

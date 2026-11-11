@@ -20,11 +20,15 @@ class EntityItem extends vscode.TreeItem {
 
 type TreeDataChange = EntityNode | undefined | null | void;
 
-export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNode> {
+export class EntityTreeDataProvider implements vscode.TreeDataProvider<EntityNode>, vscode.Disposable {
   private treeDataChangeEmitter = new vscode.EventEmitter<TreeDataChange>();
   public readonly onDidChangeTreeData = this.treeDataChangeEmitter.event;
 
   private entities: EntityNode[] | undefined;
+
+  public dispose(): void {
+    this.treeDataChangeEmitter.dispose();
+  }
 
   public setEntities(entities: EntityNode[]) {
     this.entities = entities.sort((a, b) => a.id - b.id);

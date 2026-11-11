@@ -27,22 +27,33 @@ import { ServerController } from './servers/serverController';
 import { VscodeStateServerRepository } from './servers/vscodeStateServerRepository';
 import { logger } from './vscode/logger';
 
-export class BevyInspectorExtension {
+export class BevyInspectorExtension implements vscode.Disposable {
   private disposables: vscode.Disposable[] = [];
 
   constructor(context: vscode.ExtensionContext) {
+    context.subscriptions.push(this);
     const serverRepository = new VscodeStateServerRepository(context.globalState);
     const serverController = new ServerController(context, serverRepository);
-    serverController.onConnectionChanged(({ server, connected }: ConnectionChange) => {
-      if (connected) {
-        this.setupBevy(this.buildBrpAdapter(server), context);
-        logger.info(`Connected to server v${server.version} (${server.url})`);
-      } else {
-        this.disposables.forEach((d) => d.dispose());
-        logger.info(`Disconnected from server v${server.version} (${server.url})`);
-      }
-    });
+    context.subscriptions.push(
+      serverController.onConnectionChanged(({ server, connected }: ConnectionChange) => {
+        if (connected) {
+          this.setupBevy(this.buildBrpAdapter(server), context.extensionUri);
+          logger.info(`Connected to server v${server.version} (${server.url})`);
+        } else {
+          this.disposeConnection();
+          logger.info(`Disconnected from server v${server.version} (${server.url})`);
+        }
+      }),
+    );
     logger.info('Bevy Inspector extension started');
+  }
+
+  dispose() {
+    this.disposeConnection();
+  }
+
+  private disposeConnection() {
+    this.disposables.splice(0).forEach((disposable) => disposable.dispose());
   }
 
   private buildBrpAdapter(server: Server): BrpAdapter {
@@ -74,7 +85,7 @@ export class BevyInspectorExtension {
     }
   }
 
-  private setupBevy(brp: BrpAdapter, context: vscode.ExtensionContext) {
+  private setupBevy(brp: BrpAdapter, extensionDir: vscode.Uri) {
     try {
       vscode.commands.executeCommand('setContext', 'bevyInspector.resourcesUnsupported', !brp.supportsResources);
       vscode.commands.executeCommand('setContext', 'bevyInspector.registryUnsupported', !brp.supportsRegistry);
@@ -84,17 +95,20 @@ export class BevyInspectorExtension {
       } else {
         schemaService = new ReflectionSchemaService();
       }
-      const treeController = new TreeController(context, new EntityTreeRepository(brp));
-      const componentsController = new ComponentsController(context, new ComponentRepository(brp, schemaService));
-      treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController));
-      componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated));
-      this.disposables.push(treeController, componentsController);
+      const treeController = new TreeController(new EntityTreeRepository(brp));
+      const componentsController = new ComponentsController(new ComponentRepository(brp, schemaService), extensionDir);
+      this.disposables.push(
+        treeController,
+        componentsController,
+        treeController.onSelectionChanged(componentsController.updateSelection.bind(componentsController)),
+        componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated)),
+      );
       if (brp.supportsResources) {
-        const resourcesController = new ResourcesController(context, new ResourceRepository(brp, schemaService));
+        const resourcesController = new ResourcesController(new ResourceRepository(brp, schemaService), extensionDir);
         this.disposables.push(resourcesController);
       }
       if (brp.supportsRegistry) {
-        const registryController = new RegistryController(context, new RegistryRepository(brp));
+        const registryController = new RegistryController(new RegistryRepository(brp));
         this.disposables.push(registryController);
       }
     } catch (error: unknown) {

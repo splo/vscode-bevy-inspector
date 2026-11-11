@@ -15,11 +15,15 @@ class ServerItem extends vscode.TreeItem {
 
 type ServerDataChange = void | Server | Server[] | null | undefined;
 
-export class ServerDataProvider implements vscode.TreeDataProvider<Server> {
+export class ServerDataProvider implements vscode.TreeDataProvider<Server>, vscode.Disposable {
   private servers: Server[] | undefined;
   private connectedServerId: number | undefined;
   private readonly serverDataChangeEmitter = new vscode.EventEmitter<ServerDataChange>();
   public readonly onDidChangeTreeData = this.serverDataChangeEmitter.event;
+
+  public dispose(): void {
+    this.serverDataChangeEmitter.dispose();
+  }
 
   public setServers(value: Server[] | undefined) {
     this.servers = value;

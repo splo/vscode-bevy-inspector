@@ -3,9 +3,10 @@ import type { TypedValue } from '../../inspector-data/types';
 import type { EntityNode } from '../entities/entityTree';
 import { loadHtml } from '../vscode/htmlLoader';
 
-export class ComponentsViewProvider implements vscode.WebviewViewProvider {
+export class ComponentsViewProvider implements vscode.WebviewViewProvider, vscode.Disposable {
   private extensionUri: vscode.Uri;
   private view: vscode.WebviewView | undefined;
+  private viewDisposables: vscode.Disposable[] = [];
   private readonly messageReceivedEmitter = new vscode.EventEmitter<unknown>();
   private readonly visibilityChangeEmitter = new vscode.EventEmitter<boolean>();
   public readonly onMessageReceived = this.messageReceivedEmitter.event;
@@ -16,17 +17,31 @@ export class ComponentsViewProvider implements vscode.WebviewViewProvider {
   }
 
   resolveWebviewView(webviewView: vscode.WebviewView): void {
+    this.viewDisposables.splice(0).forEach((disposable) => disposable.dispose());
     this.view = webviewView;
     this.view.webview.options = {
       enableScripts: true,
     };
-    this.view.onDidChangeVisibility(() => this.visibilityChangeEmitter.fire(this.view?.visible ?? false));
+    this.viewDisposables.push(
+      webviewView.onDidChangeVisibility(() => this.visibilityChangeEmitter.fire(webviewView.visible)),
+      webviewView.webview.onDidReceiveMessage(this.messageReceivedEmitter.fire.bind(this.messageReceivedEmitter)),
+      webviewView.onDidDispose(() => {
+        this.view = undefined;
+        this.viewDisposables.splice(0).forEach((disposable) => disposable.dispose());
+      }),
+    );
     this.view.webview.html = loadHtml({
       webview: this.view.webview,
       contentBaseUri: this.extensionUri,
       htmlPath: '/dist/components-view/index.html',
     });
-    this.view.webview.onDidReceiveMessage(this.messageReceivedEmitter.fire.bind(this.messageReceivedEmitter));
+  }
+
+  dispose(): void {
+    this.viewDisposables.splice(0).forEach((disposable) => disposable.dispose());
+    this.view = undefined;
+    this.messageReceivedEmitter.dispose();
+    this.visibilityChangeEmitter.dispose();
   }
 
   public postMessage(message: unknown): void {

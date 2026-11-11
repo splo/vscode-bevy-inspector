@@ -17,7 +17,7 @@ export class TreeController implements vscode.Disposable {
   public readonly onSelectionChanged = this.entityNodeEmitter.event;
   private disposables: vscode.Disposable[] = [];
 
-  constructor(context: vscode.ExtensionContext, repository: EntityTreeRepository) {
+  constructor(repository: EntityTreeRepository) {
     this.repository = repository;
     this.treeDataProvider = new EntityTreeDataProvider();
     this.treeView = vscode.window.createTreeView('bevyInspector.entities', {
@@ -31,33 +31,32 @@ export class TreeController implements vscode.Disposable {
         handleDrop: this.handleDrop.bind(this),
       },
     });
-    this.disposables.push(this.treeView);
     this.repository.tree().then(this.treeDataProvider.setEntities.bind(this.treeDataProvider));
-    this.treeView.onDidChangeSelection(this.handleSelectionChange.bind(this));
     this.disposables.push(
+      this.entityNodeEmitter,
+      this.treeView.onDidChangeSelection(this.handleSelectionChange.bind(this)),
+      this.treeView,
+      this.treeDataProvider,
       vscode.commands.registerCommand('bevyInspector.refreshEntities', this.refresh.bind(this)),
       vscode.commands.registerCommand('bevyInspector.enableEntitiesPolling', this.enablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.disableEntitiesPolling', this.disablePolling.bind(this)),
-    );
-    this.pollingService.onRefresh(this.refresh.bind(this));
-    vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
-        const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
-        this.pollingService.setDelay(delay);
-      }
-    });
-    this.disposables.push(
+      this.pollingService.onRefresh(this.refresh.bind(this)),
+      this.pollingService,
+      vscode.workspace.onDidChangeConfiguration((e) => {
+        if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
+          const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
+          this.pollingService.setDelay(delay);
+        }
+      }),
       vscode.commands.registerCommand('bevyInspector.spawnEntity', this.spawnEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.destroyEntity', this.destroyEntity.bind(this)),
       vscode.commands.registerCommand('bevyInspector.moveEntityToTopLevel', this.moveEntityToTopLevel.bind(this)),
     );
-    context.subscriptions.push(...this.disposables);
   }
 
   dispose() {
     this.disablePolling();
-    this.treeView.dispose();
-    this.disposables.forEach((d) => d.dispose());
+    this.disposables.splice(0).forEach((d) => d.dispose());
   }
 
   private async enablePolling() {

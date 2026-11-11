@@ -20,40 +20,35 @@ export class ResourcesController implements vscode.Disposable {
   private pollingService: PollingService = new PollingService();
   private disposables: vscode.Disposable[] = [];
 
-  constructor(context: vscode.ExtensionContext, repository: ResourceRepository) {
+  constructor(repository: ResourceRepository, extensionUri: vscode.Uri) {
     this.repository = repository;
-    this.resourcesViewProvider = new ResourcesViewProvider(context.extensionUri);
+    this.resourcesViewProvider = new ResourcesViewProvider(extensionUri);
     this.disposables.push(
+      this.resourcesViewProvider.onMessageReceived(this.handleMessage.bind(this)),
+      this.resourcesViewProvider,
       vscode.window.registerWebviewViewProvider('bevyInspector.resources', this.resourcesViewProvider),
-    );
-    this.resourcesViewProvider.onMessageReceived(this.handleMessage.bind(this));
-    this.disposables.push(
       vscode.commands.registerCommand('bevyInspector.refreshResources', this.refresh.bind(this)),
       vscode.commands.registerCommand('bevyInspector.enableResourcesPolling', this.enablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.disableResourcesPolling', this.disablePolling.bind(this)),
       vscode.commands.registerCommand('bevyInspector.expandAllResources', this.expandAll.bind(this)),
       vscode.commands.registerCommand('bevyInspector.collapseAllResources', this.collapseAll.bind(this)),
-    );
-    this.pollingService.onRefresh(this.refresh.bind(this));
-    vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
-        const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
-        this.pollingService.setDelay(delay);
-      }
-    });
-
-    this.disposables.push(
+      this.pollingService.onRefresh(this.refresh.bind(this)),
+      this.pollingService,
+      vscode.workspace.onDidChangeConfiguration((e) => {
+        if (e.affectsConfiguration('bevyInspector.pollingDelay')) {
+          const delay = vscode.workspace.getConfiguration('bevyInspector').get('pollingDelay', DEFAULT_POLLING_DELAY);
+          this.pollingService.setDelay(delay);
+        }
+      }),
       vscode.commands.registerCommand('bevyInspector.insertResource', this.insertResource.bind(this)),
     );
 
     vscode.commands.executeCommand('setContext', 'bevyInspector.anyResourceExpanded', false);
-
-    context.subscriptions.push(...this.disposables);
   }
 
   dispose() {
     this.disablePolling();
-    this.disposables.forEach((d) => d.dispose());
+    this.disposables.splice(0).forEach((d) => d.dispose());
   }
 
   private async enablePolling() {

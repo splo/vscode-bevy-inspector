@@ -3,10 +3,14 @@ import type { BrpSchema, Reference, TypePath } from '../../brp/brp-0.20';
 
 type TreeDataChange = SchemaNodeItem | undefined | null | void;
 
-export class RegistryDataProvider implements vscode.TreeDataProvider<SchemaNodeItem> {
+export class RegistryDataProvider implements vscode.TreeDataProvider<SchemaNodeItem>, vscode.Disposable {
   private registry: BrpSchema[] | undefined;
   private readonly treeDataChangeEmitter = new vscode.EventEmitter<TreeDataChange>();
   public readonly onDidChangeTreeData = this.treeDataChangeEmitter.event;
+
+  public dispose(): void {
+    this.treeDataChangeEmitter.dispose();
+  }
 
   public setRegistry(registry: BrpSchema[]): void {
     this.registry = registry;
