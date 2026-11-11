@@ -1,13 +1,16 @@
+import pLimit from 'p-limit';
 import type { DestroyParams, EntityId, QueryParams, ReparentParams, SpawnParams } from '../../brp/brp-0.18';
 import type { BrpAdapter } from '../brp/adapter';
 import { logger } from '../vscode/logger';
 import type { EntityNode } from './entityTree';
 
 const ENTITY_NOT_FOUND_ERROR_CODE = -23401;
+const MAX_CONCURRENT_COMPONENT_REQUESTS = 8;
 
 /** Class for managing a tree of entities. */
 export class EntityTreeRepository {
   brp: BrpAdapter;
+  private readonly limitComponentRequests = pLimit(MAX_CONCURRENT_COMPONENT_REQUESTS);
 
   constructor(brp: BrpAdapter) {
     this.brp = brp;
@@ -26,7 +29,9 @@ export class EntityTreeRepository {
     await Promise.all(
       queryResult.map(async (row) => {
         try {
-          const componentNames = await this.brp.listComponents({ entity: row.entity });
+          const componentNames = await this.limitComponentRequests(() =>
+            this.brp.listComponents({ entity: row.entity }),
+          );
           const name = this.brp.nameFromNameComponent(row.components[this.brp.nameTypePath]);
           const parentId = this.brp.parentIdFromParentComponent(row.components[this.brp.parentTypePath]);
           entityById.set(row.entity, {
