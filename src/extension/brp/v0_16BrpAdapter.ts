@@ -1,6 +1,7 @@
 import type * as brp16 from '../../brp/brp-0.16';
 import type * as brplatest from '../../brp/brp-0.20';
 import type { BrpAdapter } from './adapter';
+import { entityIdToStringV16 } from './entityIdDecoder';
 
 export class V0_16BrpAdapter implements BrpAdapter {
   private remoteService: brp16.BevyRemoteService;
@@ -23,6 +24,10 @@ export class V0_16BrpAdapter implements BrpAdapter {
   public parentIdFromParentComponent(value: unknown): brplatest.EntityId | undefined {
     type ChildOfComponent = brp16.EntityId;
     return value as ChildOfComponent | undefined;
+  }
+
+  public entityIdToShortId(entityId: brplatest.EntityId): string {
+    return entityIdToStringV16(entityId);
   }
 
   public async getComponents(params: brplatest.GetStrictParams): Promise<brplatest.GetStrictResult>;

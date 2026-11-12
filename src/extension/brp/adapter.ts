@@ -15,4 +15,6 @@ export interface BrpAdapter extends BevyRemoteService {
   nameFromNameComponent: (value: unknown) => string | undefined;
   /** Extracts the parent EntityId from a parent component value. */
   parentIdFromParentComponent: (value: unknown) => EntityId | undefined;
+  /** Converts an EntityId to its `{index}v{generation}` representation. */
+  entityIdToShortId: (entityId: EntityId) => string;
 }

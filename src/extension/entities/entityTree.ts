@@ -3,6 +3,7 @@ import type { EntityId, TypePath } from '../../inspector-data/types';
 /** Represents a node in the entity tree structure. */
 export interface EntityNode {
   id: EntityId;
+  shortId: string;
   name?: string;
   componentNames: TypePath[];
   children: EntityNode[];
@@ -13,6 +14,7 @@ export function isEntityNode(node: unknown): node is EntityNode {
     typeof node === 'object' &&
     node !== null &&
     'id' in node &&
+    'shortId' in node &&
     'name' in node &&
     'componentNames' in node &&
     'children' in node
