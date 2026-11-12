@@ -1,7 +1,13 @@
 import * as vscode from 'vscode';
-import type { UpdateRequestedEvent, ValuesUpdatedEvent, ViewEvent } from '../../inspector-data/messages';
+import type {
+  SchemaUpdatedEvent,
+  UpdateRequestedEvent,
+  ValuesUpdatedEvent,
+  ViewEvent,
+} from '../../inspector-data/messages';
 import {
   CollapsibleStateChanged,
+  SchemaUpdated,
   SetCollapsibleState,
   UpdateRequested,
   ValuesUpdated,
@@ -15,6 +21,7 @@ import { DEFAULT_POLLING_DELAY, PollingService } from '../vscode/polling';
 import type { ComponentRepository } from './componentRepository';
 import type { EntityUpdated } from './components';
 import { ComponentsViewProvider } from './componentsViewProvider';
+import type { SchemaService } from '../schemas/schemas';
 
 export class ComponentsController implements vscode.Disposable {
   private repository: ComponentRepository;
@@ -24,9 +31,11 @@ export class ComponentsController implements vscode.Disposable {
   private readonly valueUpdatedEmitter = new vscode.EventEmitter<EntityUpdated>();
   public readonly onValueUpdated: vscode.Event<EntityUpdated> = this.valueUpdatedEmitter.event;
   private disposables: vscode.Disposable[] = [];
+  private schemaService: SchemaService;
 
-  constructor(repository: ComponentRepository, extensionDir: vscode.Uri) {
+  constructor(repository: ComponentRepository, extensionDir: vscode.Uri, schemaService: SchemaService) {
     this.repository = repository;
+    this.schemaService = schemaService;
     this.componentsViewProvider = new ComponentsViewProvider(extensionDir);
     this.disposables.push(
       this.valueUpdatedEmitter,
@@ -95,6 +104,13 @@ export class ComponentsController implements vscode.Disposable {
         type: ValuesUpdated,
         data: components,
       } satisfies ValuesUpdatedEvent);
+
+      const schema = await this.schemaService.getRootSchema();
+
+      this.componentsViewProvider.postMessage({
+        type: SchemaUpdated,
+        data: schema,
+      } satisfies SchemaUpdatedEvent);
     }
   }
 

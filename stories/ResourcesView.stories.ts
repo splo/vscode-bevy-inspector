@@ -1,4 +1,4 @@
-import { ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
+import { SchemaUpdated, ValuesUpdated } from '@bevy-inspector/inspector-data/messages';
 import type { BevyJsonSchemaDefinition, BevyRootJsonSchema, TypePath } from '@bevy-inspector/inspector-data/types';
 import { VsCodeMessenger } from '@bevy-inspector/messenger/vscodeMessenger';
 import { ResourcesView } from '@bevy-inspector/resources-view/components/ResourcesView';
@@ -35,6 +35,10 @@ export const ResourceWithPrimitiveObject: Story = {
           },
         },
       ],
+    });
+    vscodeMessenger.publishEvent({
+      type: SchemaUpdated,
+      data: { $defs: {} },
     });
   },
 };

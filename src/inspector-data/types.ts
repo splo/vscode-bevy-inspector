@@ -27,6 +27,7 @@ interface BevyJsonSchemaExtension {
 
 export interface BevyRootJsonSchema {
   $defs: Record<TypePath, BevyJsonSchemaDefinition>;
+  isReflected: boolean;
 }
 
 export type BevyJsonSchemaDefinition = BevyJsonSchema & {

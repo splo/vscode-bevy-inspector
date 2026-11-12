@@ -96,7 +96,11 @@ export class BevyInspectorExtension implements vscode.Disposable {
         schemaService = new ReflectionSchemaService();
       }
       const treeController = new TreeController(new EntityTreeRepository(brp));
-      const componentsController = new ComponentsController(new ComponentRepository(brp, schemaService), extensionDir);
+      const componentsController = new ComponentsController(
+        new ComponentRepository(brp, schemaService),
+        extensionDir,
+        schemaService,
+      );
       this.disposables.push(
         treeController,
         componentsController,
@@ -104,7 +108,11 @@ export class BevyInspectorExtension implements vscode.Disposable {
         componentsController.onValueUpdated((entityUpdated) => treeController.refreshName(entityUpdated)),
       );
       if (brp.supportsResources) {
-        const resourcesController = new ResourcesController(new ResourceRepository(brp, schemaService), extensionDir);
+        const resourcesController = new ResourcesController(
+          new ResourceRepository(brp, schemaService),
+          extensionDir,
+          schemaService,
+        );
         this.disposables.push(resourcesController);
       }
       if (brp.supportsRegistry) {

@@ -1,4 +1,3 @@
-import $RefParser from '@apidevtools/json-schema-ref-parser';
 import type { BrpSchema, Reference } from '../../brp/brp-0.20';
 import type {
   BevyJsonSchema,
@@ -24,13 +23,12 @@ export class RemoteSchemaService implements SchemaService {
     return root.$defs[typePath] || { typePath, shortPath: shortenTypePath(typePath) };
   }
 
-  private async getRootSchema(): Promise<BevyRootJsonSchema> {
+  public async getRootSchema(): Promise<BevyRootJsonSchema> {
     if (this.cachedSchema === null) {
       const registry = await this.brp.registrySchema();
       const schema = toJsonSchema(registry);
       const fixedSchema = fixDocument(schema);
-      const derefSchema = await dereferenceSchema(fixedSchema);
-      this.cachedSchema = derefSchema;
+      this.cachedSchema = fixedSchema;
     }
     return this.cachedSchema;
   }
@@ -50,6 +48,7 @@ function toJsonSchema(registry: Record<TypePath, BrpSchema>): BevyRootJsonSchema
         return [key, definition as BevyJsonSchemaDefinition];
       }),
     ),
+    isReflected: false,
   };
 }
 
@@ -364,10 +363,4 @@ function fixDefinition([name, definition]: [string, BevyJsonSchema]): [string, B
     }
   }
   return [name, definition];
-}
-
-async function dereferenceSchema(schema: BevyRootJsonSchema): Promise<BevyRootJsonSchema> {
-  return await $RefParser.dereference<BevyRootJsonSchema>(schema, {
-    dereference: { preservedProperties: ['typePath', 'shortPath'] },
-  });
 }
