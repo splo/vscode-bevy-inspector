@@ -34,8 +34,10 @@ export class EntityTreeRepository {
           );
           const name = this.brp.nameFromNameComponent(row.components[this.brp.nameTypePath]);
           const parentId = this.brp.parentIdFromParentComponent(row.components[this.brp.parentTypePath]);
+          const shortId = this.brp.entityIdToShortId(row.entity);
           entityById.set(row.entity, {
             id: row.entity,
+            shortId,
             name,
             componentNames,
             children: [],
@@ -80,8 +82,10 @@ export class EntityTreeRepository {
       components: {},
     };
     const result = await this.brp.spawnEntity(params);
+    const shortId = this.brp.entityIdToShortId(result.entity);
     return {
       id: result.entity,
+      shortId,
       componentNames: [],
       children: [],
     };
